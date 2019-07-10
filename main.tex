@@ -1,0 +1,151 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+
+\title{Embedding project}
+\author{}
+\date{}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\begin{document}
+
+\maketitle
+
+\section{Our initial idea (12.06.2019)}
+
+Motivation:
+\begin{itemize}
+    \item Somehow use our intuition that networks are usually formed from different clusters, which also hierarchically consist of smaller clusters;
+    \item Try to formalize a notion of varying dimension: some parts of a graph can be more complex than others, so we need more dimensions for them;
+    \item Also try to formalize a notion of varying curvature, in order to be not limited by a fixed one.
+\end{itemize}
+A possible algorithm:
+\begin{itemize}
+    \item Consider the whole graph, choose appropriate curvature and dimension, embed a graph into the corresponding space;
+    \item Compute ``residual'' graph, find its subgraph with largers error and approximately constant curvature, embed it into the corresponding space;
+    \item Continue the process with other subsets;
+    \item When compute the distance between two nodes, use its common subspace.
+\end{itemize}
+Some comments and open questions:
+\begin{itemize}
+    \item Global curvature of a graph is not defined and studied. It would be interesting to define it based on some practical metric. (And it is not clear how it would be connected with local curvatures of nodes/edges);
+    \item Intuitively, it seems to be desirable to move from larger subsets of nodes in the algorithm to smaller ones;
+    \item Maybe we can use community detection at some point of the algorithm.
+\end{itemize}
+
+\section{Our current simple plan (28.07.2019)}
+
+We think that we will start our experiment with the following simple approach, in order to see whether we can benefit from our general idea.
+
+\begin{itemize}
+    \item Take our graph and apply a community detection algorithm to it. There are two options which we discussed: 1) apply some hierarchical algorithm in order to get several levels of granularity as an output; 2) get only one level of communities, but with some overlaps. The further ideas can be applied to both cases, but we like the second one more, so, let me describe this one. 
+    \item Assume that we have some budget for the overall dimension. Then, we split this budget into two parts. The first we use to embed the whole graph, using some standard graph embedding approach (using an existing algorithm to choose the curvature). The second part we use in the following way: we embed each cluster separately in its own space (choosing curvature individually for clusters).
+    \item When we have to measure the distance between two elements, if the belong to the same cluster, then we use the corresponding cluster embedding, if they belong to different clusters, then we use the embedding of the whole graph.
+    \item One more idea that we discussed: when we embed the whole graph we care more about long distances, since short ones will be improved at the cluster embedding stage. Therefore, in the learning procedure we can sample only the pairs which are far away from each other.
+\end{itemize}
+
+Speaking about the practical realization, we decided to do the following: 
+\begin{itemize}
+    \item We want to improve the results of \cite{gu2019learning} using their algorithm and their datasets.
+    \item We take the code from their github: \url{https://github.com/HazyResearch/hyperbolics}.
+    \item Using this, it seems to be fairly easy to make some starting experiments.
+\end{itemize}
+
+Also, we discussed the following possible directions for theoretical (or algorithmic) research:
+\begin{itemize}
+    \item As we discussed before, it would be very useful to estimate optimal curvature and dimension given a graph (optimal in terms of some target metric, e.g., distortion).
+    \item It would be interesting to understand the optimal way to split the overall maximum dinension into two parts: for global graph embedding and local cluster embeddings. On the one hand, global graph embedding is expected to be coarser. On the other hand, the number of vertices in the whole graph is larger. 
+    \item Probably unrelated note: it is always useful to understand which algorithm is better at which distances (longer or shorter ones).
+\end{itemize}
+
+\section{Measuring quality of embeddings}
+
+
+
+\paragraph{Mean Average Precision (MAP)}
+
+Let us consider the node $v$. $N_i(v)$ be the number of nodes closest to $i$ we have to consider to cover $i$ neighbors of $i$. Note that in the ideal situation we have $N_i(v) = i$. Then MAP is defined as 
+\[
+\frac{1}{n} \sum_v \frac{1}{deg(v)} \sum_{i=1}^{deg(v)} \frac{i}{N_i(v)}. 
+\]
+
+\paragraph{Distortion} This is a standard metric for graph embeddings.
+
+\[
+D(f) = \frac{1}{\binom{n}{2}} \sum_{u \neq v}  \frac{|d(f(u),f(v)) - d_G(u,v)|}{d_G(u,v)}.
+\]
+
+There is also a variant called worst-case distortion:
+\[
+D_{WC}(f) = \frac{\max_{u\neq v}d(f(u),f(v))/d_G(u,v)}{\min_{u\neq v}d(f(u),f(v))/d_G(u,v)} 
+\]
+
+\section{Practical tasks}
+
+\subsection{Network reconstruction and link prediction}
+
+\cite{goyal2018graph} uses some standard complex networks: Blogcatalog, YouTube, HepTh, AstroPh, protein-protein interactions. As metrics they use Precision at $k$ and Mean Average Precision (MAP).
+
+\cite{nickel2017poincare} uses the following networks: AstroPh, CondMat, GrQc, HepPh. Each dataset is split into train, validation, and test sets. Parameters are tuned on validation, MAP is measured on test. 
+
+\cite{nickel2017poincare} also uses transitive closure of the WordNet noun hierarchy. Tasks: reconstruction and link prediction. Measure mean rank and (MAP).  The same dataset is used in~\cite{sala2018representation}, where MAP is measured. Similarly, \cite{ganea2018hyperbolic} uses this, treats link prediction as classifiaction task and measures precision, recall, F1.
+
+\cite{sala2018representation} also uses fully-balanced trees along with phylogenetic trees expressing genetic heritage (of mosses growing in urban
+environments), a graph of Ph.D. advisor-advisee relationships, biological sets involving disease relationships, protein interactions in yeast bacteria, collaboration network Gr-QC. Measure MAP and distortion. 
+
+\cite{nickel2018learning} uses the following taxonomies: WordNet (noun and verb hierarchy), EuroVoc, ACM, MeSH. Measures MR and MAP. In addition, they also evaluate how well the norm of the embeddings  correlates with
+the ground-truth ranks in the embedded taxonomy: they measure the Spearman rank-order correlation of the normalized rank with the norm of the embedding. 
+ 
+\cite{nickel2018learning} also embeds Enron Email Corpus and measures Spearman correlation of the norms of the embedding with
+the organizational rank.
+
+ 
+\subsection{Lexical Entailment}
+
+\cite{nickel2017poincare} uses HyperLex datasets. Uses embedding of WordNet. Records Spearman’s rank correlation
+with the ground-truth ranking. 
+
+\subsection{Node classification}
+
+\cite{goyal2018graph} uses Blogcatalog and protein-protein interactions. Use embeddings as features (as input to a one-vs-rest logistic regression).
+
+\section{Selected relevant papers}
+
+\paragraph{Graph embedding techniques, applications, and performance: A survey~\cite{goyal2018graph}}
+
+A survey of graph embedding techniques, covers many different methods, but all based on euclidean space (with euclidean distance or dot product). The code is available at \url{https://github.com/palash1992/GEM}.
+
+\paragraph{What relations are reliably embeddable in Euclidean space?~\cite{bhattacharjee2019relations}}
+
+About embeddings of directed graphs to euclidean space. Also contains a short background on undirected graphs (section 1.1), in particular cite some known theoretical results on the subject. Also, focus on precision of embeddings. Maybe we can use something as a starting point for the theory. 
+
+\paragraph{Poincare embeddings for learning hierarchical representations~\cite{nickel2017poincare}}
+
+Influential paper - they were the first to use hyperbolic embeddings in computer science.
+Embed in multidimensional Poincar{\'e} ball. Propose embedding algorithm based on Riemannian optimization. The code is available at \url{https://github.com/facebookresearch/poincare-embeddings}.
+
+\paragraph{Learning Continuous Hierarchies in the Lorentz Model of Hyperbolic Geometry~\cite{nickel2018learning}}
+
+Follow-up for the previous work, show that it is better to embed to Lorentx model of hyperbolic space. 
+
+\paragraph{Learning Mixed-Curvature Representations in Product Spaces~\cite{gu2019learning}}
+
+Embed graphs to a product manifold combining multiple copies of spherical,
+hyperbolic, and Euclidean spaces. The code is available at \url{https://github.com/HazyResearch/hyperbolics}
+
+\paragraph{Representation Tradeoffs for Hyperbolic Embeddings~\cite{sala2018representation}}
+
+Interesting observation that not only dimensionality, but also precision is important.
+Propose a new algorithm for graph embedding: first, embed a graph into a weighted tree, and then embed that tree into the hyperbolic disk. The code is available at \url{https://github.com/HazyResearch/hyperbolics}.
+
+\paragraph{Hyperbolic Entailment Cones for Learning Hierarchical Embeddings~\cite{ganea2018hyperbolic}}
+
+Propose a new method for embedding directed acyclic graphs (DAGs). 
+Use nested geodesically convex cones, which improve embeddings in both euclidean and hyperbolic spaces. 
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
