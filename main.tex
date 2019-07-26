@@ -9,6 +9,7 @@
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{amssymb}
 
 \begin{document}
 
@@ -83,6 +84,64 @@ There is also a variant called worst-case distortion:
 D_{WC}(f) = \frac{\max_{u\neq v}d(f(u),f(v))/d_G(u,v)}{\min_{u\neq v}d(f(u),f(v))/d_G(u,v)} 
 \]
 
+\section{Curvature in graphs}
+
+There are many different notions of graphs curvature. Here we describe a few of them, starting with the most prominent one Ollivier-Ricci curvature.
+
+\subsection{Ollivier-Ricci curvature}
+
+To define this curvature we first need to introduce the Wasserstein metric.
+
+Let $(\mathcal{X},d)$ be a metric space and consider two probability measures $\mu_1$ and $\mu_2$ on this space. Recall that a coupling between $\mu_1$ and $\mu_2$ is a joint probability measure $\mu$ whose marginals are $\mu_1$ and $\mu_2$. Let $\Gamma(\mu_1, \mu_2)$ denote the set of all such couplings. The Wasserstein metric (Kantorovich-Rubenstein distance of order one) between $\mu_1$ and $\mu_2$ is then given by
+\begin{equation}\label{eq:def_wasserstein_inf}
+	W_1(\mu_1, \mu_2) = \inf_{\mu \in \Gamma(\mu_1, \mu_2)} \int_{\mathcal{X} \times \mathcal{X}} d(x,y) \, d\mu(x,y)
+\end{equation}
+
+Due to a duality theorem by Kantorovich and Rubenstein we have the following equivalent definition of $W_1(\mu_1, \mu_2)$
+\begin{equation}\label{eq:def_wasserstein_sup}
+	W_1(\mu_1, \mu_2) = \sup_{f \in L_1} \int_\mathcal{X} f(x) \, d\mu_1(x) - \int_\mathcal{X} f(y) \, d\mu_2(y),
+\end{equation}
+where the supremum is taken over all Lipschitz continuous function on $(X,d)$ with Lipschitz constant $1$, i.e.
+\[
+	|f(x) - f(y)| \le d(x,y).
+\]
+
+For a graph $G$ we consider the shortest path metric on $G$, denoted by $d_G$, and let $W_1^G$ denote the Wasserstein metric with respect to the metric space $(G,d_G)$. Furthermore, for each node $v$ let $m_v$ denote the uniform probability measure on the neighbors of $v$, i.e.
+\[
+	m_v(u) = \frac{1_{u \sim v}}{\mathrm{deg}(v)},
+\]
+where $\mathrm{deg}(v)$ denotes the degree of $v$. Then the classic definition of Ollivier-Ricci curvature between two neighboring nodes $v \sim u$ in $G$ is defined as
+\begin{equation}\label{eq:def_classic_ollivier_graphs}
+	\kappa_G(u,v) = 1 - W_1^G(m_v, m_u).
+\end{equation}
+
+It is important to note that Ollivier-Ricci curvature is defined in much more generality in terms of metrics and random walks, see~\cite{ollivier2009ricci}. Thus different version on graphs can be considered. Definition~\eqref{eq:def_classic_ollivier_graphs} corresponds to the classical choices of graph distance and random walk on the graph.
+
+The strength of Ollivier-Ricci curvature lies in the fact that when we consider its continuous version on Riemannian manifolds than this converges to the Ricci curvature, see~\cite[Example 7]{ollivier2009ricci}. It turns out that this also holds when we consider dense random geometric graphs on Riemannian manifolds (upcoming paper). However, for this one needs to deviate from the classical version and consider random-walks on larger neighborhoods. Still these results highlights that Ollivier-Ricci curvature can properly encode the curvature of the underlying manifold. 
+
+Below we list some simple examples of Ollivier-Ricci curvature in graphs.
+
+\paragraph{Circle}
+
+Consider a circle on $n$ nodes and let $v \sim u$ be two neighbors. Then $W_1^G(m_u,m_v) = 1$ and hence $\kappa_G(u,v) = 0$.
+
+\paragraph{Trees}
+
+Consider any tree graph $T$, let $v \sim u$ be two neighbors. Then Proposition 2 in \cite{jost2014ollivier} states that
+\[
+	\kappa_G(m_x,m_y) = -2\left(1 - \frac{1}{\mathrm{deg}(v)} - \frac{1}{\mathrm{deg}(u)}\right)_+, 
+\]
+where $(t)_+ = \max\{0,t\}$. In particular, if either $\mathrm{deg}(v) = 1$ or $\mathrm{deg}(u) = 1$ then it follows that $\kappa_G(u,v) = 0$. However, if $\mathrm{deg}(v) \ge 3$ for all nodes $v$ then $\kappa_G(v,u) < 0$. Thus trees are intrinsic examples of negatively curved graphs, according to Ollivier-Ricci curvature.
+
+\paragraph{Lattice}
+Consider the $2$-dimensional lattice $\mathbb{Z}^2$ and let $v \sim u$ be two neighbors. Then the optimal transportation from $m_u$ to $m_v$ is given by a translation by the vector $y - x$ and hence $W_1^G(m_v,m_u) = d_G(u,v) = 1$, see also \cite[Example 5]{ollivier2009ricci}, and thus $\kappa_G(u,v) = 0$.
+
+\paragraph{Complete graph}
+
+Consider a complete graph on $n$ nodes. Then, for any two nodes $u$ and $v$ it follows from Example 1 in~\cite{jost2014ollivier} that $\kappa_G(m_v, m_u) = \frac{n-2}{n-1} \to 1$ as $n \to \infty$.
+
+
+                     
 \section{Practical tasks}
 
 \subsection{Network reconstruction and link prediction}
