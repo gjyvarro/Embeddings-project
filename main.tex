@@ -92,7 +92,7 @@ There are many different notions of graphs curvature. Here we describe a few of 
 
 To define this curvature we first need to introduce the Wasserstein metric.
 
-Let $(\mathcal{X},d)$ be a metric space and consider two probability measures $\mu_1$ and $\mu_2$ on this space. Recall that a coupling between $\mu_1$ and $\mu_2$ is a joint probability measure $\mu$ whose marginals are $\mu_1$ and $\mu_2$. Let $\Gamma(\mu_1, \mu_2)$ denote the set of all such couplings. The Wasserstein metric (Kantorovich-Rubenstein distance of order one) between $\mu_1$ and $\mu_2$ is then given by
+Let $(\mathcal{X},d)$ be a metric space (which technically should be Radon or Polish) and consider two probability measures $\mu_1$ and $\mu_2$ on this space. Recall that a coupling between $\mu_1$ and $\mu_2$ is a joint probability measure $\mu$ whose marginals are $\mu_1$ and $\mu_2$. Let $\Gamma(\mu_1, \mu_2)$ denote the set of all such couplings. The Wasserstein metric (Kantorovich-Rubenstein distance of order one) between $\mu_1$ and $\mu_2$ is then given by
 \begin{equation}\label{eq:def_wasserstein_inf}
 	W_1(\mu_1, \mu_2) = \inf_{\mu \in \Gamma(\mu_1, \mu_2)} \int_{\mathcal{X} \times \mathcal{X}} d(x,y) \, d\mu(x,y)
 \end{equation}
@@ -140,7 +140,47 @@ Consider the $2$-dimensional lattice $\mathbb{Z}^2$ and let $v \sim u$ be two ne
 
 Consider a complete graph on $n$ nodes. Then, for any two nodes $u$ and $v$ it follows from Example 1 in~\cite{jost2014ollivier} that $\kappa_G(m_v, m_u) = \frac{n-2}{n-1} \to 1$ as $n \to \infty$.
 
+\paragraph{Erd\H{o}s-Renyi graph}
 
+The following results from~\cite{lin2011ricci} characterize Ollivier-Ricci curvature in $G(n,p)$:
+
+\begin{enumerate}
+\item If $p \ge \log(n)^{1/3} n^{-1/3}$ then almost surely
+\[
+	\kappa_G(u,v) = p + O\left(\sqrt{\frac{\log(n)}{n p}}\right).
+\]
+\item If $2 \log(n)^{1/2} n^{-1/2} \le p < \log(n)^{1/3} n^{-1/3}$ then almost surely
+\[
+	\kappa_G(u,v) = O\left(\frac{\log(n)}{n p^2}\right).
+\]
+\item If $\log(n)^{1/2} n^{-2/3} \ll p \ll \log(n)^{-1/2}$ then almost surely
+\[
+	\kappa_G(u,v) = -1 + O\left(n p^2\right) + O\left(\frac{\log(n)}{n^2 p^3}\right).
+\]
+\item If $\log(n) n^{-1} \ll p \ll n^{-2/3}$ then almost surely
+\[
+	\kappa_G(u,v) = -2 + O\left(n^2 p^3\right) + O\left(\sqrt{\frac{\log(n)}{np}}\right)
+\]
+\end{enumerate}
+
+\subsection{Forman-Ricci curvature}
+
+Another notion of graph curvature called Forman-Ricci curvature~\cite{sreejith2016forman} is based on the discretization of Ricci curvature proposed by Forman~\cite{forman2003bochner}. It is defined for general weighted graph $G$, with both vertex weights $w(v)$ and edge weights $w(u,v)$, as follows
+\begin{equation}\label{eq:def_forman_curvature_edges}
+	F(u,v) = w(u,v) \left(\frac{w(u) + w(v)}{w(u,v)} - \hspace{-8pt}\sum_{u^\prime \in N(u)\setminus v} \sum_{v^\prime \in N(v) \setminus u} \frac{w(u)}{w(u,u^\prime)} + \frac{w(v)}{w(v,v^\prime)}\right),
+\end{equation}
+where $N(v)$ denotes the neighborhood of a node $v$. A definition of Forman-Ricci curvature for vertices is then obtained by averaging over all neighbors
+\begin{equation}\label{eq:def_forman_curvature_nodes}
+	F(v) = \frac{1}{\mathrm{deg}(v)} \sum_{u \in N(v)} F(u,v).
+\end{equation}
+
+When the graph $G$ is not weighted, i.e. when $w(v) = 1 = w(v,u)$ for all nodes $v$ and edges $(u,v)$, we get
+\begin{align*}
+	F(u,v) &= 2 \left(1 - \sum_{u^\prime \in N(u)\setminus v} \sum_{v^\prime \in N(v) \setminus u} 1 \right) \\
+	&= 2\left(1 - (\mathrm{deg}(v) - 1)(\mathrm{deg}(u) - 1)\right) \\
+	&= 2\left(\mathrm{deg}(v) + \mathrm{deg}(u) - \mathrm{deg}(v)\mathrm{deg}(u)\right).
+\end{align*}
+In this case we thus see that Forman-Ricci curvature is completely determined by the degree distributions and the joint-degree distribution of the graph.
                      
 \section{Practical tasks}
 
