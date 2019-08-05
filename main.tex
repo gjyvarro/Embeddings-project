@@ -181,7 +181,52 @@ When the graph $G$ is not weighted, i.e. when $w(v) = 1 = w(v,u)$ for all nodes 
 	&= 2\left(\mathrm{deg}(v) + \mathrm{deg}(u) - \mathrm{deg}(v)\mathrm{deg}(u)\right).
 \end{align*}
 In this case we thus see that Forman-Ricci curvature is completely determined by the degree distributions and the joint-degree distribution of the graph.
+
+\section{Global graph curvature}
+
+\subsection{Possible definition}
+        
+Assume that we are given a loss function $L(e(G),G)$ which compares graph $G$ and its embedding. For example, $L$ can be distortion.
+
+Assume that we have some ideal network embedder $e_{d,C}(G)$ which embeds $G$ into a $d$-dimensional space of curvature $C$ and minimizes $L$. Then we can define a $d$-dimensional curvature of $G$ in the following way:
+\[
+C_d(G) = \textrm{argmin}_C L(e_{d,C}(G),G)\,.
+\]
+
+\subsection{Circle of size $n$}
                      
+\paragraph{Ollivier-Ricci curvature} $\kappa_G(u,v) = 0$ for all edges, so by averaging we obtain $0$.
+
+\paragraph{Forman-Ricci curvature} $F(u,v) = 0$.
+
+\paragraph{Distortion-based curvature} For any dimension $d$ and for $n \ge 4$, there is a curvature which gives zero distortion:
+\[
+C_d(G) = \frac{2\pi}{n}.
+\]
+This is easy to explain: if we consider three consequent vertices, then the middle one should lie on the geodetic between the other two. So, they all lie on a great circle (of length $n$).
+
+\subsection{Complete graph on $n$ vertices}
+
+\paragraph{Ollivier-Ricci curvature} 
+        
+$\kappa_G(u,v) = \frac{n-2}{n-1}$, so average is the same.
+
+\paragraph{Forman-Ricci curvature} $F(u,v) = -2n^2 + 8n - 6$.
+
+\paragraph{Distortion-based curvature} Assume that $d = n-2$, then it is easy to find $C_d(G)$. Note that we want to get $n-1$-simplex, which can be embedded into a $n-2$-dimensional spherical space, the radius is $R = \sqrt{\frac{n-1}{2n}}$, so we have
+\[
+C_{n-2}(G) = \sqrt{\frac{2n}{n-1}}\,.
+\]
+\textbf{TODO: analyze smaller $d$}
+
+\subsection{Star on $n$ vertices}
+
+\paragraph{Ollivier-Ricci curvature} $\kappa_G = 0$
+
+\paragraph{Forman-Ricci curvature} $F = 2$
+
+\paragraph{Distortion-based curvature} It seems that in order to minimize distortion, we want $C_d(G) \to -\infty$.
+            
 \section{Practical tasks}
 
 \subsection{Network reconstruction and link prediction}
