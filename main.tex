@@ -167,7 +167,7 @@ The following results from~\cite{lin2011ricci} characterize Ollivier-Ricci curva
 
 Another notion of graph curvature called Forman-Ricci curvature~\cite{sreejith2016forman} is based on the discretization of Ricci curvature proposed by Forman~\cite{forman2003bochner}. It is defined for general weighted graph $G$, with both vertex weights $w(v)$ and edge weights $w(u,v)$, as follows
 \begin{equation}\label{eq:def_forman_curvature_edges}
-	F(u,v) = w(u,v) \left(\frac{w(u) + w(v)}{w(u,v)} - \hspace{-8pt}\sum_{u^\prime \in N(u)\setminus v} \sum_{v^\prime \in N(v) \setminus u} \frac{w(u)}{w(u,u^\prime)} + \frac{w(v)}{w(v,v^\prime)}\right),
+	F(u,v) = w(u,v) \left(\frac{w(u) + w(v)}{w(u,v)} - \hspace{-8pt}\sum_{u^\prime \in N(u)\setminus v}  \frac{w(u)}{w(u,u^\prime)} - \hspace{-8pt} \sum_{v^\prime \in N(v) \setminus u} \frac{w(v)}{w(v,v^\prime)}\right),
 \end{equation}
 where $N(v)$ denotes the neighborhood of a node $v$. A definition of Forman-Ricci curvature for vertices is then obtained by averaging over all neighbors
 \begin{equation}\label{eq:def_forman_curvature_nodes}
@@ -176,11 +176,18 @@ where $N(v)$ denotes the neighborhood of a node $v$. A definition of Forman-Ricc
 
 When the graph $G$ is not weighted, i.e. when $w(v) = 1 = w(v,u)$ for all nodes $v$ and edges $(u,v)$, we get
 \begin{align*}
-	F(u,v) &= 2 \left(1 - \sum_{u^\prime \in N(u)\setminus v} \sum_{v^\prime \in N(v) \setminus u} 1 \right) \\
-	&= 2\left(1 - (\mathrm{deg}(v) - 1)(\mathrm{deg}(u) - 1)\right) \\
-	&= 2\left(\mathrm{deg}(v) + \mathrm{deg}(u) - \mathrm{deg}(v)\mathrm{deg}(u)\right).
+	F(u,v) &= \left(2 - (\mathrm{deg}(v) - 1) - (\mathrm{deg}(u) - 1)\right) \\
+	&= 4 - (\mathrm{deg}(v) + \mathrm{deg}(u)).
 \end{align*}
-In this case we thus see that Forman-Ricci curvature is completely determined by the degree distributions and the joint-degree distribution of the graph.
+In particular, Forman-Ricci curvature of a graph is zero if and only if the graph is a circle.
+
+The general formula by Forman included the faces of any dimension. This can of course be done for graphs as well, see~\cite{weber2017coarse}. In~\eqref{eq:def_forman_curvature_edges} only $1$-dimensional faces (edges) are included. However, one can also include $2$-dimensional faces. This was considered in~\cite{samal2018comparative}, where only the $2$-dimensional faces on three nodes (triangles) were considered. In the case of an unweighted graph we then obtain
+\begin{equation}\label{eq:def_forman_curvature_triangles}
+	F_2(u,v) = F(u,v) + 3\Delta(u,v),
+\end{equation}
+where $\Delta(u,v)$ is the number of triangles that contain the edge $(u,v)$. This is the same as the number of common neighbors of $u$ and $v$. 
+
+
 
 \section{Global graph curvature}
 
@@ -197,7 +204,7 @@ C_d(G) = \textrm{argmin}_C L(e_{d,C}(G),G)\,.
                      
 \paragraph{Ollivier-Ricci curvature} $\kappa_G(u,v) = 0$ for all edges, so by averaging we obtain $0$.
 
-\paragraph{Forman-Ricci curvature} $F(u,v) = 0$.
+\paragraph{Forman-Ricci curvature} $F(u,v) = 0 = F_2(u,v)$.
 
 \paragraph{Distortion-based curvature} For any dimension $d$ and for $n \ge 4$, there is a curvature which gives zero distortion:
 \[
@@ -211,7 +218,7 @@ This is easy to explain: if we consider three consequent vertices, then the midd
         
 $\kappa_G(u,v) = \frac{n-2}{n-1}$, so average is the same.
 
-\paragraph{Forman-Ricci curvature} $F(u,v) = -2n^2 + 8n - 6$.
+\paragraph{Forman-Ricci curvature} $F(u,v) = 6 - 2n$, $F_2(u,v) = n$.
 
 \paragraph{Distortion-based curvature} Assume that $d = n-2$, then it is easy to find $C_d(G)$. Note that we want to get $n-1$-simplex, which can be embedded into a $n-2$-dimensional spherical space, the radius is $R = \sqrt{\frac{n-1}{2n}}$, so we have
 \[
@@ -223,7 +230,7 @@ C_{n-2}(G) = \sqrt{\frac{2n}{n-1}}\,.
 
 \paragraph{Ollivier-Ricci curvature} $\kappa_G = 0$
 
-\paragraph{Forman-Ricci curvature} $F = 2$
+\paragraph{Forman-Ricci curvature} $F = 3-n = F_2$
 
 \paragraph{Distortion-based curvature} It seems that in order to minimize distortion, we want $C_d(G) \to -\infty$.
             
