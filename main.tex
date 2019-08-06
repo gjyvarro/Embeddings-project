@@ -204,6 +204,15 @@ The general formula by Forman included the faces of any dimension. This can of c
 \end{equation}
 where $\Delta(u,v)$ is the number of triangles that contain the edge $(u,v)$. This is the same as the number of common neighbors of $u$ and $v$. 
 
+\subsection{Approximation of Ollivier curvature}
+
+From~\cite{kelly2019self}
+
+\subsection{Heuristic sectional curvature from~\cite{gu2019learning}}
+
+\textbf{[To be described]}
+
+This is one of our main baselines, so we should compare with this theoretically and empirically.
 
 
 \section{Global graph curvature}
@@ -250,6 +259,14 @@ C_{n-2}(G) = \sqrt{\frac{2n}{n-1}}\,.
 \paragraph{Forman-Ricci curvature} $F = 3-n = F_2$
 
 \paragraph{Distortion-based curvature} It seems that in order to minimize distortion, we want $C_d(G) \to -\infty$.
+    
+\section{Some ideas for global curvature estimation}
+
+\begin{enumerate}
+    \item Use the number of neighbors and clustering coefficient. Thus, we can estimate the volume of a ball of a unit radius. 
+    \item Use the number of $k$-neighbors (the vertices at distance exactly $k$), so we can understand the speed of growth.
+    \item Compare the volume of intersection of two balls with their union. This can also help in estimating dimension.
+\end{enumerate}
             
 \section{Practical tasks}
 
