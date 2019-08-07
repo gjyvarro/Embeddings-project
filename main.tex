@@ -210,9 +210,34 @@ In~\cite{kelly2019self} it was shown that $\kappa_G^\ast(u,v) = \kappa_G(u,v)$ i
 
 \subsection{Heuristic sectional curvature from~\cite{gu2019learning}}
 
-\textbf{[To be described]}
+In~\cite{gu2019learning} a different notion of curvature is used, based on the parallelogram law. This is one of our main baselines, so we should compare with this theoretically and empirically. For a parallelogram with nodes $a,b,c,d$ and sides $ab, ac, bd, cd$, the parallelogram law states that:
+\[
+	2d(c,d)^2 + 2d(b,d)^2 = d(b,c)^2 + d(a,d)^2.
+\]
+Now imagine a point $m$ in the center of the line connecting $a$ and $d$, i.e. $d(a,m)=d(a,d)/2=d(m,d)$. Then we have that
+\begin{align*}
+	4d(a,m)^2 &= d(a,d)^2 = 2d(c,d)^2 + 2d(b,d)^2 - d(b,c)^2 \\
+	&= 2d(a,b)^2 + 2d(a,c)^2 - d(b,c)^2,
+\end{align*}
+where the last line is because $d(a,c) = d(b,d)$ and $d(a,b) = d(c,d)$. This then implies that
+\begin{equation}\label{eq:parallelogram_law}
+	d(a,m)^2 + \frac{d(b,c)^2}{4} - \frac{d(a,b)^2 + d(a,c)^2}{2} = 0.
+\end{equation}
 
-This is one of our main baselines, so we should compare with this theoretically and empirically.
+The key intuition behind the definition in~\cite{gu2019learning} is that this holds in flat Euclidean space while in a positively or negative curved space the left hand side in~\eqref{eq:parallelogram_law} should be positive or negative, respectively. 
+
+For graphs, Let $v$ be a node in $G$, $u,w$ neighbors of $v$ and $z$ any other node. Then we define
+\begin{equation}
+	\xi_G(v,u,w,z) = d(v,z)^2 + \frac{d(u,w)^2}{4} - \frac{d(v,u)^2 + d(v,w)^2}{2}.
+\end{equation}
+Note that this resembles the left hand side in~\eqref{eq:parallelogram_law} with $a = v$, $b = u$, $c = w$ and $m = z$. Again, based on the parallelogram law, the intuition is that if these four vertices are supposed to be embedded in negative, flat or positive curved space then $\xi_G(v,u,w,z)$ should be negative, zero or positive, respectively. Now consider any node $v$ and two of its neighbors $u$ and $w$. Then we define the graph sectional curvature of a node $v$ and is neighbors $u,w$ as the average of $\xi_G(v,u,w,z)$,
+\[
+	\xi_G(v; u,w) = \frac{1}{|G|-1} \sum_{z \in G\setminus v} \frac{\xi_G(v,u,w,z)}{2d_G(v,z)}.
+\] 
+Here the normalization constant $2d_G(v,z)$ is include to yield the right scalings for trees and cycles.
+
+The curvature of the graph is then defined as the average of $\xi_G(v; u,w)$. This is computed as $\xi_G = \frac{\xi_G(v^\ast,u^\ast,w^\ast,z^\ast)}{2d_G(v^\ast,z^\ast)}$, where $v^\ast, u^\ast, w^\ast$ and $z^\ast$ are selected uniformly at random from $G$, $N(v^\ast)$, $N(v^\ast)\setminus u^\ast$ and $G\setminus v^\ast$, respectively. Here $N(v)$ denotes the neighborhood of $v$.
+
 
 
 \section{Global graph curvature}
