@@ -121,21 +121,6 @@ It is important to note that Ollivier-Ricci curvature is defined in much more ge
 The strength of Ollivier-Ricci curvature lies in the fact that when we consider its continuous version on Riemannian manifolds than this converges to the Ricci curvature, see~\cite[Example 7]{ollivier2009ricci}. It turns out that this also holds when we consider dense random geometric graphs on Riemannian manifolds (upcoming paper). However, for this one needs to deviate from the classical version and consider random-walks on larger neighborhoods. Still these results highlights that Ollivier-Ricci curvature can properly encode the curvature of the underlying manifold. 
 
 
-An explicit formula for Ollivier-Ricci curvature in graphs is obtained in~\cite{kelly2019self}, under somewhat restrictive assumptions. For an edge $(u,v)$, let $\triangle_{uv}$, $\square_{uv}$ and $\pentagon_{uv}$ denote, respectively, the number of triangles, squares and pentagons in the graph that include the edge $(u,v)$. Moreover let $a \wedge b = \min\{a,b\}$, $a \vee b = \max\{a,b\}$ and $[a]_+ = a \vee 0$. Then we define:
-\begin{equation}\label{eq:def_ollivier_ricci_approx}
-	\begin{aligned}
-		\kappa_G^\ast(u,v) &= \frac{\triangle_{uv}}{\mathrm{deg}(u) \wedge \mathrm{deg}(v)} 
-			- \left[1 - \frac{1 + \triangle_{uv} + \square_{uv}}{\mathrm{deg}(u) \vee \mathrm{deg}(v)} - \frac{1}{\mathrm{deg}(u) \wedge \mathrm{deg}(v)}\right]_+\\
-		&\hspace{10pt}- \left(\frac{\triangle_{uv}}{\mathrm{deg}(u) \vee \mathrm{deg}(v)} 
-			- \frac{\triangle_{uv}}{\mathrm{deg}(u) \wedge \mathrm{deg}(v)}\right)\\
-		&\hspace{25pt}\vee \left(1 - \frac{1 + \triangle_{uv} + \square_{uv} + \pentagon_{uv}}
-			{\mathrm{deg}(u) \vee \mathrm{deg}(v)}
-			- \frac{1}{\mathrm{deg}(u) \wedge \mathrm{deg}(v)}\right).
-	\end{aligned}	
-\end{equation}
-
-In~\cite{kelly2019self} it was shown that $\kappa_G^\ast(u,v) = \kappa_G(u,v)$ if and only if short cycles of length $3$,$4$ or $5$ that include the edge $(u,v)$ share no other edges. For example, if $w$ is a neighbor of both $u$ and $v$ (so $w$ is part of a $3$-cycle) then $w$ cannot be connected to any other neighbor of either $u$ or $v$, since that would mean that $w$ is part of a $4$-cycle that includes the edge $(u,v)$. Although this requirement is quite restrictive, one could still use~\eqref{eq:def_ollivier_ricci_approx} as an approximation (or even a definition) of curvature in graphs.
-
 Below we list some simple examples of Ollivier-Ricci curvature in graphs.
 
 \paragraph{Circle}
@@ -206,7 +191,22 @@ where $\Delta(u,v)$ is the number of triangles that contain the edge $(u,v)$. Th
 
 \subsection{Approximation of Ollivier curvature}
 
-From~\cite{kelly2019self}
+An explicit formula for Ollivier-Ricci curvature in graphs is obtained in~\cite{kelly2019self}, under somewhat restrictive assumptions. In general it could be used as an approximation.
+
+For an edge $(u,v)$, let $\triangle_{uv}$, $\square_{uv}$ and $\pentagon_{uv}$ denote, respectively, the number of triangles, squares and pentagons in the graph that include the edge $(u,v)$. Moreover let $a \wedge b = \min\{a,b\}$, $a \vee b = \max\{a,b\}$ and $[a]_+ = a \vee 0$. Then we define:
+\begin{equation}\label{eq:def_ollivier_ricci_approx}
+	\begin{aligned}
+		\kappa_G^\ast(u,v) &= \frac{\triangle_{uv}}{\mathrm{deg}(u) \wedge \mathrm{deg}(v)} 
+			- \left[1 - \frac{1 + \triangle_{uv} + \square_{uv}}{\mathrm{deg}(u) \vee \mathrm{deg}(v)} - \frac{1}{\mathrm{deg}(u) \wedge \mathrm{deg}(v)}\right]_+\\
+		&\hspace{10pt}- \left(\frac{\triangle_{uv}}{\mathrm{deg}(u) \vee \mathrm{deg}(v)} 
+			- \frac{\triangle_{uv}}{\mathrm{deg}(u) \wedge \mathrm{deg}(v)}\right)\\
+		&\hspace{25pt}\vee \left(1 - \frac{1 + \triangle_{uv} + \square_{uv} + \pentagon_{uv}}
+			{\mathrm{deg}(u) \vee \mathrm{deg}(v)}
+			- \frac{1}{\mathrm{deg}(u) \wedge \mathrm{deg}(v)}\right).
+	\end{aligned}	
+\end{equation}
+
+In~\cite{kelly2019self} it was shown that $\kappa_G^\ast(u,v) = \kappa_G(u,v)$ if and only if short cycles of length $3$,$4$ or $5$ that include the edge $(u,v)$ share no other edges. For example, if $w$ is a neighbor of both $u$ and $v$ (so $w$ is part of a $3$-cycle) then $w$ cannot be connected to any other neighbor of either $u$ or $v$, since that would mean that $w$ is part of a $4$-cycle that includes the edge $(u,v)$. Although this requirement is quite restrictive, one could still use~\eqref{eq:def_ollivier_ricci_approx} as an approximation (or even a definition) of curvature in graphs.
 
 \subsection{Heuristic sectional curvature from~\cite{gu2019learning}}
 
