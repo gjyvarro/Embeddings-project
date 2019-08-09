@@ -208,6 +208,8 @@ For an edge $(u,v)$, let $\triangle_{uv}$, $\square_{uv}$ and $\pentagon_{uv}$ d
 
 In~\cite{kelly2019self} it was shown that $\kappa_G^\ast(u,v) = \kappa_G(u,v)$ if and only if short cycles of length $3$,$4$ or $5$ that include the edge $(u,v)$ share no other edges. For example, if $w$ is a neighbor of both $u$ and $v$ (so $w$ is part of a $3$-cycle) then $w$ cannot be connected to any other neighbor of either $u$ or $v$, since that would mean that $w$ is part of a $4$-cycle that includes the edge $(u,v)$. Although this requirement is quite restrictive, one could still use~\eqref{eq:def_ollivier_ricci_approx} as an approximation (or even a definition) of curvature in graphs.
 
+{\bf [By adjusting the definitions used in~\cite{kelly2019self} it might be possible to derive an upper bound for Ollivier curvature in terms of disjoint triangles, squares and pentagrams. It will look very similar to~\eqref{eq:def_ollivier_ricci_approx} and will be exact when the independent short cycle assumption holds.]}
+
 \subsection{Heuristic sectional curvature from~\cite{gu2019learning}}
 
 In~\cite{gu2019learning} a different notion of curvature is used, based on the parallelogram law. This is one of our main baselines, so we should compare with this theoretically and empirically. For a parallelogram with nodes $a,b,c,d$ and sides $ab, ac, bd, cd$, the parallelogram law states that:
