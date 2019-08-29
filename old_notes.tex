@@ -2,7 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{url}
 
-\title{Global curvature of data}
+\title{Embedding project}
 \author{}
 \date{}
 
@@ -15,120 +15,52 @@
 \begin{document}
 
 \maketitle
+\section{Our initial idea (12.06.2019)}
 
-\section{Status and ToDo}
-
-ToDo:
+Motivation:
 \begin{itemize}
-    \item Write down some simple heuristics (Liuda)
-    \item Estimate distortion for geometric graphs (Pim)
-    \item Understand the details and implications for Section 3.4 in the paper on product spaces, because there is a theoretical result on distortion of general graphs (Liuda)
+    \item Somehow use our intuition that networks are usually formed from different clusters, which also hierarchically consist of smaller clusters;
+    \item Try to formalize a notion of varying dimension: some parts of a graph can be more complex than others, so we need more dimensions for them;
+    \item Also try to formalize a notion of varying curvature, in order to be not limited by a fixed one.
+\end{itemize}
+A possible algorithm:
+\begin{itemize}
+    \item Consider the whole graph, choose appropriate curvature and dimension, embed a graph into the corresponding space;
+    \item Compute ``residual'' graph, find its subgraph with largers error and approximately constant curvature, embed it into the corresponding space;
+    \item Continue the process with other subsets;
+    \item When compute the distance between two nodes, use its common subspace.
+\end{itemize}
+Some comments and open questions:
+\begin{itemize}
+    \item Global curvature of a graph is not defined and studied. It would be interesting to define it based on some practical metric. (And it is not clear how it would be connected with local curvatures of nodes/edges);
+    \item Intuitively, it seems to be desirable to move from larger subsets of nodes in the algorithm to smaller ones;
+    \item Maybe we can use community detection at some point of the algorithm.
 \end{itemize}
 
-Ideas for research:
+\section{Our current simple plan (28.06.2019)}
+
+We think that we will start our experiment with the following simple approach, in order to see whether we can benefit from our general idea.
+
 \begin{itemize}
-    \item Gromov's hyperbolicity cannot be easily converted to curvature. We can think about some similarly motivated measure which can be. Using either the distance from one edge of a triangle to the other edges or using the perimeter of the orthic triangle. 
-    \item Think about optimal curvature of ER graphs. We have the result on  Ollivier curvature, but it is supposed to be different (for example, Ollivier is bounded between -2 and 1)
-    \item We all understand now that distortion is not a good measure for graph embeddings from all points of view. One reason is that optimal distortion is $-\infty$ for many graphs (trees and tree-like). Let's compare this with some threshold-based loss function.
+    \item Take our graph and apply a community detection algorithm to it. There are two options which we discussed: 1) apply some hierarchical algorithm in order to get several levels of granularity as an output; 2) get only one level of communities, but with some overlaps. The further ideas can be applied to both cases, but we like the second one more, so, let me describe this one. 
+    \item Assume that we have some budget for the overall dimension. Then, we split this budget into two parts. The first we use to embed the whole graph, using some standard graph embedding approach (using an existing algorithm to choose the curvature). The second part we use in the following way: we embed each cluster separately in its own space (choosing curvature individually for clusters).
+    \item When we have to measure the distance between two elements, if the belong to the same cluster, then we use the corresponding cluster embedding, if they belong to different clusters, then we use the embedding of the whole graph.
+    \item One more idea that we discussed: when we embed the whole graph we care more about long distances, since short ones will be improved at the cluster embedding stage. Therefore, in the learning procedure we can sample only the pairs which are far away from each other.
 \end{itemize}
 
-\section{Selected relevant papers}
+Speaking about the practical realization, we decided to do the following: 
+\begin{itemize}
+    \item We want to improve the results of \cite{gu2019learning} using their algorithm and their datasets.
+    \item We take the code from their github: \url{https://github.com/HazyResearch/hyperbolics}.
+    \item Using this, it seems to be fairly easy to make some starting experiments.
+\end{itemize}
 
-\paragraph{Learning Mixed-Curvature Representations in Product Spaces~\cite{gu2019learning}}
-
-Embed graphs to a product manifold combining multiple copies of spherical,
-hyperbolic, and Euclidean spaces. The code is available at \url{https://github.com/HazyResearch/hyperbolics}. 
-This is the main paper for the current project: we use their code for embedding, we also use two their approaches as our baselines: gradient descent and parallelogram. 
-
-\paragraph{Representation Tradeoffs for Hyperbolic Embeddings~\cite{sala2018representation}}
-
-Interesting observation that not only dimensionality, but also precision is important.
-Propose a new algorithm for graph embedding: first, embed a graph into a weighted tree, and then embed that tree into the hyperbolic disk. The code is available at \url{https://github.com/HazyResearch/hyperbolics}.
-One of their observations, which is quite natural, is that the dependence of the required precision on $deg_{max}$ is logarithmic, but on the maximum path length is linear.
-
-When they embed a tree to a hyperbolic disk (ball) they use Sarkar's algorithm for a 2-dimensional disk~\cite{sarkar2011low}. This algorithm is simple: take the next node, consider its children, distribute them uniformly on a circle around the node, as far as possible from the parent of this node. The authors also extend Sarkar's algorithm to higher dimensions, where they use spherical coding to space out points on a hypersphere. 
-
-An important ingredient of Sarkar's algorithm is scaling $\tau$: we assume that the length of an edge is not 1, but $\tau$. Larger $\tau$ allows to reduce distortion (increasing $\tau$ basically means increasing absolute value of curvature), but larger $\tau$ requires larger precision also, so there is a trade-off. 
-
-A theoretical result about embedding trees on hyperbolic disk is the following: if $\tau = \frac{1+\varepsilon}{\varepsilon} \cdot 2 \log \frac{deg_{max}}{\pi/2}$, then the worst-case
-distortion is no more than $1 + \varepsilon$.
-
-Their embedding of graphs into weighted trees is based on the paper~\cite{abraham2007reconstructing} which I discuss next.
-
-\paragraph{Reconstructing Approximate Tree Metrics~\cite{abraham2007reconstructing}}
-
-Note: this paper discusses distortion, which is actually worst-case distortion $D_{WC}$.
-
-In another paper it is shown that a metric space is a tree metric if and only if the sub-metric induced by any four points is a tree metric, which is equivalent to the following Four-Points Condition (4PC): for any four points, out of the three possible matchings, the two matchings that have the maximum weight have equal weight.
-
-Also, they refer to Gromov's $\delta$-hyperbolicity, which is the following. A metric space
-$\delta$-hyperbolic if for every four points $w,x,y,z$ that are ordered such that $d(w,x) + d(y,z) \le d(w,y) + d(x,z) \le d(w,z) + d(x,y)$, we have $d(w, z) + d(x, y) \le d(w, y) + d(x, z) + \delta$. The $\delta$-hyperbolicity condition is equivalent to assuming that every 4 points embed into a tree metric with additive distortion $O(\delta)$.
-
-In the current paper, the authors propose $\varepsilon-4PC$, where $d(w, z) + d(x, y) \le d(w, y) + d(x, z) + 2\varepsilon\cdot\min{d(w,x),d(y,z)}$. $\varepsilon = 0$ gives 4PC. For $\varepsilon = 1$ the property is always satisfied due to the triangle inequality. The authors argue that from the practical point of view this property is more useful.
-
-They show that of $\varepsilon$-4PC, then there is a constant $c_1$ such that we can embed into a tree metric with a maximum distortion of $(1+\varepsilon)^{c_1 \cdot \log n}$. And also there is a lower bound (for some metric space) with another constant $c_2$.
-
-They give an algorithm for embedding. The algorithm is based on adding Steiner nodes recursively. Note that the distances among every set of three points $x, y, z$ of a metric space can be exactly represented by a tree by adding one additional Steiner node. The Gromov product $(x|y)_z = \frac 1 2 \cdot (d(x,z) + d(y,z) - d(x,y))$ is the distance from such Steiner node to $z$.
-
-\paragraph{Poincar\'e GloVe: Hyperbolic Word Embeddings~\cite{tifrea2018poincar}}
-
-This paper discusses and computes average $\delta$-hyperbolicity, which is discussed in Appendix B. 
-Using the notation of the paragraph above, they write that for four point $\delta = (d(w, z) + d(x, y) - d(w, y) - d(x, z))/2$. Then, the supremum of these numbers over all 4-tuples is $\delta_{worst}$.
-They (reasonably) argue that the average $\delta_{avg}$ is more meaningful than $\delta_{worst}$.
-If we can define triangles, then an equivalent definition is: $\delta_{worst}$ is the smallest $\delta > 0$ such that for any triangle there exists a point at distance at most $\delta$ from each side of the triangle. 
-Note that Euclidean space is $\infty$-hyperbolic.
-They also report the normalized value $2 \delta_{avg} / d_{avg}$ which is invariant to metric scaling. 
-Note that low values of both $\delta_{avg}$ and $d_{avg}$ are indicators of some hyperbolicity. 
-
-\paragraph{Ricci Curvature of the Internet Topology~\cite{ni2015ricci}}
-
-Empirical paper: analyze Ricci curvature of some graphs. Also, analyze computation of Ricci curvature. Show that in networks, the distribution of Ricci curvature is highly
-non-homogeneous. And there are many negatively curved edges, but also communities of positive curved edges. The curvature distribution for different
-type of Internet topology can be very different. As expected, removing edges of negative curvatures disconnect network fast.
-
-The correlation between Ricci curvature and other properties is shown on Figures 9-13. They consider betweenness centrality, farness centrality, degree and clustering coefficient.
-
-Also, this paper has a nice intuitive introduction into Gromov hyperbolicity and sectional and Ricci curvature. Speaking about Gromov, this paper has yet another definition of this curvature: metric has $\delta$-hyperbolicity if all geodesic triangles are $\delta$-slim, that is, for any three points
-$a, b, c$, the geodesic paths (shortest paths) between them satisfy
-the following property: any point on one path is within
-distance $\delta$ from the closest vertex on the other two paths.s
-Further, we can compare $\delta(\Delta abc)$ with
-the diameter of the triangle $\Delta abc$. The ratio is bounded above
-by 3/2 in a Riemannian manifold of constant nonpositive
-curvature, thus, in other papers, it was suggested to use 3/2 as the threshold to
-distinguish whether the graph metric is hyperbolic or not.
-
-\paragraph{Upper bound on scaled Gromov-hyperbolic $\delta$~\cite{jonckheere2007upper}}
-
-This paper defines $\delta$ in yet another way and discusses the bound $2/3$ mentioned above. Namely, now $\delta(\Delta ABC)$ is the smallest value of $d(X,Y) + d(Y,Z) + d(Z, X)$, where $X, Y, Z$ are some points on the geodesics forming this triangle. For a tree we have $\delta = 0$. In Eucledian space the points $X, Y, Z$ form orthic triangle.
-
-%\paragraph{What relations are reliably embeddable in Euclidean space?~\cite{bhattacharjee2019relations}}
-
-%About embeddings of directed graphs to euclidean space. Also contains a short background on undirected graphs (section 1.1), in particular cite some known theoretical results on the subject. Also, focus on precision of embeddings. Maybe we can use something as a starting point for the theory. 
-
-%\paragraph{Hyperbolic Entailment Cones for Learning Hierarchical Embeddings~\cite{ganea2018hyperbolic}}
-
-%Propose a new method for embedding directed acyclic graphs (DAGs).  Use nested geodesically convex cones, which improve embeddings in both euclidean and hyperbolic spaces. 
-
-\section{How to estimate global curvature}
-
-\subsection{Number of $k$-neightbors}
-
-Let us take a node $v$. Let $N_k(v)$ denote the number of nodes at distance exactly $k$ from $v$. Assuming that nodes are roughly uniformly distributed, we can compare $N_k(v)$ with a surface area of a ball of radius $k$. 
-
-In euclidean space, surface area of a ball grows as $k^{d-1}$ (up to some multiplicative function of $d$). 
-
-Let us consider spherical space. Here, if I am not mistaken, up to some multiplier depending on $d$, we have  $\left(R \sin \theta\right)^{d-1}$. Curvature is $c = 1/R^2$, radius is $k = R \cdot \theta$, so surface area is $\left(\frac{1}{\sqrt{c}}\sin{\sqrt{c}\,k}\right)^{d-1}$.
-
-Let us consider hyperbolic space. Here, assuming the the curvature is $-c$, we have $\left(\frac{1}{\sqrt{c}}\sinh{\sqrt{c}\,k}\right)^{d-1}$.
-%and
-%\[
-%\sinh{\sqrt{c}\,r} = %\frac{e^{\sqrt{c}\,r}+e^{-\sqrt{c}\,r}}{2}.
-%\]
-
-So, the algorithm can be the following (recall that we are given dimentsion $d$): consider $N_k^{\frac 1 {d-1}}$ for some small $k$, check if the obtained function is convex or concave or straight line. Then, fit the corresponding function ($\sin$, $\sinh$), obtain curvature.
-
-\subsection{Improve}
+Also, we discussed the following possible directions for theoretical (or algorithmic) research:
+\begin{itemize}
+    \item As we discussed before, it would be very useful to estimate optimal curvature and dimension given a graph (optimal in terms of some target metric, e.g., distortion).
+    \item It would be interesting to understand the optimal way to split the overall maximum dinension into two parts: for global graph embedding and local cluster embeddings. On the one hand, global graph embedding is expected to be coarser. On the other hand, the number of vertices in the whole graph is larger. 
+    \item Probably unrelated note: it is always useful to understand which algorithm is better at which distances (longer or shorter ones).
+\end{itemize}
 
 \section{Measuring quality of embeddings}
 
@@ -408,7 +340,39 @@ with the ground-truth ranking.
 
 \cite{goyal2018graph} uses Blogcatalog and protein-protein interactions. Use embeddings as features (as input to a one-vs-rest logistic regression).
 
+\section{Selected relevant papers}
 
+\paragraph{Graph embedding techniques, applications, and performance: A survey~\cite{goyal2018graph}}
+
+A survey of graph embedding techniques, covers many different methods, but all based on euclidean space (with euclidean distance or dot product). The code is available at \url{https://github.com/palash1992/GEM}.
+
+\paragraph{What relations are reliably embeddable in Euclidean space?~\cite{bhattacharjee2019relations}}
+
+About embeddings of directed graphs to euclidean space. Also contains a short background on undirected graphs (section 1.1), in particular cite some known theoretical results on the subject. Also, focus on precision of embeddings. Maybe we can use something as a starting point for the theory. 
+
+\paragraph{Poincare embeddings for learning hierarchical representations~\cite{nickel2017poincare}}
+
+Influential paper - they were the first to use hyperbolic embeddings in computer science.
+Embed in multidimensional Poincar{\'e} ball. Propose embedding algorithm based on Riemannian optimization. The code is available at \url{https://github.com/facebookresearch/poincare-embeddings}.
+
+\paragraph{Learning Continuous Hierarchies in the Lorentz Model of Hyperbolic Geometry~\cite{nickel2018learning}}
+
+Follow-up for the previous work, show that it is better to embed to Lorentx model of hyperbolic space. 
+
+\paragraph{Learning Mixed-Curvature Representations in Product Spaces~\cite{gu2019learning}}
+
+Embed graphs to a product manifold combining multiple copies of spherical,
+hyperbolic, and Euclidean spaces. The code is available at \url{https://github.com/HazyResearch/hyperbolics}
+
+\paragraph{Representation Tradeoffs for Hyperbolic Embeddings~\cite{sala2018representation}}
+
+Interesting observation that not only dimensionality, but also precision is important.
+Propose a new algorithm for graph embedding: first, embed a graph into a weighted tree, and then embed that tree into the hyperbolic disk. The code is available at \url{https://github.com/HazyResearch/hyperbolics}.
+
+\paragraph{Hyperbolic Entailment Cones for Learning Hierarchical Embeddings~\cite{ganea2018hyperbolic}}
+
+Propose a new method for embedding directed acyclic graphs (DAGs). 
+Use nested geodesically convex cones, which improve embeddings in both euclidean and hyperbolic spaces. 
 
 \bibliographystyle{plain}
 \bibliography{references}
