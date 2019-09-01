@@ -11,6 +11,20 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{wasysym}
+\usepackage{amsthm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                Setup of the theorem environment                                 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{assumption}[definition]{Assumption}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{remark}[theorem]{Remark}
 
 \begin{document}
 
@@ -379,6 +393,69 @@ C_{n-2}(G) = 4 \left(\arcsin \sqrt{\frac{n}{2(n-1)}}\right)^2\,.
     \item Compare the volume of intersection of two balls with their union. This can also help in estimating dimension.
 \end{enumerate}
             
+\section{Distortion in Random Geometric Graphs}
+
+Consider the random graph $G_n^r$ constructed by choosing $n$ points uniformly in the square $[\sqrt{n}/2, \sqrt{n}/2]$ and connecting two points $u$ and $v$ if $d(u,v) \le r$. For the remainder of this section we will assume that $r \ge 244 \sqrt{\log(n)}$, which is slightly larger than the threshold value $r_c = \sqrt{\log(n)/\pi}$ at which point the graph $G_n^r$ becomes connected a.a.s. and furthermore that $r \le \sqrt{n}/2$. We will identify nodes $v \in V$ with points and let $(x_v,y_v)$ denote their corresponding coordinates.
+
+Clearly, the structure of the graph $G_n^r$ is completely determined by the coordinates $\{(x_v,y_v)\}_{v \in V}$ of the chosen points. Hence, the most natural and optimal embedding for this graph should be in the $2$-dimensional Euclidean plane using these original coordinates. However, if we do this then the distortion actually diverges.
+
+We use the following result from~\cite{diaz2016relation} concerning the stretch in $G_n^r$:
+
+\begin{theorem}\label{thm:stretch_rgg}
+Let $G_n^r$ be constructed as above. Then, for each pair of nodes $u,v \in V$ with $d(u, v) > r$, there exists sequences $a_n^-, a_n^+ \to 0$, depending on $r$, such that the following holds with probability $1 - o(n^{-5/2})$:
+\begin{enumerate}
+\item If $d(u,v) \ge \max\{12\log(n)^{3/2}/r, 21 r \log(n)\}$:
+\[
+	d_G(u,v) \ge \left\lfloor \frac{d(u,v)}{r}\left(1 + a_n^-\right)\right\rfloor
+\]
+\item if $r \ge 224 \sqrt{\log(n)}$:
+\[
+	d_G(u,v) \le \left\lceil \frac{d(u,v)}{r}\left(1 + a_n^+\right)\right\rceil
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{lemma}
+Let $f : V \to \mathbb{R}^2$ denote the embedding for the graph $G_n^r$ that assigns to each node $v$ it original coordinates $(x_v,y_v)$ and let $D_n(r)$ denote the distortion associated with this embedding. Then
+\[
+	\mathbb{E}[D_n(r)] = \Omega\left(\sqrt{\log(n)}\right).
+\]
+\end{lemma}
+
+\begin{proof}
+Let $S_n$ denote the event for which the statements of Theorem~\ref{thm:stretch_rgg} holds for all pairs $(u,v)$. Then since the probability that it holds for one pair is $1 - o(n^{-5/2})$, it follows that $\mathbb{P}(S_n) = 1 - o(n^{-1/2})$.
+
+On the event $S_n$, it follows from the second statement of Theorem~\ref{thm:stretch_rgg} that for all $u,v$ with $d(u,v) > r$
+\[
+	\left|\frac{d(u,v)}{d_G(u,v)} - 1\right| \ge \frac{d(u,v)}{d_G(u,v)} - 1
+	\ge \frac{r(d_G(u,v) - 1)}{d_G(u,v)(1+a_n^+)} - 1.
+\]
+Therefore, on the event $S_n$, we have that
+\begin{align*}
+	D_n(r) &= \frac{1}{\binom{n}{2}} \sum_{u \ne v} \left|\frac{d(u,v)}{d_G(u,v)} - 1\right|\\
+	&\ge \frac{1}{\binom{n}{2}} \sum_{u \ne v \atop d(u,v) > r} \left|\frac{d(u,v)}{d_G(u,v)} - 1\right|\\
+	&\ge \frac{1}{\binom{n}{2}} \sum_{u \ne v \atop d(u,v) > r} \left(\frac{r(d_G(u,v) - 1)}{d_G(u,v)(1+a_n^+)} - 1\right)\\
+	&\ge \left(\frac{r}{1 + a_n^+} - \frac{r}{d_G(u,v)(1+a_n^+)}\right) 
+		\frac{|\{u \ne v \, :\, d(u,v) > r\}|}{\binom{n}{2}} - 1\\
+	&\ge \left(\frac{r}{1 + a_n^+} - \frac{r}{n(1+a_n^+)}\right) 
+			\frac{|\{u \ne v \, :\, d(u,v) > r\}|}{\binom{n}{2}} - 1\\
+	&\ge 224 \sqrt{\log(n)} \frac{1 - \frac{1}{n}}{1 + a_n^+} \frac{|\{u \ne v \, :\, d(u,v) > r\}|}{\binom{n}{2}} - 1.
+\end{align*}
+Next we note that since $224 \pi \log(n) \le \pi r^2 \le \pi n/4$, we have that the expected number of nodes at least a distance $r$ away from a given node is at least $(n - \pi r^2) = \Omega(n)$ (center) and at most $n - \pi r^2/4 = O(n)$ (the corners). We conclude that
+\[
+	\mathbb{E}[|\{u \ne v \, :\, d(u,v) > r\}|] = \Theta\left(\binom{n}{2}\right).
+\]
+
+The result now follows since
+\begin{align*}
+	\mathbb{E}[D_n(r)] &\ge \mathbb{E}[D_n(r) 1_{S_n}] \\
+	&\ge 224 \sqrt{\log(n)} \frac{1 - \frac{1}{n}}{1 + a_n^+} 
+		\frac{\mathbb{E}[|\{u \ne v \, :\, d(u,v) > r\}|]}{\binom{n}{2}}
+		= \Omega(\sqrt{\log(n)}).
+\end{align*}
+\end{proof}
+
+
 \section{Practical tasks}
 
 \subsection{Network reconstruction and link prediction}
@@ -407,7 +484,7 @@ with the ground-truth ranking.
 \subsection{Node classification}
 
 \cite{goyal2018graph} uses Blogcatalog and protein-protein interactions. Use embeddings as features (as input to a one-vs-rest logistic regression).
-
+	
 
 
 \bibliographystyle{plain}
