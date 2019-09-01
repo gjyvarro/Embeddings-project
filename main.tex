@@ -128,7 +128,20 @@ Let us consider hyperbolic space. Here, assuming the the curvature is $-c$, we h
 
 So, the algorithm can be the following (recall that we are given dimentsion $d$): consider $N_k^{\frac 1 {d-1}}$ for some small $k$, check if the obtained function is convex or concave or straight line. Then, fit the corresponding function ($\sin$, $\sinh$), obtain curvature.
 
-\subsection{Improve}
+\subsection{Modifications of the above idea}
+
+Assumption about uniform distribution is rather strong. In particular, we could take into accound the edges between the vertices of $N_k$. Here I see two options.
+
+The first one is the following: let us take nodes at distance $k$ and consider the maximum independent subset in this set (assume that its size is $N_k'$). Then, we know that for each vertex there are no other vertices in the ball of radius 0.5, which gives us the lower bound for the required volume: $N_k'/2$. So, we can use the algorithm discussed above, but with $N_k'$ instead of $N_k$.
+
+The second one is similar to the previous, but maybe considering the independent set is too restrictive. So, we may look at the number of non-edges between the vertices on distance $k$. If this number if $L$, then we can say that the volume grows as $N_k''$ with $N_k''(N_k''-1)/2 = L$ (no good theory behind that).
+
+\subsection{Intersecting balls}
+
+Consider our graph $G$. Let us take two balls (considering graph distance) at distance $l$ and with radius $k$. I do not have formulas now, but in euclidean/hyperbolic/spherical spaces we can compute the volume of the intersection of such balls relative to the volume of their union. This will be the function of dimension and curvature, dimension is given, so we can use this to estimate the curvature.
+
+I see two weaknesses of this approach: 1) formulas seems to be more complicated, even for euclidean space, 2) it is not clear which radius and which distance to consider, my first idea was to take distance 1 and radius 1 (i.e., analyze the fraction of common neighbors), but this fails on, e.g., integer lattice in euclidean space.
+
 
 \section{Measuring quality of embeddings}
 
