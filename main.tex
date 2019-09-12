@@ -421,21 +421,36 @@ Note: for now I assume $b$ to be large enough to be in hyperbolic space only. Bu
 \begin{proof}
 
 If $d = 2$, we want to have $n-1$ points to be at distance at most $1$ from $v$, but at distance $> 1$ from each other. It is easy to show that it is optimal to place the leaf nodes at distance exactly 1. Now $C$ is just the largest curvature which allows to have distance exactly 1 between closest leaves. Let us find $C$. We use hyperbolic low of cosines again and let $c = -\frac{1}{k^2}$, $\alpha = \frac{2\pi}{n-1}$:
+%\[
+%\cosh{\frac{1}{k}} = \cosh^2{\frac{1}{k}} - \sinh^2{\frac{1}{k}}\cos\alpha.
+%\]
+%\[
+%\cosh{\frac{1}{k}} = 1 +  (1- \cos\alpha) \sinh^2{\frac{1}{k}}.
+%\]
+%\[
+%\cosh{\frac{1}{k}} = 1 +  2\sin^2 \frac{\alpha}{2} \sinh^2{\frac{1}{k}}.
+%\]
+%\[
+%\frac{1}{2\sin^2 \frac{\alpha}{2}} = \frac{\sinh^2{\frac{1}{k}}}{\cosh{\frac{1}{k}} - 1}.
+%\]
+%\[
+%\frac{1}{2\sin \frac{\alpha}{2}} = \frac{\sinh{\frac{1}{k}}}{\sqrt{2}\sqrt{\cosh{\frac{1}{k}} - 1}}.
+%\]
 \[
-\cosh{\frac{1}{k}} = \cosh^2{\frac{1}{k}} - \sinh^2{\frac{1}{k}}\cos\alpha.
+\cosh\frac{1}{2k} = \frac{1}{2\sin \frac{\alpha}{2}}
 \]
 \[
-\cosh{\frac{1}{k}} = 1 +  (1- \cos\alpha) \sinh^2{\frac{1}{k}}.
+k = \frac{1}{2\,\textrm{arccosh}\frac{1}{2\sin \frac{\alpha}{2}}}
 \]
 \[
-\cosh{\frac{1}{k}} = 1 +  2\sin^2 \frac{\alpha}{2} \sinh^2{\frac{1}{k}}.
+C = - \left(2\,\textrm{arccosh}\frac{1}{2\sin \frac{\alpha}{2}}\right)^2
 \]
-\[
-\frac{1}{2\sin^2 \frac{\alpha}{2}} = \frac{\sinh^2{\frac{1}{k}}}{\cosh{\frac{1}{k}} - 1}.
-\]
-\[
-\frac{1}{2\sin \frac{\alpha}{2}} = \frac{\sinh{\frac{1}{k}}}{\cosh{\frac{1}{k}} - 1}.
-\]
+
+Note that for $n = 6$ we have $C = 0$.
+
+Also note that if $n$ is large, then $\sin \frac{\alpha}{2} = \sin\frac{\pi}{n-1} \sim \frac{\pi}{n-1}$. Then,  $\textrm{arccosh}\frac{1}{2\sin \frac{\alpha}{2}} \sim \textrm{arccosh}\frac{n-1}{2\pi} \sim \log n$, so we get $C \sim - 4 \log^2 n$. 
+
+For $d > 2$ we can get lower and upper bounds for $C$. One bound we can obtain by covering the surface of a unit ball by the balls of radius $1/2$. The other bound can be obtained by using spherical packing. \textbf{[To be finished formally.]} 
 
 \end{proof}
 
@@ -446,11 +461,16 @@ If $d = 2$, we want to have $n-1$ points to be at distance at most $1$ from $v$,
 
 \paragraph{Forman-Ricci curvature} $F(u,v) = 0 = F_2(u,v)$.
 
-\paragraph{Distortion-based curvature} For any dimension $d$ and for $n \ge 4$, there is a curvature which gives zero distortion:
+\paragraph{Ollivier approximation} $\kappa_G^* = 0$.
+
+\paragraph{Distortion-based curvature} For any dimension $d$ and for $n \ge 4$, there is a unique curvature which gives zero distortion:
 \[
 C_d(G) = \left(\frac{2\pi}{n}\right)^2.
 \]
 This is easy to explain: if we consider three consequent vertices, then the middle one should lie on the geodetic between the other two. So, they all lie on a great circle (of length $n$).
+
+\paragraph{Threshold-based curvature} 
+Here, again, we have $C_d(G) = (-\infty, C)$ with some $C>0$. It is easy to prove that any curvature $c < \left(\frac{4\pi}{n}\right)^2$ is ok, but I have to think whether we can get some larger bound. 
 
 \subsection{Complete graph on $n$ vertices}
 
@@ -459,6 +479,8 @@ This is easy to explain: if we consider three consequent vertices, then the midd
 $\kappa_G(u,v) = \frac{n-2}{n-1}$, so average is the same.
 
 \paragraph{Forman-Ricci curvature} $F(u,v) = 6 - 2n$, $F_2(u,v) = n$.
+
+\paragraph{Ollivier approximation} $\kappa_G^* = ...$. \textbf{[Easy, but did not check yet. We can see the difference with Ollivier with this example.]}
 
 \paragraph{Distortion-based curvature} Assume that $d = n-2$, then it is easy to find $C_d(G)$. Note that we want to get $n-1$-simplex, which can be embedded into a $n-2$-dimensional spherical space, the radius is $R = a\sqrt{\frac{n-1}{2n}}$, and we want
 \[
@@ -479,72 +501,15 @@ so we have
 C_{n-2}(G) = 4 \left(\arcsin \sqrt{\frac{n}{2(n-1)}}\right)^2\,.
 \]
 
+Also, it seems that for all $n$ and $d$ curvature $-\infty$ gives zero distortion since we can make a star from a clique using one Steiner node.
 
+\paragraph{Threshold-based curvature} We can embed cliques to any space (all nodes to one point).
 
-\textbf{TODO: analyze smaller $d$}
-            
-\section{Distortion in Random Geometric Graphs}
+\subsection{Tree with branching factor $b$}
 
-Consider the random graph $G_n^r$ constructed by choosing $n$ points uniformly in the square $[\sqrt{n}/2, \sqrt{n}/2]$ and connecting two points $u$ and $v$ if $d(u,v) \le r$. For the remainder of this section we will assume that $r \ge 244 \sqrt{\log(n)}$, which is slightly larger than the threshold value $r_c = \sqrt{\log(n)/\pi}$ at which point the graph $G_n^r$ becomes connected a.a.s. and furthermore that $r \le \sqrt{n}/2$. We will identify nodes $v \in V$ with points and let $(x_v,y_v)$ denote their corresponding coordinates.
+\paragraph{Distortion-based curvature} It is $-\infty$, similarly to stars.
 
-Clearly, the structure of the graph $G_n^r$ is completely determined by the coordinates $\{(x_v,y_v)\}_{v \in V}$ of the chosen points. Hence, the most natural and optimal embedding for this graph should be in the $2$-dimensional Euclidean plane using these original coordinates. However, if we do this then the distortion actually diverges.
-
-We use the following result from~\cite{diaz2016relation} concerning the stretch in $G_n^r$:
-
-\begin{theorem}\label{thm:stretch_rgg}
-Let $G_n^r$ be constructed as above. Then, for each pair of nodes $u,v \in V$ with $d(u, v) > r$, there exists sequences $a_n^-, a_n^+ \to 0$, depending on $r$, such that the following holds with probability $1 - o(n^{-5/2})$:
-\begin{enumerate}
-\item If $d(u,v) \ge \max\{12\log(n)^{3/2}/r, 21 r \log(n)\}$:
-\[
-	d_G(u,v) \ge \left\lfloor \frac{d(u,v)}{r}\left(1 + a_n^-\right)\right\rfloor
-\]
-\item if $r \ge 224 \sqrt{\log(n)}$:
-\[
-	d_G(u,v) \le \left\lceil \frac{d(u,v)}{r}\left(1 + a_n^+\right)\right\rceil
-\]
-\end{enumerate}
-\end{theorem}
-
-\begin{lemma}
-Let $f : V \to \mathbb{R}^2$ denote the embedding for the graph $G_n^r$ that assigns to each node $v$ it original coordinates $(x_v,y_v)$ and let $D_n(r)$ denote the distortion associated with this embedding. Then
-\[
-	\mathbb{E}[D_n(r)] = \Omega\left(\sqrt{\log(n)}\right).
-\]
-\end{lemma}
-
-\begin{proof}
-Let $S_n$ denote the event for which the statements of Theorem~\ref{thm:stretch_rgg} holds for all pairs $(u,v)$. Then since the probability that it holds for one pair is $1 - o(n^{-5/2})$, it follows that $\mathbb{P}(S_n) = 1 - o(n^{-1/2})$.
-
-On the event $S_n$, it follows from the second statement of Theorem~\ref{thm:stretch_rgg} that for all $u,v$ with $d(u,v) > r$
-\[
-	\left|\frac{d(u,v)}{d_G(u,v)} - 1\right| \ge \frac{d(u,v)}{d_G(u,v)} - 1
-	\ge \frac{r(d_G(u,v) - 1)}{d_G(u,v)(1+a_n^+)} - 1.
-\]
-Therefore, on the event $S_n$, we have that
-\begin{align*}
-	D_n(r) &= \frac{1}{\binom{n}{2}} \sum_{u \ne v} \left|\frac{d(u,v)}{d_G(u,v)} - 1\right|\\
-	&\ge \frac{1}{\binom{n}{2}} \sum_{u \ne v \atop d(u,v) > r} \left|\frac{d(u,v)}{d_G(u,v)} - 1\right|\\
-	&\ge \frac{1}{\binom{n}{2}} \sum_{u \ne v \atop d(u,v) > r} \left(\frac{r(d_G(u,v) - 1)}{d_G(u,v)(1+a_n^+)} - 1\right)\\
-	&\ge \left(\frac{r}{1 + a_n^+} - \frac{r}{d_G(u,v)(1+a_n^+)}\right) 
-		\frac{|\{u \ne v \, :\, d(u,v) > r\}|}{\binom{n}{2}} - 1\\
-	&\ge \left(\frac{r}{1 + a_n^+} - \frac{r}{n(1+a_n^+)}\right) 
-			\frac{|\{u \ne v \, :\, d(u,v) > r\}|}{\binom{n}{2}} - 1\\
-	&\ge 224 \sqrt{\log(n)} \frac{1 - \frac{1}{n}}{1 + a_n^+} \frac{|\{u \ne v \, :\, d(u,v) > r\}|}{\binom{n}{2}} - 1.
-\end{align*}
-Next we note that since $224 \pi \log(n) \le \pi r^2 \le \pi n/4$, we have that the expected number of nodes at least a distance $r$ away from a given node is at least $(n - \pi r^2) = \Omega(n)$ (center) and at most $n - \pi r^2/4 = O(n)$ (the corners). We conclude that
-\[
-	\mathbb{E}[|\{u \ne v \, :\, d(u,v) > r\}|] = \Theta\left(\binom{n}{2}\right).
-\]
-
-The result now follows since
-\begin{align*}
-	\mathbb{E}[D_n(r)] &\ge \mathbb{E}[D_n(r) 1_{S_n}] \\
-	&\ge 224 \sqrt{\log(n)} \frac{1 - \frac{1}{n}}{1 + a_n^+} 
-		\frac{\mathbb{E}[|\{u \ne v \, :\, d(u,v) > r\}|]}{\binom{n}{2}}
-		= \Omega(\sqrt{\log(n)}).
-\end{align*}
-\end{proof}
-
+\paragraph{Threshold-based curvature} This can be analyzed for $d = 2$ and we can get lower and upper bounds. One bound follows from the corresponding result for star on $b+2$ vertices (we need enough space to embed the children of one node). For the other bound, I have the precise combinatorial construction which gives $z\log{b}$ with some constant $z$ for which I have some analytical expression. I can write more details about this later, but the basic idea is that each level of a tree lies on a circle of some radius. This idea is well-known but I was not able to find rigorous result for our loss function.
 
 \section{Practical tasks}
 
