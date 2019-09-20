@@ -175,6 +175,8 @@ $\xi_G(v; b,c) = \frac{1}{|G|-3} \sum_{a \in G\setminus \{v,b,c\}} \xi_G(v;b,c;a
 
 \section{Global graph curvature}
 
+\textbf{[Some notation are inconsistent, will be improved]}
+
 \subsection{Definition}
 
 While there are many different notions of \textit{local} graph curvature, they cannot be easily used in practical application. In practice, data is usually embedded in a space of constant curvature, so a \textit{global} notion of curvature is needed. 
@@ -344,6 +346,86 @@ Also, it seems that for all $n$ and $d$ curvature $-\infty$ gives zero distortio
 
 \paragraph{Threshold-based curvature} We can embed cliques to any space (all nodes to one point).
 
+\subsubsection{Complete bipartite graph $K_{l,m}$}
+
+W.l.o.g. we assume that $l \ge m \ge 2$ (the remaining cases are stars and are already considered).
+
+\paragraph{Ollivier curvature}  
+\textcolor{red}{[Pim, do you know if there are any results about Ollivier curvature of bipartite graphs?]}
+
+\paragraph{Forman curvature} 
+
+$F(G) = \hat F(G) = 4 - l - m$. Again, Forman curvature can be highly negative.
+
+\paragraph{Approximate Ollivier curvature} 
+In is easy to derive from \Eqref{eq:def_ollivier_ricci_approx} that $\kappa^*(G) = 0$. \textcolor{red}{[Which is porbably significantly different from true Ollivier curvature.]}
+
+\paragraph{Heuristic sectional curvature} If $v$ and $a$ are in the same part of the bipartite graph, then $\xi_G(v;b,c;a) = 1$, otherwise $\xi_G(v;b,c;a) = -1$. Therefore, if $a$ belongs to the part of size $l$, sectional curvature is
+$\xi_G(v;b,c) = \frac{l-m+1}{l+m-3}$, otherwise it is $\xi_G(v;b,c) = \frac{m-l+1}{l+m-3}$. As a result, by averaging over all triplets, we get
+\[
+\xi(G) = \frac{1}{l \binom{m}{2} + m \binom{l}{2}} \left(l \binom{m}{2} \frac{l-m+1}{l+m-3} + m \binom{l}{2} \frac{m-l+1}{l+m-3}\right) = \frac{2ml - m^2 - l^2 + m + l - 2}{(m+l-2)(l+m-3)}.
+\]
+In particular, if $m = l$ we get $\xi(G) = \frac{1}{2m - 3}$. In other words, for balanced complete bipartite graphs $\xi(G)$ is positive, but tends to zero as graph grows.
+
+\paragraph{Distortion-based curvature} 
+
+Figure~\ref{fig:bipartite} shows empirical behavior of distortion depending on curvature. We observe that for all graphs optimal curvature is between 2 and 2.5. 
+The following proposition gives an intuition about why one could expect this. 
+
+\begin{proposition}\label{prop:bipartite_distortion}
+For any $d$, $C_d^{dist}(K_{2,2}) = \left(\frac{\pi}{2}\right)^2 \approx 2.47$ and $K_{2,2}$ is the only complete bipartite graph (with at least two nodes in each part) for which zero distortion is achievable.
+\end{proposition}
+
+Indeed, the result for $K_{2,2}$ follows from Proposition~\ref{prop:cycle_distortion}. Moreover, if for $K_{l,m}$ we have $l \ge 3$ and $m \ge 2$, then ...
+ 
+\section{Experiments}
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.49 \textwidth]{bipartite_distortion.pdf}
+    \includegraphics[width = 0.49 \textwidth]{bipartite_zero_one.pdf}
+    \caption{Complete bipartite graphs $K_{n,n}$}
+    \label{fig:bipartite}
+\end{figure}
+
+\textbf{[Below I describe the current status of experiments. I will start writing a better version of this part on weekends.]}
+
+\subsection{Experiments on synthetic graphs}
+
+For synthetic graphs, in most cases, we know what to expect and where is the optimal curvature. So, these experiments are expected to illustrate our theoretical observations. 
+
+In all experiments, we consider two dimensions: $d = 2$ and $d = 10$.
+
+\begin{itemize}
+    \item Star on $n+1$ nodes, $n = 5$ and $n = 10$. Loss: distortion. 
+    We want to illustrate the claim $C = -\infty$, i.e., to show that loss function decreases when $C$ becomes smaller. This experiment is done. 
+    \item Star on $n+1$ nodes, $n = 5$ and $n = 10$. Loss: zero-one. Here we want to show that optimal curvature is at most some constant. Which is about 1.23 for $n=5$, $d = 2$ and $-1.2$ for $n = 7$, $d = 2$ (we add this pair to illustrate negative curvature). This experiment is noisy (small graphs + discrete metric), but done. 
+    \item Cycle on $n+1$ nodes, $n = 5$, $n = 100$. Loss: distortion. We want to illustrate that global curvature do not depend on distortion. For $n = 5$ we have about 1.6, for $n = 100$ we have $n = 0.004$. This experiment is done.
+    \item Cycle on $n+1$ nodes, $n = 5$, $n = 100$. Loss: zero-one. Want to show that can be embedded in any curvature smaller than some positive value (we need enough space). This experiment is done.
+    \item Clique on $n$ nodes, $n = 5$, $n = 100$. Loss: distortion. We also add here $n = 4$ for $d = 2$ and $n = 12$ for $d = 10$. In two latter cases, We want to illustrate the following theoretical result: optimum is in some positive curvature (we have a formula, which agrees with figure) and in $-\infty$ (we see that error decreases for smaller curvatures). This experiment is done.
+   \item Clique on $n$ nodes, $n = 5$, $n = 100$. Loss: zero-one. Trivial experiment (zero loss), finished, will not add to the paper.
+   \item Tree with branching factor $3$ and depth $6$. Loss: distortion. Very nice plot, optimal distortion is about $-1/4$ for both $d$. This contradicts my initial intuition. \textbf{[TODO: explain the optimal curvature!]}
+   \item Tree with branching factor $3$ and depth $6$. Loss: zero-one. Slightly strange result: for $d = 0$ good curvature is 0 and below  (I expected more negative one). 
+   \item Complete bipartite graph, $n/2 = 5$, $n/2 = 100$. Loss: distortion. Interesting result, positive curvature (2-2.5), don't have theory for that. Plus some unexpected drop at about 0.5 on two plots... This experiment is done for now. 
+   \item Complete bipartite graph, $n/2 = 5$, $n/2 = 100$. Loss: zero-one. \textbf{[Will be finished after I have some bound for curvature]} 
+\end{itemize}
+
+\subsection{Experiments on real graphs}
+
+For now, we just run experiments on datasets of reasonable size and see how the plots look like. 
+
+\begin{itemize}
+    \item Karate, $n = 32$ \textbf{[almost done, on embeddings]}
+    \item Conflict \textbf{[Done for zero-one, problem for distortion, discuss and fix?]}
+    \item CSPhDs \textbf{[Done for distortion, in progress for zero-one, on embeddings]}
+    
+\end{itemize}
+
+
+\section{Conclusion}
+
+\textbf{[To be added after the main parts are completed.]}
+
 %\begin{table}[t]
 %\caption{Sample table title}
 %\label{sample-table}
@@ -495,8 +577,8 @@ Now, let us consider $d > 2$. In this case, we only have lower and upper bounds 
 
 \subsection{Proof of Theorem~\ref{thm:tree_threshold} (tree with branching factor $b$)}
 
-First, let us discuss the upper bound. For this, we apply the corresponding result for star on $b + 2$ nodes. \textbf{[To finish this, we have to finish the previous proof.]} 
-Actually, we can get better upper bound here, if we say that all children at level $l$ have to fit to the ball of radius $l$. This is better since if $b \le 5$, then one-level bound gives spherical/euclidean space.
+First, let us discuss the upper bound. 
+Here we say that all children at levels $l, l-2, l-4, \ldots$ have to fit to the ball of radius $l$ with all pairwise distances $> 1$. We can consider large enough $l$ here (and get hyperbolic space).
 
 \begin{figure}
     \centering
@@ -529,16 +611,28 @@ Now we note that $\sin^2 \frac{\alpha}{b} \ge \frac{\sin^2 \alpha}{b^2}$ for all
 \end{equation}
 Combining \Eqref{eq:1} and \Eqref{eq:1}, we obtain:
 \[
-\sinh \frac{r'}{R} \ge b \cdot \sinh \frac{r}{R}.
+\sinh \frac{r'}{R} \ge b^2 \cdot \sinh \frac{r}{R}.
 \]
 To achieve this, it is sufficient to have:
 \[
-
-
-
+\frac{r' - r}{R} \ge \log b,
+\]
+\[
+R \le \frac{r' - r}{\log b}.
+\]
+It remains to find the lower bound for $r' - r$ and it is easy to see that $r' - r$ decreases with $r$. Therefore, it is sufficient to consider only the second step of the construction procedure, when we move from the circle of radius 1 to the next one. In this case, $r = 1$ and 
+\[
+r' = 2 \, \mathrm{arccosh} \frac{\cosh 1}{\cosh 1/2}.
+\]
+So, we have 
+\[
+-C = \frac{1}{R^2} \le \left( \frac{\log b}{2 \, \mathrm{arccosh} \frac{\cosh 1}{\cosh 1/2} - 1} \right)^2.
+\]
 
 
 \section{Distortion of Random Geometric Graphs}
+
+\textbf{[Will see how the result will be reformulated if we rescale the graph to thresold one. Based on the obtained result, we will include this section or not.]}
 
 Consider the random graph $G_n^r$ constructed by choosing $n$ points uniformly in the square $[\sqrt{n}/2, \sqrt{n}/2]$ and connecting two points $u$ and $v$ if $d(u,v) \le r$. For the remainder of this section we will assume that $r \ge 244 \sqrt{\log(n)}$, which is slightly larger than the threshold value $r_c = \sqrt{\log(n)/\pi}$ at which point the graph $G_n^r$ becomes connected a.a.s. and furthermore that $r \le \sqrt{n}/2$. We will identify nodes $v \in V$ with points and let $(x_v,y_v)$ denote their corresponding coordinates.
 
