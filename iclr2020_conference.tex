@@ -357,6 +357,38 @@ W.l.o.g. we assume that $l \ge m \ge 2$ (the remaining cases are stars and are a
 \paragraph{Ollivier curvature}  
 \textcolor{red}{[Pim, do you know if there are any results about Ollivier curvature of bipartite graphs?]}
 
+\textcolor{red}{[No, but the proof is below.]}
+
+\begin{lemma}
+$\kappa(K_{l,m}) = 0$.
+\end{lemma}
+
+\begin{proof}
+Let use denote the node sets in $G$ by $U := \{u_1, \dots, u_l\}$ and $V := \{v_1, \dots, v_m\}$. We will prove that for any edge $(u, v)$, $W_1^G(m_{u},m_{v}) = 1$, which then implies that $\kappa(K_{l,m}) = 0$. 
+
+Note that for any $u \in U, v \in V$ the joint neighborhood is $V \times U$. First we establish upper bound by defining the joint probability density on $V \times U$
+\[
+	\rho(x,y) =	\frac{1}{m l}.
+\]
+It then follows that
+\[
+	W_1^G(m_{u},m_{v}) \le \sum_{i = 1}^m \sum_{j = 1}^l d_G(v_i, u_j) \rho(v_i, u_j)
+	= 1.
+\]
+For the lower bound we define the function
+\[
+	f(z) = \begin{cases}
+		2 &\mbox{if } z \in V\\
+		1 &\mbox{if } z \in U.
+	\end{cases}
+\]
+Observe that if $u \in U$ and $v \in V$ then $|f(u) - f(z)| = 1 = d_G(u,v)$. On the other hand, if $u, u^\prime \in U$ then $|f(u) - f(u^\prime)| = 0 \le 2 = d_G(u,u^\prime)$ and similar for $v, v^\prime \in V$. Thus we conclude that $f$ is 1-Lipschitz. It now follows that
+\[
+	W_1^G(m_u,m_v) \ge \frac{1}{m} \sum_{j = 1}^l f(u_j) - \frac{1}{l} \sum_{i = 1}^m f(v_i) = 1,
+\]
+which completes the proof.
+\end{proof}
+
 \paragraph{Forman curvature} 
 
 $F(K_{l,m}) = \hat F(K_{l,m}) = 4 - l - m$. Again, Forman curvature can be highly negative.
@@ -366,6 +398,11 @@ $F(K_{l,m}) = \hat F(K_{l,m}) = 4 - l - m$. Again, Forman curvature can be highl
 
 \paragraph{Heuristic sectional curvature} If $v$ and $a$ are in the same part of the bipartite graph, then $\xi_{K_{l,m}}(v;b,c;a) = 1$, otherwise $\xi_{K_{l,m}}(v;b,c;a) = -1$. Therefore, if $a$ belongs to the part of size $l$, sectional curvature is
 $\xi_{K_{l,m}}(v;b,c) = \frac{l-m+1}{l+m-3}$, otherwise it is $\xi_{K_{l,m}}(v;b,c) = \frac{m-l+1}{l+m-3}$. As a result, by averaging over all triplets, we get
+
+
+\paragraph{Heuristic sectional curvature} If $v$ and $a$ are in the same part of the bipartite graph, then $\xi_G(v;b,c;a) = 1$, otherwise $\xi_G(v;b,c;a) = -1$. Therefore, if $a$ belongs to the part of size $l$, sectional curvature is
+$\xi_G(v;b,c) = \frac{l-m+1}{l+m-3}$, otherwise it is $\xi_G(v;b,c) = \frac{m-l+1}{l+m-3}$. As a result, by averaging over all triplets, we get
+>>>>>>> Stashed changes
 \[
 \xi({K_{l,m}}) = \frac{1}{l \binom{m}{2} + m \binom{l}{2}} \left(l \binom{m}{2} \frac{l-m+1}{l+m-3} + m \binom{l}{2} \frac{m-l+1}{l+m-3}\right) = \frac{2ml - m^2 - l^2 + m + l - 2}{(m+l-2)(l+m-3)}.
 \]
