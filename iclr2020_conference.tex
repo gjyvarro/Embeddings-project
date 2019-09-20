@@ -139,6 +139,8 @@ where $\Delta_{uv}$ is the number of triangles that contain the edge $(u,v)$.
 
 \subsection{Approximate Ollivier curvature}
 
+\textcolor{red}{[Will remove from the paper]}
+
 \textbf{[Say something on complexity of computing Ollivier curvature? I think that we should discuss this approximation only if it gives a significant boost in speed.]}
 
 An explicit formula for Ollivier-Ricci curvature in graphs is obtained by~\citet{kelly2019self} under somewhat restrictive assumptions. 
@@ -280,29 +282,6 @@ $C_d(G) = (-\infty, C)$.
 
 
 
-\subsubsection{Cycle of size $n$} 
-
-\paragraph{Ollivier curvature}  
-$\kappa_G(u,v) = 0$ for all edges, so by averaging we obtain $0$.
-
-\paragraph{Forman curvature} 
-
-$F(u,v) = 0 = F_2(u,v)$.
-
-\paragraph{Approximate Ollivier curvature} 
-
-$\kappa_G^* = 0$.
-
-\paragraph{Heuristic sectional curvature} \textbf{[ToDo]}
-
-\paragraph{Distortion-based curvature} For any dimension $d$ and for $n \ge 4$, there is a unique curvature which gives zero distortion:
-\[
-C_d(G) = \left(\frac{2\pi}{n}\right)^2.
-\]
-This is easy to explain: if we consider three consequent vertices, then the middle one should lie on the geodetic between the other two. So, they all lie on a great circle (of length $n$).
-
-\paragraph{Threshold-based curvature} 
-Here, again, we have $C_d(G) = (-\infty, C)$ with some $C>0$. It is easy to prove that any curvature $c < \left(\frac{4\pi}{n}\right)^2$ is ok, but I have to think whether we can get some larger bound. 
 
 \subsubsection{Complete graph on $n$ vertices}
 
@@ -346,6 +325,31 @@ Also, it seems that for all $n$ and $d$ curvature $-\infty$ gives zero distortio
 
 \paragraph{Threshold-based curvature} We can embed cliques to any space (all nodes to one point).
 
+
+\subsubsection{Cycle graph $C_n$} 
+
+\paragraph{Ollivier curvature}  
+For any edge we have $\kappa_G(u,v) = 0$, hence $\kappa(C_n) = 0$.
+
+\paragraph{Forman curvature} 
+
+It is easy to see that $F(C_n) = \hat F(C_n) = 0$.
+
+%\paragraph{Approximate Ollivier curvature} 
+%Using \Eqref{eq:def_ollivier_ricci_approx}, we derive  $\kappa^*(C_n) = 0$.
+
+\paragraph{Heuristic sectional curvature} \textbf{[ToDo]}
+
+\paragraph{Distortion-based curvature} For any dimension $d$ and for $n \ge 4$, there is a unique curvature which gives zero distortion:
+\[
+C_d(G) = \left(\frac{2\pi}{n}\right)^2.
+\]
+This is easy to explain: if we consider three consequent vertices, then the middle one should lie on the geodetic between the other two. So, they all lie on a great circle (of length $n$).
+
+\paragraph{Threshold-based curvature} 
+Here, again, we have $C_d(G) = (-\infty, C)$ with some $C>0$. It is easy to prove that any curvature $c < \left(\frac{4\pi}{n}\right)^2$ is ok, but I have to think whether we can get some larger bound. 
+
+
 \subsubsection{Complete bipartite graph $K_{l,m}$}
 
 W.l.o.g. we assume that $l \ge m \ge 2$ (the remaining cases are stars and are already considered).
@@ -355,28 +359,33 @@ W.l.o.g. we assume that $l \ge m \ge 2$ (the remaining cases are stars and are a
 
 \paragraph{Forman curvature} 
 
-$F(G) = \hat F(G) = 4 - l - m$. Again, Forman curvature can be highly negative.
+$F(K_{l,m}) = \hat F(K_{l,m}) = 4 - l - m$. Again, Forman curvature can be highly negative.
 
-\paragraph{Approximate Ollivier curvature} 
-In is easy to derive from \Eqref{eq:def_ollivier_ricci_approx} that $\kappa^*(G) = 0$. \textcolor{red}{[Which is porbably significantly different from true Ollivier curvature.]}
+%\paragraph{Approximate Ollivier curvature} 
+%In is easy to derive from \Eqref{eq:def_ollivier_ricci_approx} that $\kappa^*(K_{l,m}) = 0$. \textcolor{red}{[Which is probably significantly different from true Ollivier curvature.]}
 
-\paragraph{Heuristic sectional curvature} If $v$ and $a$ are in the same part of the bipartite graph, then $\xi_G(v;b,c;a) = 1$, otherwise $\xi_G(v;b,c;a) = -1$. Therefore, if $a$ belongs to the part of size $l$, sectional curvature is
-$\xi_G(v;b,c) = \frac{l-m+1}{l+m-3}$, otherwise it is $\xi_G(v;b,c) = \frac{m-l+1}{l+m-3}$. As a result, by averaging over all triplets, we get
+\paragraph{Heuristic sectional curvature} If $v$ and $a$ are in the same part of the bipartite graph, then $\xi_{K_{l,m}}(v;b,c;a) = 1$, otherwise $\xi_{K_{l,m}}(v;b,c;a) = -1$. Therefore, if $a$ belongs to the part of size $l$, sectional curvature is
+$\xi_{K_{l,m}}(v;b,c) = \frac{l-m+1}{l+m-3}$, otherwise it is $\xi_{K_{l,m}}(v;b,c) = \frac{m-l+1}{l+m-3}$. As a result, by averaging over all triplets, we get
 \[
-\xi(G) = \frac{1}{l \binom{m}{2} + m \binom{l}{2}} \left(l \binom{m}{2} \frac{l-m+1}{l+m-3} + m \binom{l}{2} \frac{m-l+1}{l+m-3}\right) = \frac{2ml - m^2 - l^2 + m + l - 2}{(m+l-2)(l+m-3)}.
+\xi({K_{l,m}}) = \frac{1}{l \binom{m}{2} + m \binom{l}{2}} \left(l \binom{m}{2} \frac{l-m+1}{l+m-3} + m \binom{l}{2} \frac{m-l+1}{l+m-3}\right) = \frac{2ml - m^2 - l^2 + m + l - 2}{(m+l-2)(l+m-3)}.
 \]
-In particular, if $m = l$ we get $\xi(G) = \frac{1}{2m - 3}$. In other words, for balanced complete bipartite graphs $\xi(G)$ is positive, but tends to zero as graph grows.
+In particular, if $m = l$ we get $\xi({K_{l,m}}) = \frac{1}{2m - 3}$. In other words, for balanced complete bipartite graphs $\xi({K_{l,m}})$ is positive, but tends to zero as graph grows.
 
 \paragraph{Distortion-based curvature} 
 
-Figure~\ref{fig:bipartite} shows empirical behavior of distortion depending on curvature. We observe that for all graphs optimal curvature is between 2 and 2.5. 
+Figure~\ref{fig:bipartite} (left) shows empirical behavior of distortion depending on curvature. We observe that for all graphs optimal curvature is between 2 and 2.5. 
 The following proposition gives an intuition about why one could expect this. 
 
 \begin{proposition}\label{prop:bipartite_distortion}
 For any $d$, $C_d^{dist}(K_{2,2}) = \left(\frac{\pi}{2}\right)^2 \approx 2.47$ and $K_{2,2}$ is the only complete bipartite graph (with at least two nodes in each part) for which zero distortion is achievable.
 \end{proposition}
 
-Indeed, the result for $K_{2,2}$ follows from Proposition~\ref{prop:cycle_distortion}. Moreover, if for $K_{l,m}$ we have $l \ge 3$ and $m \ge 2$, then ...
+Indeed, the result for $K_{2,2}$ follows from Proposition~\ref{prop:cycle_distortion}. Moreover, if for $K_{l,m}$ we have $l \ge 3$ and $m \ge 2$, then for any two nodes in the part of size 3 there are at least 2 different geodesics of length 2 between them. Therefore, all such pairs lie at opposite poles of the hypersphere, which is impossible since $l \ge 3$.
+
+\paragraph{Threshold-based curvature} 
+ 
+Threshold-based embeddings to Euclidean spaces are well studied. In particular, it is know that for any graph $G(V,E)$ a perfect threshold embedding  exists for some $d \le |V|$~\citep{maehara1984space}. 
+However, undirected bipartite graphs are hard to embed to Euclidean space: the bound $d = O(n)$ is known~\citep{maehara1984space}. We empirically observe that they are similarly hard to embed to both spherical and hyperbolic spaces, as shown on Figure~\ref{fig:bipartite} (right). Empirically, these graphs are insensitive to curvature (given that it is not too large, so that a sphere is too small).
  
 \section{Experiments}
 
