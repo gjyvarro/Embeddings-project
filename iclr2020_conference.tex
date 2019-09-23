@@ -85,17 +85,49 @@ State-of-the-art algorithms typically use Euclidean space for embedding.
 However, recently hyperbolic spaces demonstrated superior performance for various tasks~\citep{nickel2018learning,sala2018representation}. On the other hand, in some cases spherical space can be useful~\citep{liu2017sphereface}.
 While some methods use embedding to a space of constant curvature (e.g., -1 for hyperbolic space) \citep{nickel2018learning}, others learn curvature and embedding simultaneously using alternating gradient steps~\cite{gu2019learning}.
 
-In this paper, we analyze the problem of determining a graph curvature suitable for an embedding \textit{without} actually embedding. The aim is to use some simple graph characteristics in order to understand whether it is reasonable to embed a graph into some non-Euclidean space and if yes, then which curvature to choose. 
-This save both computational resources (learning an embedding is computationally )
+In this paper, we analyze the problem of determining a graph curvature suitable for an embedding \textit{without} actual embedding. The aim is to use some simple graph characteristics in order to understand whether it is reasonable to embed a graph into some non-Euclidean space and if yes, then which curvature to choose. 
+Having such an estimator would save computational resources, since learning an embedding is computationally expensive and should be made for each space separately. 
+More importantly, it can also save human resources by showing whether it is worth investing resources in the implementation of more complex embedding algorithm.
 
-\textcolor{red}{[writing this section now]}
+In this paper, we make a fist step in this direction by introducing a concept of \textit{global} graph curvature, which depends on both dimension and loss function. We consider two loss function: distortion, which is widely used in embedding literature, and zero-one loss, which is more suitable for some applications, e.g., for graph reconstruction task. We demonstrate, both theoretically and empirically, that these loss functions lead to fundamentally different graph curvatures. We compare several estimators of the global curvature, in particular the ones based on well-known Ollivier-Ricci and Forman-Ricci \textit{local} graph curvatures. Our analysis shows that they all have fundamental flaws for global curvature estimation task. 
+
+\textcolor{red}{[Add about new estimator if we have one]}
+
+\textcolor{red}{[Some more conclusions? That zero-one loss prefers larger curvature? Anything else?]}
 
 \section{Background and related work}\label{sec:related_work}
 
 \paragraph{Embeddings} 
-\textbf{[Basic information about what is embedding. Some selected relevant papers on embeddings and their applications.]}
+In general, an embedding is a mapping $f: W \rightarrow U$, where $W$ and $U$ are some metric spaces. In this paper we focus on graph embeddings. Let $G = (V,E)$ be an unweighted graph, then $f: V \rightarrow U$ is an embedding of this graph to a metric space $U$. 
 
-\paragraph{Fidelity measures} \textbf{[Define distortion and MAP. Discuss minuses of distortion (practical and theoretical). Define threshold-based loss.]}
+There are several loss/quality functions used to measure the quality of such embedding. The most well-known one is \textit{distortion}:
+\[
+D(f) = \frac{1}{\binom{n}{2}} \sum_{u \neq v}  \frac{|d(f(u),f(v)) - d_G(u,v)|}{d_G(u,v)}.
+\]
+
+Distortion is a global metric, it takes into account all graph distance. However, in many practical applications 
+
+\textcolor{red}{[to be continued]}
+
+\iffalse
+
+\paragraph{Mean Average Precision (MAP)}
+
+Let us consider the node $v$. $N_i(v)$ be the number of nodes closest to $i$ we have to consider to cover $i$ neighbors of $i$. Note that in the ideal situation we have $N_i(v) = i$. Then MAP is defined as 
+\[
+\frac{1}{n} \sum_v \frac{1}{deg(v)} \sum_{i=1}^{deg(v)} \frac{i}{N_i(v)}. 
+\]
+
+\paragraph{Distortion} This is a standard metric for graph embeddings.
+
+
+
+\paragraph{Threshold-based loss}
+
+Note that MAP is scale-invariant, while distortion is not scale-invariant. Here is a more reasonable non-scale-invariant measure. Let $G$ be the original graph and let $G'$ be the graph recovered from embedding with threshold 1.
+Let $n_{11}$ the number of pairs of vertices, which are connected in both $G$ and $G'$, $n_{00}$~--- which are not connected in both cases, $n_{01}$ and $n_{10}$~--- connected in one graph and not connected in another. Then there are several ways to measure similarity using these numbers (Rand, Jaccard, etc.), among them unbiased ones are correlation coefficient and Sokal and Sneath index. Let's use correlation coefficient since it is more well-known: \[\frac{n_{00}n_{11} - n_{01}n_{10}}{\sqrt{(n_{00} + n_{01})(n_{10} + n_{11})(n_{00} + n_{10})(n_{01} + n_{11})}}\].
+
+\fi
 
 \paragraph{Hyperbolic and Spherical Spaces} \textbf{[Discuss hyperbolic and spherical spaces and their main properties which we will use throughout the proofs.]}
 
