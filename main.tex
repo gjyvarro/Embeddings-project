@@ -46,6 +46,23 @@ Ideas for research:
     %\item We all understand now that distortion is not a good measure for graph embeddings from all points of view. One reason is that optimal distortion is $-\infty$ for many graphs (trees and tree-like). Let's compare this with some threshold-based loss function.
 \end{itemize}
 
+\subsection{Approximate Ollivier curvature}
+
+\textbf{[Say something on complexity of computing Ollivier curvature? I think that we should discuss this approximation only if it gives a significant boost in speed.]}
+
+An explicit formula for Ollivier-Ricci curvature in graphs is obtained by~\citet{kelly2019self} under somewhat restrictive assumptions. 
+For an edge $(u,v)$, let $\triangle_{uv}$, $\square_{uv}$ and $\pentagon_{uv}$ denote, respectively, the number of triangles, squares and pentagons in the graph that include the edge $(u,v)$. Moreover let $a \wedge b = \min\{a,b\}$, $a \vee b = \max\{a,b\}$ and $[a]^+ = a \vee 0$. Then we define:
+\begin{multline}\label{eq:def_ollivier_ricci_approx}
+		\kappa_G^\ast(u,v) = \frac{\triangle_{uv}}{\mathrm{deg}(u) \wedge \mathrm{deg}(v)} 
+			- \left[1 - \frac{1 + \triangle_{uv} + \square_{uv}}{\mathrm{deg}(u) \vee \mathrm{deg}(v)} - \frac{1}{\mathrm{deg}(u) \wedge \mathrm{deg}(v)}\right]^+\\
+	- \left(\frac{\triangle_{uv}}{\mathrm{deg}(u) \vee \mathrm{deg}(v)} 
+			- \frac{\triangle_{uv}}{\mathrm{deg}(u) \wedge \mathrm{deg}(v)}\right) \vee \left(1 - \frac{1 + \triangle_{uv} + \square_{uv} + \pentagon_{uv}}
+			{\mathrm{deg}(u) \vee \mathrm{deg}(v)}
+			- \frac{1}{\mathrm{deg}(u) \wedge \mathrm{deg}(v)}\right).
+\end{multline}
+
+\citet{kelly2019self} shows that $\kappa_G^\ast(u,v) = \kappa_G(u,v)$ if and only if short cycles of length $3$, $4$ or $5$ that include the edge $(u,v)$ share no other edges. For example, if $w$ is a neighbor of both $u$ and $v$ (so $w$ is part of a $3$-cycle) then $w$ cannot be connected to any other neighbor of either $u$ or $v$, since that would mean that $w$ is part of a $4$-cycle that includes the edge $(u,v)$. Although this requirement is quite restrictive, one could still use~\Eqref{eq:def_ollivier_ricci_approx} as an approximation (or even a definition) of local curvature in graphs.
+
 \section{Selected relevant papers}
 
 \paragraph{Learning Mixed-Curvature Representations in Product Spaces~\cite{gu2019learning}}
