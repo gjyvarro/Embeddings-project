@@ -261,7 +261,7 @@ In this section, we consider several basic graphs and analyze their global curva
 \end{figure}
 
 It is pointed out in numerous papers that trees are negatively curved. 
-We analyze this theoretically and start with the simplest tree: one central node and $n$ leaves. We denote this graph by $S_n$ and assume that $n \ge 3$.
+We analyze this theoretically and start with the simplest tree: one central node and $n$ \ph{leafs}. We denote this graph by $S_n$ and assume that $n \ge 3$.
 
 \paragraph{Ollivier curvature} 
 Consider any tree graph $T$, let $v, u$ be two neighbors. Then Proposition 2 in~\citep{jost2014ollivier} states that
@@ -282,7 +282,7 @@ Heuristic sectional curvature is defined for a node and its two neighbors. In ca
 
 \paragraph{Distortion-based curvature} 
 We prove the following theorem (the proof is in Appendix~\ref{app:star_distortion}).
-
+\ph{[We should be very explicit about the type of asymptotics considered in the statement of this theorem. I think it should be $c \to -\infty$. Is that correct?]}
 \begin{theorem}\label{thm:star_distortion}
 For any $d$, in hyperbolic space of curvature $c$ we have $D(S_n) = \Omega\left(\frac{1}{n\max(\sqrt{-c},1)}\right)$; in spherical and euclidean spaces $D(S_n) = \Omega\left(\frac{1}{n}\right)$. Also, the optimal distortion $D_{opt}(S_n) = O\left(\frac{\log n}{\sqrt{-c}}\right)$. Therefore, for any $S_n$ we have $C_d^{dist}(S_n) = -\infty$.
 \end{theorem}
@@ -408,12 +408,15 @@ Similarly, it is easy to see that $F(C_n) = \hat F(C_n) = 0$.
 
 \paragraph{Distortion-based curvature} 
 
-\ph{[Where is the proof of this proposition?]} \lt{[Just below the proposition]}
-
-\begin{proposition}\label{prop:cycle_distortion}
-$C_d^{dist}(C_n) = \left(\frac{2\pi}{n}\right)^2$.
-\end{proposition}
-
+\ph{[Where is the proof of this proposition?]} \lt{[Just below the proposition]}\ph{[It seems to be more of a simple observation. I would therefore suggest to not state it as a proposition.]} 
+%\begin{proposition}\label{prop:cycle_distortion}
+%$C_d^{dist}(C_n) = \left(\frac{2\pi}{n}\right)^2$.
+%\end{proposition}
+\ph{Here we have that
+\begin{equation}\label{eq:cycle_distortion}
+	C_d^{dist}(C_n) = \left(\frac{2\pi}{n}\right)^2.
+\end{equation}
+}
 Indeed, if we consider any three consequent nodes, then the middle one should lie on the geodetic between the other two. So, they all lie on a great circle (of length $n$) from which the proposition follows.
 In particular, $C_d^{dist}(C_5) \approx 1.58$, $C_d^{dist}(C_{100}) \approx 0.004$, which is illustrated on Figure~\ref{fig:cycle} (left).
 
@@ -467,7 +470,7 @@ The following proposition gives an intuition about why one could expect this.
 For any $d$, $C_d^{dist}(K_{2,2}) = \left(\frac{\pi}{2}\right)^2 \approx 2.47$ and $K_{2,2}$ is the only complete bipartite graph (with at least two nodes in each part) for which zero distortion is achievable.
 \end{proposition}
 
-Indeed, the result for $K_{2,2}$ follows from Proposition~\ref{prop:cycle_distortion}. Moreover, if for $K_{l,m}$ we have $l \ge 3$ and $m \ge 2$, then for any two nodes in the part of size 3 there are at least 2 different geodesics of length 2 between them. Therefore, all such pairs lie at opposite poles of the hypersphere, which is impossible since $l \ge 3$.
+Indeed, the result for $K_{2,2}$ follows from~\Eqref{eq:cycle_distortion}. Moreover, if for $K_{l,m}$ we have $l \ge 3$ and $m \ge 2$, then for any two nodes in the part of size 3 there are at least 2 different geodesics of length 2 between them. Therefore, all such pairs lie at opposite poles of the hypersphere, which is impossible since $l \ge 3$.
 
 \paragraph{Threshold-based curvature} 
  
@@ -879,7 +882,7 @@ If $R \to \infty$, then, similarly to Euclidean case, we get $\varphi = x + y - 
 \]
 and
 %$e^{\frac{x+y-z}{R}} - 1 = \Omega\left(e^{\frac{x+y-z}{R}}\right) = \Omega(1)$, so 
-$\varphi = x + y - z = \Omega(R)$.
+$\varphi = x + y - z = \Omega(R)$. \ph{[I still do not follow this last step. Where does this conclusion come from and what are the asymptotics considered? It can't be $R \to \infty$ because we concluded that in that case it is bounded from below by a constant. So is it $R \to 0$?]}
 
 Note that $D_{min} \ge |z-2| + \frac{|x-1| + |y-1|}{(n-1)/2} =  |\varepsilon + \delta - \varphi| + \frac{|\varepsilon| + |\delta|}{(n-1)/2}$. This gives us a lower bound $D_{min} = \Omega(1/n)$ in spherical and Euclidean spaces and $D_{min} = \Omega(\min(R,1)/n) = \Omega\left(\frac{1}{n\max\left(\sqrt{-c},1\right)}\right)$ in hyperbolic one. From this and \Eqref{eq:D_min} the required bound follows.
 
@@ -890,8 +893,8 @@ Let $v$ be the central node, then we spread all other nodes uniformly on a 2-dim
 \cosh \frac{k}{R} = 1  + \left(1 -  \cos \frac{2 \pi}{n}\right)  \sinh^2 \frac{1}{R} \,.
 \]
 
-
-So, $D_{opt}(S_n)$ can be upper bounded as \ph{[This bound cannot be true since it only uses the distance between closest leafs]} \lt{[Do not understand this comment. The distance between closest leaves is the ``worst'' one, others are closer to two, so they give less contribution to distortion]}
+\ph{Note that for any two leaves $v_i$ and $v_j$ we have that $d(f(v_i), f(v_j)) \le 2$. In particular, the closer two leaves are, the greater the difference $2 - d(f(v_i), f(v_j))$ is. Hence, the distance between adjacent leaves is the worst case and thus $D_{opt}(S_n)$ can be upper bounded as}
+%\ph{[This bound cannot be true since it only uses the distance between closest leafs]} \lt{[Do not understand this comment. The distance between closest leaves is the ``worst'' one, others are closer to two, so they give less contribution to distortion]}
 \begin{multline*}
 D_{opt}(S_n) \le \frac{{n \choose 2}}{2{n+1\choose 2}} \left(2 - R\cdot \mathrm{arccosh}\left( \left(1 - \cos \frac{2 \pi}{n}\right)\sinh^2\frac{1}{R}  + 1 \right)\right) \\
 = \frac{(n-1)}{2(n+1)} \left(2 - R\cdot \mathrm{arccosh}\left( \left(1 - \cos \frac{2 \pi}{n}\right)\sinh^2\frac{1}{R}  + 1 \right)\right)
@@ -908,29 +911,33 @@ D_{opt}(S_n) = O\left( R \log n \right) = O\left( \frac{\log n}{\sqrt{-c}} \righ
 \ph{[I do not understand this part. Where is the radius coming from?]}
 \lt{[For simplex with side length $a$ radius of a circumscribed hypersphere is known, I took it from russian wikipedia, url is below. However, we do not need $a = 1$, we need distance on a sphere $= 1$, so I wrote the corresponding formula for this. I tried to improve the text below.]}
 \url{https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BC%D0%BF%D0%BB%D0%B5%D0%BA%D1%81#%D0%9E%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D1%81%D1%84%D0%B5%D1%80%D0%B0}
+\ph{[Is this a well-known fact? If not, then we need a reference for this.]}
 
-If $d = n-2$, then we are given $(n-1)$-simplex, which can be embedded into $n-2$-dimensional spherical space. Indeed, the radius of circumscribed hypersphere for $(n-1)$-simplex with side length $a$ is $R = a\sqrt{\frac{n-1}{2n}}$. Since we want \textit{spherical} distance between all points to be equal to one, we want
+If $d = n-2$, then we are given \ph{a} $(n-1)$-simplex, which can be embedded into $n-2$-dimensional spherical space. Indeed, the radius of circumscribed hypersphere for \ph{this} $(n-1)$-simplex with side length $a$ is $R = a\sqrt{\frac{n-1}{2n}}$. Since we want \ph{the} \textit{spherical} distance between all points to be equal to one, we \ph{require}
 \[
 \sin \frac{\alpha}{2} = \frac{a}{2R} \,\,\text{ for } \,\,\alpha = \frac{1}{R}.
 \]
-Hence,
+\ph{[It is unclear to me where this formula is coming from. Some more details would be nice.]}
+\ph{This implies that
 \[
 2 R \arcsin \frac{a}{2R} = 1,
 \]
+and solving this equation for $a$ yields
+%\[
+%2 a\sqrt{\frac{n-1}{2n}} \arcsin \sqrt{\frac{n}{2(n-1)}} = 1,
+%\]
 \[
-2 a\sqrt{\frac{n-1}{2n}} \arcsin \sqrt{\frac{n}{2(n-1)}} = 1,
+a  = \sqrt{\frac{2n}{(n-1)}}\frac{1}{2\arcsin \sqrt{\frac{n}{2(n-1)}}}.
 \]
-\[
-a  = \sqrt{\frac{2n}{(n-1)}}\frac{1}{2\arcsin \sqrt{\frac{n}{2(n-1)}}},
-\]
+Plugging this back into the formula for the radius $R$ we obtain
 \[
 R = \frac{1}{2\arcsin \sqrt{\frac{n}{2(n-1)}}},
 \]
-
-so we have
+so that we have
 \[
 C_{n-2}^{dist}(K_n) = 4 \left(\arcsin \sqrt{\frac{n}{2(n-1)}}\right)^2\,.
 \]
+}
 
 \textcolor{red}{[Todo: to show that we cannot embed into space of any other curvature]}
 
@@ -1046,7 +1053,7 @@ Combining \Eqref{eq:1} and \lt{\Eqref{eq:2}}, we obtain:
 \[
 \sinh \frac{r'}{R} \ge b^2 \cdot \sinh \frac{r}{R}.
 \]
-To achieve this, it is sufficient to have:
+To achieve this, it is sufficient to have: \ph{[Why? I do not see this.]}
 \[
 \frac{r' - r}{R} \ge \log b,
 \]
