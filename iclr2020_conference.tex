@@ -99,44 +99,41 @@ We also compare several estimators of the global curvature, in particular the on
 \section{Background and related work}\label{sec:related_work}
 
 \paragraph{Embeddings} 
-In general, an embedding is a mapping $f: W \rightarrow U$, where $W$ and $U$ are some metric spaces. In this paper we focus on graph embeddings  \textcolor{brown}{[, where the first space is an unweighted graph $G = (V,E)$ equipped with the graph distance metric]}. Let $G = (V,E)$ be an unweighted graph, then $f: V \rightarrow U$ is an embedding of this graph to a metric space $U$. Graph embeddings are used in many applications~\lt{[Egor, can you help here with the most important references?]} \textcolor{brown}{[May be \cite{goyal2018graph}?]}
+\ph{[Embeddings in general do not map metric spaces to metric spaces. Rather, they map any space into any other space while preserving the mathematical structure.]}
 
-There are several loss/quality functions used to measure the quality of such embedding. The most well-known one is \textit{distortion}:
+
+\ph{For an unweighted graph $G = (V,E)$ equipped with the shortest path distance metric $d_G$, a graph embedding $f$ is a map $f: V \rightarrow U$, where $U$ is a metric space.}
+%In general, an embedding is a mapping $f: W \rightarrow U$, where $W$ and $U$ are some metric spaces. In this paper we focus on graph embeddings  \textcolor{brown}{[, where the first space is an unweighted graph $G = (V,E)$ equipped with the graph distance metric]}. Let $G = (V,E)$ be an unweighted graph, then $f: V \rightarrow U$ is an embedding of this graph to a metric space $U$. 
+Graph embeddings are used in many applications~\lt{[Egor, can you help here with the most important references?]} \textcolor{brown}{[May be \cite{goyal2018graph}?]}
+
+\ph{The goal is to have an embedding that preserves the metric structure of the graph, i.e. $d(f(v), f(v^\prime)) = d_G(v,v^\prime)$ for all nodes $v, v^\prime \in V$.} There are several loss/quality functions used to measure the quality of a graph embedding. The most well-known is \textit{distortion}:
 \[
 D(f) = \frac{1}{\binom{n}{2}} \sum_{u \neq v}  \frac{|d(f(u),f(v)) - d_G(u,v)|}{d_G(u,v)}.
 \]
 
-Distortion is a global metric, it takes into account all graph distance \textcolor{brown}{[s]}. However, in many practical applications it may not be a good choice. For example, in recommendation task, for a user-item pair we usually know whether they are connected (presence of click, like, etc.) or not. Graph distance do not make much sense in such applications.  \textcolor{brown}{[Not clear why. May be? "In recommendation task we usually deal with a partially observed graph, so a huge graph distance between nodes in the observed part does not necessarily mean that nodes are not connected in the full graph"]} Additionally, as discussed in Section~\ref{sec:S_n} graph distances are hard to preserve: there are graphs on just 4 nodes which cannot be perfectly embedded in a space of any curvature and any dimension. 
+Distortion is a global metric, it takes into account all graph distances. However, in many practical applications it may not be a good choice. For example, in recommendation task, for a user-item pair we usually know whether they are connected (presence of click, like, etc.) or not. Graph distance do not make much sense in such applications.  \textcolor{brown}{[Not clear why. May be? "In recommendation task we usually deal with a partially observed graph, so a huge graph distance between nodes in the observed part does not necessarily mean that nodes are not connected in the full graph"]} Additionally, as discussed in Section~\ref{sec:S_n} graph distances are hard to preserve: there are graphs on just 4 nodes which cannot be perfectly embedded in a space of any curvature and any dimension. 
 
-Another measure, often used for embeddings is Mean Average Precision (MAP), which, for a given node $v$, compares the distance-based ranking of other embedded nodes with the graph-neighborhood-based ranking. MAP is scale invariant, since it cares only about ranking. Since changing curvature is equivalent to changing scale, MAP is insensitive to curvature.\footnote{In other words, it is sufficient to consider only the curvatures -1, 0, 1, corresponding to hyperbolic, Euclidean and spherical spaces. Moreover, considering small enough region in hyperbolic or spherical space we get geometry similar to the Euclidean one, so for MAP it is important to distinguish only between -1 and~1.}  \textcolor{brown}{[Start new paragraph?]}  We consider another loss function, which is at the same time local and scale-depended.  \textcolor{brown}{[We should clarify why scale-dependency is important]} Let us define a class of \textit{threshold-based} loss function. Given an embedding of a graph $G$, We (re)construct a graph $G'$ in the following way: $v$ and $u$ are connected in $G'$ iff $d(v,u)\le 1$. Then, any loss function which is based on the comparison of $G$ and $G'$ is called threshold-based. While all our theoretical results hold for any threshold-based loss function (see Section~\ref{sec:global}), in our experiments we measure zero-one loss for the edge classification problem (whether a given pair is connected or not). This loss function is natural in many applications (graph reconstruction, link prediction, recommendations) and it is also much easier to optimize, as shown by our experiments.
+Another measure, often used for embeddings is Mean Average Precision (MAP), which, for a given node $v$, compares the distance-based ranking of other embedded nodes with the graph-neighborhood-based ranking. MAP is scale invariant, since it cares only about ranking. Since changing curvature is equivalent to changing scale, MAP is insensitive to curvature.\footnote{In other words, it is sufficient to consider only the curvatures -1, 0, 1, corresponding to hyperbolic, Euclidean and spherical spaces. Moreover, by considering a small enough region in hyperbolic or spherical space we get geometry similar to the Euclidean one, so for MAP it is important to distinguish only between -1 and~1.}  \textcolor{brown}{[Start new paragraph?]}  We consider another loss function, which is at the same time local and scale-depended.  \textcolor{brown}{[We should clarify why scale-dependency is important]} Let us define \ph{the following class of \textit{threshold-based} loss functions}. Given an embedding of a graph $G$, We (re)construct a graph $G'$ in the following way: $v$ and $u$ are connected in $G'$ iff $d(v,u)\le 1$. Then, any loss function which is based on the comparison of $G$ and $G'$ is called threshold-based. While all our theoretical results hold for any threshold-based loss function (see Section~\ref{sec:global}), in our experiments we measure zero-one loss for the edge classification problem (whether a given pair is connected or not). This loss function is natural in many applications (graph reconstruction, link prediction, recommendations) and it is also much easier to optimize, as shown by our experiments.
 
 \paragraph{Hyperbolic and Spherical Spaces}
 
-For many years, Euclidean space was the primary choice for data embeddings~\citep{goyal2018graph}. However, it turned out that many observed graph are well fitted to hyperbolic space~\citep{krioukov2010hyperbolic}. \citet{nickel2017poincare} have shown that such hyperbolic embeddings can improve state-of-the-art quality in several practical tasks, e.g., lexical entailment and link prediction. On the other hand, spherical spaces are also used for embeddings~\citep{liu2017sphereface}. \citet{gu2019learning} goes further by suggesting mixed spaces: product manifolds combining multiple copies of spherical, hyperbolic, and Euclidean spaces. 
+For many years, Euclidean space was the primary choice for data embeddings~\citep{goyal2018graph}. However, it turned out that many observed graph are well fitted \ph{into} hyperbolic space~\citep{krioukov2010hyperbolic}. \citet{nickel2017poincare} have shown that such hyperbolic embeddings can improve state-of-the-art quality in several practical tasks, e.g., lexical entailment and link prediction. On the other hand, spherical spaces are also used for embeddings~\citep{liu2017sphereface}. \citet{gu2019learning} goes further by suggesting mixed spaces: product manifolds combining multiple copies of spherical, hyperbolic, and Euclidean spaces. 
 
-The main advantage of hyperbolic space is that it is ``larger'': the volume of a ball grows exponentially with radius. Hence, such spaces are well suited for tree-like structures as trees. On the other hand, spherical spaces are suitable for embedding of cycles~\citep{gu2019learning}. Spherical and hyperbolic space are parametrized by \textit{curvature} $c$, which is positive for spherical space and negative for hyperbolic space. As $c \to 0$ geometry of both these spaces becomes similar to Euclidean one. We discuss some geometrical properties of different spaces in Appendix~\ref{sec:properties}.
+The main advantage of hyperbolic space is that it is ``larger'': the volume of a ball grows exponentially with radius. Hence, such spaces are well suited for tree-like structures. On the other hand, spherical spaces are suitable for embedding of cycles~\citep{gu2019learning}. Spherical and hyperbolic space are parametrized by \textit{curvature} $c$, which is positive for spherical space and negative for hyperbolic space. As $c \to 0$ geometry of both these spaces becomes similar to \ph{the} Euclidean one. We discuss some geometrical properties of \ph{these} different spaces in Appendix~\ref{sec:properties}.
 
 
 \section{Local graph curvatures}
 
-While in this paper we analyze the \textit{global} graph curvature, there are several \textit{local} ones proposed in the literature.
-Many of them are based on the notion of sectional curvature and Ricci curvature defined for Riemannian manifolds. Intuitively, Ricci curvature controls whether the distance between small spheres is smaller or larger than the distance between the centers of the spheres. 
-Ricci curvature is positive if
-small spheres are closer than their centers are.
+While in this paper we analyze the \textit{global} graph curvature, there are several \textit{local} ones proposed in the literature. Many of them are based on the notion of sectional curvature and Ricci curvature defined for Riemannian manifolds. Intuitively, Ricci curvature controls whether the distance between small spheres is smaller or larger than the distance between the centers of the spheres. Ricci curvature is positive if small spheres are closer than their centers are. \ph{We refer to~\cite{jost2009geometry,oneill1983semiriemannian} for more details on Ricci curvature.}
 %Ricci curvature can also be understood as representing the amount by which the volume of a geodesic ball in a curved Riemannian manifold deviates from that of the standard ball in Euclidean space. 
 %If Ricci curvature at a point is non-negative, the volume growth with respect to the radius of the ball centered at this point is a polynomial; if the Ricci curvature is negative everywhere, the volume growth is exponential.
-\lt{[Pim, do you have a good reference to the formal definition of Ricci curvature?]}
+%\lt{[Pim, do you have a good reference to the formal definition of Ricci curvature?]}
 
 \subsection{Ollivier curvature}
 
-Ollivier's coarse Ricci curvature translates the definition of Ricci curvature to graphs. 
-Again, the idea is to compare the distances between two small balls with the
-distance between their centers. 
-The distance between balls is defined by the well-known optimal transport
-distance (a.k.a. Wasserstein distance, earth-mover distance,
-Monge-Kantorovich-Rubinstein distance).
+Ollivier's coarse Ricci curvature translates the definition of Ricci curvature to graphs. Again, the idea is to compare the distances between two small balls with the distance between their centers. The distance between balls is defined by the well-known optimal transport distance (a.k.a. Wasserstein distance, earth-mover distance, Monge-Kantorovich-Rubinstein distance).
 
-Formally, for a graph $G$ we consider the shortest path metric on $G$, denoted by $d_G$, and let $W_1^G$ denote the Wasserstein metric with respect to the metric space $(G,d_G)$. Furthermore, for each node $v$ let $m_v$ denote the uniform probability measure on the neighbors of $v$, i.e., $m_v(u) = \frac{1_{u \sim v}}{\mathrm{deg}(v)}$, where $\mathrm{deg}(v)$ denotes the degree of $v$. Then, the classic definition\footnote{Note that Ollivier curvature is defined in much more generality in terms of metrics and random walks, see~\citep{ollivier2009ricci}. Thus, different version on graphs can be considered. \Eqref{eq:def_classic_ollivier_graphs} corresponds to the classical choices of graph distance and random walk on the graph.} of Ollivier curvature between two neighboring nodes $v \sim u$ in $G$ is defined as
+Formally, for a graph $G$ we consider the shortest path metric on $G$, denoted by $d_G$, and let $W_1^G$ denote the Wasserstein metric with respect to the metric space $(G,d_G)$. Furthermore, for each node $v$ we let $m_v$ denote the uniform probability measure on the neighbors of $v$, i.e., $m_v(u) = \frac{1_{u \sim v}}{\mathrm{deg}(v)}$, where $\mathrm{deg}(v)$ denotes the degree of $v$. Then, the classic definition\footnote{Note that Ollivier curvature is defined in much more generality in terms of metrics and random walks, see~\citep{ollivier2009ricci}. Thus, different version on graphs can be considered. \Eqref{eq:def_classic_ollivier_graphs} corresponds to the classical choices of graph distance and random walk on the graph.} of Ollivier curvature between two neighboring nodes $v \sim u$ in $G$ is defined as
 \begin{equation}\label{eq:def_classic_ollivier_graphs}
 	\kappa_G(u,v) = 1 - W_1^G(m_v, m_u).
 \end{equation}
@@ -165,9 +162,9 @@ F_G(u,v)
 = 4 - (\mathrm{deg}(v) + \mathrm{deg}(u)).
 \end{equation}
 
-\textcolor{red}{[I commented the general formula, since we never use this. However, I have a small confusion here. Pim, below you write that Forman's general formula include faces of any dimension. But, as I understand, \Eqref{eq:forman2} (but with weights) is also by Forman? Can we write explicitly who proposed what?]}
+%\textcolor{red}{[I commented the general formula, since we never use this. However, I have a small confusion here. Pim, below you write that Forman's general formula include faces of any dimension. But, as I understand, \Eqref{eq:forman2} (but with weights) is also by Forman? Can we write explicitly who proposed what?]}
 
-The general formula by Forman included the faces of any dimension, which can be done for graphs as well~\citep{weber2017coarse}. In~\Eqref{eq:forman} only $1$-dimensional faces (edges) are included. However, one can also include $2$-dimensional faces. This was considered in~\cite{samal2018comparative}, where $2$-dimensional faces on three nodes (triangles) were considered. In the case of an unweighted graph we then obtain
+\ph{Forman was interest in a general discretization of curvature for Riemannian manifolds and his formula includes faces of any dimension. Although this can be translated to graphs~\citep{weber2017coarse} the formula becomes quite cumbersome. Therefore, in~\Eqref{eq:forman2} only $1$-dimensional faces (edges) are included. One can extend this expression by including higher dimensional faces.} This was considered in~\cite{samal2018comparative}, where $2$-dimensional faces on three nodes (triangles) were considered. In the case of an unweighted graph we then obtain
 \begin{equation}\label{eq:def_forman_curvature_triangles}
 	\hat F_G(u,v) = F(u,v) + 3\Delta_{uv} 
 	= 4 - \mathrm{deg}(v) - \mathrm{deg}(u) + 3\Delta_{uv},
@@ -179,7 +176,7 @@ where $\Delta_{uv}$ is the number of triangles that contain the edge $(u,v)$.
 \subsection{Heuristic sectional curvature}
 
 A different notion of curvature used by \citep{gu2019learning} is based on the following geometric fact. 
-Let $abc$ be a geodesic triangle and let $m$ be the (geodesic) midpoint of $bc$, then the value
+Let $abc$ be a geodesic triangle and let $m$ be the (geodesic) midpoint of $bc$. Then the value
 %\begin{equation}\label{eq:parallelogram_law}
 $	d(a,m)^2 + \frac{d(b,c)^2}{4} - \frac{d(a,b)^2 + d(a,c)^2}{2}$
 %\end{equation}
@@ -187,7 +184,7 @@ is equal to zero in euclidean space, is positive in spherical space and negative
 
 For graphs, let $v$ be a node in $G$, $b,c$ neighbors of $v$ and $a$ any other node. Then we define
 \begin{equation}
-\xi_G(v;b,c;a) = \frac{1}{2 d(a,v)} \left( 	d(a,v)^2 + \frac{d(b,c)^2}{4} - \frac{d(a,b)^2 + d(a,c)^2}{2} \right).
+\xi_G(v;b,c;a) = \frac{1}{2 d_G(a,v)} \left( d_G(a,v)^2 + \frac{d_G(b,c)^2}{4} - \frac{d_G(a,b)^2 + d_G(a,c)^2}{2} \right).
 \end{equation}
 This resembles
 %~\Eqref{eq:parallelogram_law} 
@@ -200,7 +197,7 @@ $\xi_G(v; b,c) = \frac{1}{|V|-3} \sum_{a \in G\setminus \{v,b,c\}} \xi_G(v;b,c;a
 
 \section{Global graph curvature}\label{sec:global}
 
-While there are many different notions of \textit{local} graph curvature, they cannot be easily used in practical applications, where data is usually embedded in a space of constant curvature. 
+\ph{The problem with these different notions of \textit{local} graph curvature is that they cannot be easily used in practical applications, where data is usually embedded in a space of constant curvature.}
 Hence, a \textit{global} notion of curvature is needed. 
 In this section, we propose a practice-driven definition of global graph curvature, discuss how to estimate this curvature based on local notions and compare all curvatures theoretically and empirically for several simple graphs.
 
@@ -241,7 +238,8 @@ It is important to note that all curvatures discussed above do \textit{not} depe
 
 \subsection{Theoretical analysis of global curvature and its approximations}\label{sec:theory}
 
-In this section, we consider several basic graphs and analyze their global curvature and its approximations both theoretically and empirically. Experimental setup for our empirical illustrations is described in \textcolor{red}{[todo]}.
+\ph{In order to better understand the performance of the proposed approximations of global graph curvature for embeddings,
+we shall consider several basic graphs and analyze their global curvature and approximations both theoretically and empirically. By studying these graphs we also hope to gain insights into how classic graph topologies influence the curvature of the space in which they can be properly embedded.} The experimental setup for our empirical illustrations is described in \textcolor{red}{[todo]}.
 
 \subsubsection{Star $S_n$}\label{sec:S_n}
 
@@ -871,15 +869,28 @@ from which, \lt{using $\cosh(x+y) =\cosh x\cosh y+\sinh x\sinh y$}, we get
 \[
 \cosh \frac{x+y}{R} - \cosh \frac{z}{R} = \sinh \frac{x}{R} \sinh \frac{y}{R} (1 + \cos \alpha). %= \Omega\left(e^{(x+y)/R}\right).
 \]
-If $R \to \infty$, then, similarly to Euclidean case, we get $\varphi = x + y - z = \Omega(1)$. Otherwise, we have
-\[
-\cosh \frac{x+y}{R} - \cosh \frac{z}{R} = \Omega\left(e^{(x+y)/R}\right) = \Omega\left(e^{1/R}\right)
-\]
-and
-%$e^{\frac{x+y-z}{R}} - 1 = \Omega\left(e^{\frac{x+y-z}{R}}\right) = \Omega(1)$, so 
-$\varphi = x + y - z = \Omega(R)$. \ph{[I still do not follow this last step. Where does this conclusion come from and what are the asymptotics considered? It can't be $R \to \infty$ because we concluded that in that case it is bounded from below by a constant. So is it $R \to 0$?]}
+If $R \to \infty$, then, similarly to Euclidean case, we get $\varphi = x + y - z = \Omega(1)$. \ph{[I am still not sure how this argument goes. I did fix the other case $R \to 0$ below.]} 
 
-Note that $D_{min} \ge |z-2| + \frac{|x-1| + |y-1|}{(n-1)/2} =  |\varepsilon + \delta - \varphi| + \frac{|\varepsilon| + |\delta|}{(n-1)/2}$. This gives us a lower bound $D_{min} = \Omega(1/n)$ in spherical and Euclidean spaces and $D_{min} = \Omega(\min(R,1)/n) = \Omega\left(\frac{1}{n\max\left(\sqrt{-c},1\right)}\right)$ in hyperbolic one. From this and \Eqref{eq:D_min} the required bound follows.
+\ph{
+On the other hand since $x+y - z = \phi$, it follows from the mean value theorem that
+\[
+	\sinh \frac{x}{R} \sinh \frac{y}{R} (1 + \cos \alpha) = \frac{\phi}{R^2} \sinh \frac{c}{R},
+\]
+for some $z \le c \le x + y$. Since $\sinh$ is monotonically increasing we deduce that
+\[
+	\frac{\phi}{R^2} \ge (1+\cos \alpha) \frac{\sinh \frac{x}{R} \sinh \frac{y}{R}}{\sinh \frac{x+y}{R}}.
+\]
+Since the right hand side is bounded from below by a constant as $R \to 0$ it follows that $\phi = \Omega(R^2)$ as $R \to 0$.
+}
+%}Otherwise,  have
+%\[
+%\cosh \frac{x+y}{R} - \cosh \frac{z}{R} = \Omega\left(e^{(x+y)/R}\right) = \Omega\left(e^{1/R}\right)
+%\]
+%and
+%%$e^{\frac{x+y-z}{R}} - 1 = \Omega\left(e^{\frac{x+y-z}{R}}\right) = \Omega(1)$, so 
+%$\varphi = x + y - z = \Omega(R)$. \ph{[I still do not follow this last step. Where does this conclusion come from and what are the asymptotics considered? It can't be $R \to \infty$ because we concluded that in that case it is bounded from below by a constant. So is it $R \to 0$?]}
+
+Note that $D_{min} \ge |z-2| + \frac{|x-1| + |y-1|}{(n-1)/2} =  |\varepsilon + \delta - \varphi| + \frac{|\varepsilon| + |\delta|}{(n-1)/2}$. This gives us a lower bound $D_{min} = \Omega(1/n)$ in spherical and Euclidean spaces and \ph{$D_{min} = \Omega(\min(R^2,1)/n) = \Omega\left(\frac{1}{n\max\left(-c,1\right)}\right)$ in hyperbolic space}. From this and \Eqref{eq:D_min} the required bound follows.
 
 Now, let us get an upper bound on optimal distortion $D_{opt}(S_n)$. To do this, we explicitly construct an embedding with sufficiently low distortion $D(S_n)$.
 
