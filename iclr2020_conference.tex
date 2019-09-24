@@ -71,10 +71,10 @@ Address \\
 
 \begin{abstract}
 Recently, non-Euclidean spaces became popular for embedding structured data. However, determining suitable geometry and, in particular, curvature for a given dataset is still an open problem. 
-In this paper, we define a notion of global graph curvature and analyze a problem of estimating this curvature using only graph-based characteristics (without actual embedding). 
+In this paper, we define a notion of global graph curvature\ph{, specifically catered to the problem of embedding graphs, and analyze the problem of estimating this curvature using only graph-based characteristics (without actual embedding the graph).}
 We show that optimal curvature essentially depends on dimension and loss function one aims to minimize via embedding.
 We review the existing notions of local curvature (e.g., Ollivier-Ricci curvature) and analyze their properties theoretically and empirically. 
-In particular, we show that such curvatures are often unable to estimate the global one. 
+In particular, we show that such curvatures are often unable to \ph{properly} estimate the global one. 
 
 \textcolor{red}{[Hence, we propose a new estimator of global graph curvature which increases the quality of graph embeddings.]}
 \end{abstract}
@@ -83,14 +83,13 @@ In particular, we show that such curvatures are often unable to estimate the glo
 
 Representation learning is an important tool for learning from structured data such as graphs or texts~\citep{grover2016node2vec,perozzi2014deepwalk,mikolov2013distributed}.
 State-of-the-art algorithms typically use Euclidean space for embedding. 
-However, recently hyperbolic spaces demonstrated superior performance for various tasks~\citep{nickel2018learning,sala2018representation}. On the other hand, in some cases spherical space can be useful~\citep{liu2017sphereface}.
-While some methods use embedding to a space of constant curvature (e.g., -1 for hyperbolic space) \citep{nickel2018learning}, others learn curvature and embedding simultaneously using alternating gradient steps~\cite{gu2019learning}.
+\ph{Recently, however, it was found that hyperbolic spaces demonstrated superior performance for various such tasks~\citep{nickel2018learning,sala2018representation}, while in some cases spherical spaces can be useful~\citep{liu2017sphereface}. A key characteristic classifying the above mentioned spaces is curvature, which is negative for hyperbolic spaces, zero for Euclidean and positive for spherical spaces. These findings therefore show that certain graphs are better represented in spaces with non-zero curvature. While some methods simply fix curvature (e.g., -1 for hyperbolic space) and then find the optimal embedding of the graph in the corresponding space \citep{nickel2018learning}, others actually try to learn the right curvature and embedding simultaneously~\cite{gu2019learning}.}
 
-In this paper, we analyze the problem of determining a graph curvature suitable for an embedding \textit{without} actual embedding. The aim is to use some simple graph characteristics in order to understand whether it is reasonable to embed a graph into some non-Euclidean space and if yes, then which curvature to choose. 
-Having such an estimator would save computational resources, since learning an embedding is computationally expensive and should be made for each space separately. 
+In this paper, we analyze the problem of determining a graph curvature suitable for an embedding \textit{without} actual embedding \ph{the graph itself}. The aim is to use some simple graph characteristics in order to understand whether it is reasonable to embed a graph into some non-Euclidean space and if yes, then which curvature to choose. 
+Having such an estimator would save computational resources, since learning an embedding is computationally expensive and should be \ph{done} for each space separately. 
 More importantly, it can also save human resources by showing whether it is worth investing resources in the implementation of more complex embedding algorithm.
 
-In this paper, we make a fist step in this direction by introducing a concept of \textit{global} graph curvature, which depends on both dimension and loss function. We consider two loss function: distortion, which is widely used in embedding literature, and zero-one loss, which is more suitable for some applications, e.g., for graph reconstruction task. We demonstrate, both theoretically and empirically, that these loss functions lead to fundamentally different graph curvatures. We compare several estimators of the global curvature, in particular the ones based on well-known Ollivier-Ricci and Forman-Ricci \textit{local} graph curvatures. Our analysis shows that they all have fundamental flaws for global curvature estimation task. 
+\ph{We make an important} fist step in this direction by introducing a concept of \textit{global} graph curvature, which depends on both dimension and loss function used for the embedding. We consider two loss function: distortion, which is widely used in embedding literature, and zero-one loss, which is more suitable for some applications, e.g., for graph reconstruction task. We demonstrate, both theoretically and empirically, that these loss functions lead to fundamentally different graph curvatures. We \ph{also} compare several estimators of the global curvature, in particular the ones based on well-known Ollivier-Ricci and Forman-Ricci \textit{local} graph curvatures. \ph{Our analysis shows that all these notions give curvatures that are far from the optimal curvature for embedding the graph. This raises the important question of how to properly estimate the best curvature for embedding graphs. Interestingly, we also find that in most cases the embedding is better in more negatively curved spaces.}
 
 \textcolor{red}{[Add about new estimator if we have one]}
 \textcolor{red}{[Some more conclusions? That zero-one loss prefers larger curvature? Anything else?]}
