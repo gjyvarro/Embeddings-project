@@ -61,6 +61,7 @@ Address \\
 \newcommand{\new}{\marginpar{NEW}}
 
 \newcommand{\ph}[1]{\textcolor{blue}{#1}}
+\newcommand{\lt}[1]{\textcolor{red}{#1}}
 
 %\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
 \begin{document}
@@ -92,7 +93,6 @@ More importantly, it can also save human resources by showing whether it is wort
 In this paper, we make a fist step in this direction by introducing a concept of \textit{global} graph curvature, which depends on both dimension and loss function. We consider two loss function: distortion, which is widely used in embedding literature, and zero-one loss, which is more suitable for some applications, e.g., for graph reconstruction task. We demonstrate, both theoretically and empirically, that these loss functions lead to fundamentally different graph curvatures. We compare several estimators of the global curvature, in particular the ones based on well-known Ollivier-Ricci and Forman-Ricci \textit{local} graph curvatures. Our analysis shows that they all have fundamental flaws for global curvature estimation task. 
 
 \textcolor{red}{[Add about new estimator if we have one]}
-
 \textcolor{red}{[Some more conclusions? That zero-one loss prefers larger curvature? Anything else?]}
 
 \section{Background and related work}\label{sec:related_work}
@@ -105,7 +105,9 @@ There are several loss/quality functions used to measure the quality of such emb
 D(f) = \frac{1}{\binom{n}{2}} \sum_{u \neq v}  \frac{|d(f(u),f(v)) - d_G(u,v)|}{d_G(u,v)}.
 \]
 
-Distortion is a global metric, it takes into account all graph distance. However, in many practical applications 
+Distortion is a global metric, it takes into account all graph distance. However, in many practical applications it may not be a good choice. For example, in recommendation task, for a user-item pair we usually know whether they are connected (presence of click, like, etc.) or not. Graph distance do not make much sense in such applications. Additionally, as discussed in Section~\ref{sec:S_n} graph distances are hard to preserve: there are graphs on just 4 nodes which cannot be perfectly embedded in a space of any curvature and any dimension. 
+
+Another measure, often used for embeddings is Mean Average Precision (MAP), which, for a given node $v$, compares the distance-based ranking of other embedded nodes with the graph-neighborhood-based ranking. MAP is scale invarianе, since it cares only about ranking. Since changing curvature is equivalent to changing scale, MAP is insensitive to curvature.\footnote{In other words, it is sufficient to consider only the curvatures -1, 0, 1, corresponding to hyperbolic, Euclidean and spherical spaces. Moreover, considering small enough region in hyperbolic or spherical space we get geometry similar to the Euclidean one, so for MAP it is important to distinguish only between -1 and~1.}
 
 \textcolor{red}{[to be continued]}
 
@@ -212,7 +214,7 @@ In this section, we propose a practice-driven definition of global graph curvatu
 \subsection{Definition}\label{sec:global_curvature_definition}
 
 For a graph $G$, let $f(G)$ be an embedding of this graph into a $d$-dimensional space of constant curvature $c$ (spherical, Euclidean or hyperbolic). 
-Assume that we are given a loss function (fidelity measure) $L(f(G),G)$ for \ph{the} embedding task (possible choices were discussed in Section~\ref{sec:related_work}).
+Assume that we are given a loss function (fidelity measure) $L(f(G),G)$ for the embedding task (possible choices were discussed in Section~\ref{sec:related_work}).
 Now, let $L_{opt}(G,d,c)$ be the optimal loss for given $d$ and $c$:
 \[
 L_{opt}(G,d,c) = \min_{f(G)} L(f(G),G).
@@ -232,7 +234,7 @@ $L_{opt}(G,d,c)$ reaches its minimum on ``perfect'' embeddings, where we precise
 
 \subsection{Approximations}
 
-In this section, we describe how local graph curvatures can be used to estimate the global one. In all cases, \ph{the} standard practice is to average edge or sectional curvature over the graph.
+In this section, we describe how local graph curvatures can be used to estimate the global one. In all cases, the standard practice is to average edge or sectional curvature over the graph.
 
 \paragraph{Ollivier curvature} $\kappa(G) = \frac{1}{|E|}\sum\limits_{u < v, (u,v) \in E} \kappa_G(u,v)$.
 
@@ -240,7 +242,7 @@ In this section, we describe how local graph curvatures can be used to estimate 
 
 \paragraph{Average sectional curvature} Let $P_3$ denote the number of paths of length 3 in $G$, then $\xi(G) = \frac{1}{P_3} \sum\limits_{v \in V }\sum\limits_{b<c: b,c\in N(v)} \xi_G(v;b,c)$.
 
-It is important to note that all curvatures discussed above do \textit{not} depend on \ph{dimension $d$ nor loss function $L$.} However, as we show below, global curvature defined in Section~\ref{sec:global_curvature_definition} significantly depends on them.
+It is important to note that all curvatures discussed above do \textit{not} depend on neither dimension $d$ nor loss function $L$. However, as we show below, global curvature defined in Section~\ref{sec:global_curvature_definition} significantly depends on them.
 
 \textcolor{red}{[Probably discuss another approximation, if we get good numbers.]}
 
@@ -248,7 +250,7 @@ It is important to note that all curvatures discussed above do \textit{not} depe
 
 In this section, we consider several basic graphs and analyze their global curvature and its approximations both theoretically and empirically. Experimental setup for our empirical illustrations is described in \textcolor{red}{[todo]}.
 
-\subsubsection{Star $S_n$}
+\subsubsection{Star $S_n$}\label{sec:S_n}
 
 \begin{figure}
     \centering
@@ -259,24 +261,24 @@ In this section, we consider several basic graphs and analyze their global curva
 \end{figure}
 
 It is pointed out in numerous papers that trees are negatively curved. 
-We analyze this theoretically and start with the simplest tree: one central node and $n$ \ph{leafs}. We denote this graph by $S_n$ and assume that $n \ge 3$.
+We analyze this theoretically and start with the simplest tree: one central node and $n$ leaves. We denote this graph by $S_n$ and assume that $n \ge 3$.
 
 \paragraph{Ollivier curvature} 
 Consider any tree graph $T$, let $v, u$ be two neighbors. Then Proposition 2 in~\citep{jost2014ollivier} states that
 \begin{equation}\label{eq:ollivier_tree}
 	\kappa_T(u,v) = -2\left(1 - \frac{1}{\mathrm{deg}(v)} - \frac{1}{\mathrm{deg}(u)}\right)^+, 
 \end{equation}
-where $t^+ = \max\{0,t\}$. In particular, if either $\mathrm{deg}(v) = 1$ or $\mathrm{deg}(u) = 1$, then $\kappa_T(u,v) = 0$.  As a result, for a star we have $\kappa_{S_n}(u,v) = 0$, so $\kappa(\ph{S_n}) = 0$.
+where $t^+ = \max\{0,t\}$. In particular, if either $\mathrm{deg}(v) = 1$ or $\mathrm{deg}(u) = 1$, then $\kappa_T(u,v) = 0$.  As a result, for a star we have $\kappa_{S_n}(u,v) = 0$, so $\kappa(S_n) = 0$.
 
 \paragraph{Forman curvature}
 If follows from \Eqref{eq:forman} and \Eqref{eq:forman2} that
-$F(\ph{S_n}) = \hat F(\ph{S_n}) = 3-n$.
+$F(S_n) = \hat F(S_n) = 3-n$.
 
 %\paragraph{Approximate Ollivier curvature} According to \Eqref{eq:def_ollivier_ricci_approx}, $\kappa_G^* = 0$.
 
 \paragraph{Average sectional curvature}
 
-Heuristic sectional curvature is defined for a node and its two neighbors. In case of a star we can only take a central node $v$ and two neighboring ones $b$ and $c$. For any other node $a$ we obtain $\xi_{\ph{S_n}}(v;b,c;a) = -1$. Therefore, by averaging we obtain $\xi(\ph{S_n}) = -1$.
+Heuristic sectional curvature is defined for a node and its two neighbors. In case of a star we can only take a central node $v$ and two neighboring ones $b$ and $c$. For any other node $a$ we obtain $\xi_{S_n}(v;b,c;a) = -1$. Therefore, by averaging we obtain $\xi(S_n) = -1$.
 
 \paragraph{Distortion-based curvature} 
 We prove the following theorem (the proof is in Appendix~\ref{app:star_distortion}).
@@ -292,7 +294,7 @@ On the other hand, if $c \to -\infty$, we can spread all leaves of $S_n$ uniform
 Further we will see that if we minimize threshold-based loss, then any tree can be perfectly embedded with $d = 2$.
 
 \paragraph{Threshold-based curvature} 
-\ph{Here we have the following theorem} (the proof is in Appendix~\textcolor{red}{[todo]}).
+Here we have the following theorem (the proof is in Appendix~\textcolor{red}{[todo]}).
 
 \begin{theorem}\label{thm:star_threshold}
 $C_d^{thr}(S_n) = (-\infty, C)$ for some $C = C(n,d)$, which increases with $d$ and decreases with $n$. In particular, for $d = 2$, if $n < 6$, then $C = \left(\arccos \frac{\cos \frac{2\pi}{n}}{1 - \cos \frac{2\pi}{n}}\right)^2$; if $n = 6$, then $C = 0$; if $n > 6$, then $C = - \left(2\,\mathrm{arccosh}\frac{1}{2\sin \frac{\pi}{n}}\right)^2$.
@@ -312,14 +314,14 @@ The result is illustrated on Figure~\ref{fig:star} (right). Note that zero-one l
     \label{fig:tree}
 \end{figure}
 
-We consider a tree $T_b$, $b \ge 2$. For \ph{symmetry}, assume that the first node has $b+1$ children, while all other nodes have a parent and $b$ children. Also, for Ollivier, Forman and threshold based curvatures, we assume that the depth of $T_b$ is infinite. In other cases, our statements hold for any finite tree $T$.
+We consider a tree $T_b$, $b \ge 2$. For symmetry, assume that the first node has $b+1$ children, while all other nodes have a parent and $b$ children. Also, for Ollivier, Forman and threshold based curvatures, we assume that the depth of $T_b$ is infinite. In other cases, our statements hold for any finite tree $T$.
 
 \paragraph{Ollivier curvature} We can use \Eqref{eq:ollivier_tree} and get, for any edge,
-$\kappa_{\ph{T_b}}(u,v) = -2 \left(1 - \frac{1}{b+1} - \frac{1}{b+1} \right) = - 2 + \frac{4}{b+1}$. So, $\kappa(\ph{T_b}) = -2 + \frac{4}{b+1}$.
+$\kappa_{T_b}(u,v) = -2 \left(1 - \frac{1}{b+1} - \frac{1}{b+1} \right) = - 2 + \frac{4}{b+1}$. So, $\kappa(T_b) = -2 + \frac{4}{b+1}$.
 
 \paragraph{Forman curvature} 
 It is easy to see that we have 
-$F(\ph{T_b}) = \hat F(\ph{T_b}) = 4 - 2(b+1) = 2(1-b)$.
+$F(T_b) = \hat F(T_b) = 4 - 2(b+1) = 2(1-b)$.
 
 %\paragraph{Approximate Ollivier curvature} 
 %$\kappa_G^\ast(u,v) = -2 + \frac{4}{b+1}$.
@@ -330,7 +332,7 @@ $F(\ph{T_b}) = \hat F(\ph{T_b}) = 4 - 2(b+1) = 2(1-b)$.
 
 \paragraph{Distortion-based curvature} 
 
-On the one hand, our result for $S_n$ implies that if a graph contains $S_3$, then it cannot be embedded with zero distortion \ph{in} any space. One the other hand, \citet{sarkar2011low} proves that if we scale all edges by a sufficiently large factor $\tau$, then the obtained tree can be embedded to hyperbolic plane with distortion at most $1 + \varepsilon$ with arbitrary small $\varepsilon$. Note that multiplying graph edges by $\tau$ is equivalent to changing curvature from $1$ to $\tau^2$. As a result, \citet{sarkar2011low} proves that we can achieve arbitrary small distortion if $c \to -\infty$.
+On the one hand, our result for $S_n$ implies that if a graph contains $S_3$, then it cannot be embedded with zero distortion in any space. One the other hand, \citet{sarkar2011low} proves that if we scale all edges by a sufficiently large factor $\tau$, then the obtained tree can be embedded to hyperbolic plane with distortion at most $1 + \varepsilon$ with arbitrary small $\varepsilon$. Note that multiplying graph edges by $\tau$ is equivalent to changing curvature from $1$ to $\tau^2$. As a result, \citet{sarkar2011low} proves that we can achieve arbitrary small distortion if $c \to -\infty$.
 Hence, $C_d^{dist}(T) = -\infty$ for any $T$.
 
 \textcolor{red}{[Refer to Figure~\ref{fig:tree} (left), explain the difference with theory (bad algorithm or precision problem). Alternatively~--- remove the figure.]}
@@ -358,10 +360,10 @@ Figure~\ref{fig:tree} (right) illustrates the above theorem.
 \end{figure}
 
 \paragraph{Ollivier curvature}  
-For any two nodes $u$ and $v$, it follows from Example 1 in~\citep{jost2014ollivier} that $\ph{\kappa_{K_n}(v, u)} = \frac{n-2}{n-1}$. Thus, $\kappa(K_n) = \frac{n-2}{n-1}$ and it tends to 1 as $n \to \infty$.
+For any two nodes $u$ and $v$, it follows from Example 1 in~\citep{jost2014ollivier} that $\kappa_{K_n}(v, u) = \frac{n-2}{n-1}$. Thus, $\kappa(K_n) = \frac{n-2}{n-1}$ and it tends to 1 as $n \to \infty$.
 
 \paragraph{Forman curvature} 
-\ph{Simple computations yield:}
+Simple computations yield:
 $F(K_n) = 6 - 2n$, $F_2(K_n) = n$.
 
 \paragraph{Heuristic sectional curvature} 
@@ -369,17 +371,16 @@ $\xi(K_n) = \frac{1}{8}$.
 
 \paragraph{Distortion-based curvature}
 
-It is easy to find $C_d^{dist}(K_n)$ for $d = n-2$, since in this case there is a unique sphere with zero embedding. \ph{[Do we have a reference for this?]} Also, for any $d$ and $n$ if $c \to -\infty$, then optimal distortion tends to zero.
+It is easy to find $C_d^{dist}(K_n)$ for $d = n-2$, since in this case there is a unique sphere with zero embedding (see Appendix~\textcolor{red}{todo}). Also, for any $d$ and $n$ if $c \to -\infty$, then optimal distortion tends to zero.
 
 \begin{theorem}\label{thm:clique_distortion}
-$C_{n-2}^{dist}(\ph{K_n}) = \bigg\{-\infty,  4 \left(\arcsin \sqrt{\frac{n}{2(n-1)}}\right)^2\bigg\}$.
+$C_{n-2}^{dist}(K_n) = \bigg\{-\infty,  4 \left(\arcsin \sqrt{\frac{n}{2(n-1)}}\right)^2\bigg\}$.
 \end{theorem}
 
-This result is illustrated on Figure~\ref{fig:clique}. For $n = 4, d = 2$ we expect to see the minimum at about $3.65$, for $n = 12, d = 2$ we expect $2.76$, which is indeed the case. For other parameters we do not have theoretical results, however we see sudden drops in positive curvature. Finally, as expected, distortion decreases as \ph{curvature} becomes small. 
+This result is illustrated on Figure~\ref{fig:clique}. For $n = 4, d = 2$ we expect to see the minimum at about $3.65$, for $n = 12, d = 2$ we expect $2.76$, which is indeed the case. For other parameters we do not have theoretical results, however we see sudden drops in positive curvature. Finally, as expected, distortion decreases as curvature becomes small. 
 
 \paragraph{Threshold-based curvature} 
-$C_d^{thr}(K_n) = \R$, since we can embed any complete graph perfectly by mapping all nodes to one point. \ph{[I do not understand this. I thought that for the threshold loss we needed that connected nodes where at distance 1.]}
-
+$C_d^{thr}(K_n) = \R$, since we can embed any complete graph perfectly by mapping all nodes to one point. 
 
 \subsubsection{Cycle graph $C_n$} 
 
@@ -391,14 +392,14 @@ $C_d^{thr}(K_n) = \R$, since we can embed any complete graph perfectly by mappin
     \label{fig:cycle}
 \end{figure}
 
-\ph{We} consider a cycle $C_n$ with $n \ge 4$.
+We consider a cycle $C_n$ with $n \ge 4$.
 
 \paragraph{Ollivier curvature}  
-Let $v \sim u$ be two neighbors. Then \ph{it is easy to see that} $W_1^G(m_u,m_v) = 1$ and hence $\kappa_G(u,v) = 0$. Thus, $\kappa(C_n) = 0$. \textcolor{red}{[What is the minimum $n$ required?]}
+Let $v \sim u$ be two neighbors. Then it is easy to see that $W_1^G(m_u,m_v) = 1$ and hence $\kappa_G(u,v) = 0$. Thus, $\kappa(C_n) = 0$.
 
 \paragraph{Forman curvature} 
 
-\ph{Similarly, it} is easy to see that $F(C_n) = \hat F(C_n) = 0$.
+Similarly, it is easy to see that $F(C_n) = \hat F(C_n) = 0$.
 
 %\paragraph{Approximate Ollivier curvature} 
 %Using \Eqref{eq:def_ollivier_ricci_approx}, we derive  $\kappa^*(C_n) = 0$.
@@ -407,20 +408,19 @@ Let $v \sim u$ be two neighbors. Then \ph{it is easy to see that} $W_1^G(m_u,m_v
 
 \paragraph{Distortion-based curvature} 
 
-\ph{[Where is the proof of this proposition?]}
+\ph{[Where is the proof of this proposition?]} \lt{[Just below the proposition]}
 
 \begin{proposition}\label{prop:cycle_distortion}
 $C_d^{dist}(C_n) = \left(\frac{2\pi}{n}\right)^2$.
 \end{proposition}
 
-Indeed, if we consider any three consequent nodes, then the middle one should lie on the geodetic between the other two. So, they all lie on a great circle (of length $n$).
-
+Indeed, if we consider any three consequent nodes, then the middle one should lie on the geodetic between the other two. So, they all lie on a great circle (of length $n$) from which the proposition follows.
 In particular, $C_d^{dist}(C_5) \approx 1.58$, $C_d^{dist}(C_{100}) \approx 0.004$, which is illustrated on Figure~\ref{fig:cycle} (left).
 
 \textcolor{red}{[also, very negative curvature wins]}
 
 \paragraph{Threshold-based curvature} 
-Here, again, we have $C_d(\ph{C_n}) = (-\infty, C)$ with some $C>0$. It is easy to prove that any curvature $c < \left(\frac{4\pi}{n}\right)^2$ is ok, but I have to think whether we can get some reasonable larger bound. \textcolor{red}{[todo]}
+Here, again, we have $C_d(C_n) = (-\infty, C)$ with some $C>0$. It is easy to prove that any curvature $c < \left(\frac{4\pi}{n}\right)^2$ is ok, but I have to think whether we can get some reasonable larger bound. \textcolor{red}{[todo]}
 
 
 \subsubsection{Complete bipartite graph $K_{l,m}$}
@@ -454,13 +454,13 @@ $F(K_{l,m}) = \hat F(K_{l,m}) = 4 - l - m$. Again, Forman curvature can be highl
 $\xi_{K_{l,m}}(v;b,c) = \frac{l-m+1}{l+m-3}$, otherwise it is $\xi_{K_{l,m}}(v;b,c) = \frac{m-l+1}{l+m-3}$. As a result, by averaging over all triplets, we get
 
 \[
-\xi({K_{l,m}}) = \frac{1}{l \binom{m}{2} + m \binom{l}{2}} \left(l \binom{m}{2} \frac{l-m+1}{l+m-3} + m \binom{l}{2} \frac{m-l+1}{l+m-3}\right) = \frac{\ph{-(l - m)^2} + m + l - 2}{(m+l-2)(l+m-3)}.
+\xi({K_{l,m}}) = \frac{1}{l \binom{m}{2} + m \binom{l}{2}} \left(l \binom{m}{2} \frac{l-m+1}{l+m-3} + m \binom{l}{2} \frac{m-l+1}{l+m-3}\right) = \frac{-(l - m)^2 + m + l - 2}{(m+l-2)(l+m-3)}.
 \]
 In particular, if $m = l$ we get $\xi({K_{l,m}}) = \frac{1}{2m - 3}$. In other words, for balanced complete bipartite graphs $\xi({K_{l,m}})$ is positive, but tends to zero as graph grows.
 
 \paragraph{Distortion-based curvature} 
 
-Figure~\ref{fig:bipartite} (left) shows \ph{the} empirical behavior of distortion depending on curvature. We observe that for all graphs optimal curvature is between 2 and 2.5. 
+Figure~\ref{fig:bipartite} (left) shows the empirical behavior of distortion depending on curvature. We observe that for all graphs optimal curvature is between 2 and 2.5. 
 The following proposition gives an intuition about why one could expect this. 
 
 \begin{proposition}\label{prop:bipartite_distortion}
@@ -472,7 +472,7 @@ Indeed, the result for $K_{2,2}$ follows from Proposition~\ref{prop:cycle_distor
 \paragraph{Threshold-based curvature} 
  
 Threshold-based embeddings to Euclidean spaces are well studied. In particular, it is know that for any graph $G(V,E)$ a perfect threshold embedding  exists for some $d \le |V|$~\citep{maehara1984space}. 
-However, undirected bipartite graphs are hard to embed \ph{in} Euclidean space: the bound $d = O(n)$ is known~\citep{maehara1984space}. We empirically observe that they are similarly hard to embed to both spherical and hyperbolic spaces, as shown on Figure~\ref{fig:bipartite} (right). Empirically, these graphs are insensitive to curvature (given it is not too large, so that a sphere is too small).
+However, undirected bipartite graphs are hard to embed in Euclidean space: the bound $d = O(n)$ is known~\citep{maehara1984space}. We empirically observe that they are similarly hard to embed to both spherical and hyperbolic spaces, as shown on Figure~\ref{fig:bipartite} (right). Empirically, these graphs are insensitive to curvature (given it is not too large, so that a sphere is too small).
  
 \section{Experiments}
 
@@ -505,114 +505,114 @@ $S_{100}$ / 2 &
 0.0 & 0.334 & 
 -97.0 & 0.058 & 
 -1.0 & 0.304 &
-&&
--2.0 & 0.275 \\
+& \\
+%-2.0 & 0.275 \\
 $S_{100}$ / 10 &
 0.0 & 0.127 & 
 -97.0 & 0.014 & 
 -1.0 & 0.1 & 
-&&
--2.0 & 0.083\\
+& \\
+%-2.0 & 0.083\\
 $T_{3,6}$ / 2 &
 -0.33 & 0.136 & 
 -2.0 & 0.254 & 
 -0.5 & 0.174 & 
-&&
--0.2 & 0.141 \\
+& \\
+%-0.2 & 0.141 \\
 $T_{3,6}$ / 10 &
 -0.33 & 0.016 & 
 -2.0 & 0.243 & 
 -0.5 & 0.036 & 
-&&
--0.2 & 0.017 \\
+& \\
+%-0.2 & 0.017 \\
 $K_{100}$ / 2 & 
 0.99 & 0.348 & 
 100 & 0.841 & 
 0.125 & 0.342 & 
-&&
-3.6 & 0.322 \\
+& \\
+%3.6 & 0.322 \\
 $K_{100}$ / 10 & 
 0.99 & 0.134 & 
 100 & 0.841 & 
 0.125 & 0.124 & 
-&&
--1.9 & 0.108 \\
+& \\
+%-1.9 & 0.108 \\
 $C_{100}$ / 2 & 
 0.0 & 0.106 & 
 0.0 & 0.106 & 
 0.01 & 0.257 &
-&&
-0.0 & 0.106 \\
+& \\
+%0.0 & 0.106 \\
 $C_{100}$ / 10 & 
 0.0 & 0.106 & 
 0.0 & 0.106 & 
 0.01 & 0.255 & 
-&&
-0.0 & 0.106 \\
+& \\
+%0.0 & 0.106 \\
 $K_{100,100}$ / 2 &
 0.0 & 0.372 & 
 -196 & 0.294 & 
 0.008 & 0.372 & 
-&&
-2.2 & 0.306 \\
+& \\
+%2.2 & 0.306 \\
 $K_{100,100}$ / 10 &
 0.0 & 0.301 & 
 -196 & 0.275 & 
 0.008 & 0.301 & 
-&&
-2.4 & 0.250 \\
+& \\
+%2.4 & 0.250 \\
 Karate / 2 &
 0.01 & 0.197 & 
 -6.35 & 0.248 &
 0.30 & 0.206 &
-&&
--1.8 & 0.160 \\
+& \\
+%-1.8 & 0.160 \\
 Karate / 10 &
 0.01 & 0.105 & 
 -6.35 & 0.157 &
 0.30 & 0.126 &
-&&
--0.4 & 0.100 \\
+& \\
+%-0.4 & 0.100 \\
 Conflict / 2 &
 -0.2 &	0.229 &
 -16.5 &	0.261 &
 0.25 & 	0.269 &
-&&& \\
+& \\
 Conflict / 10 &
 -0.2 & 0.078 &
 -16.5 &	0.243 &
 0.25 &	0.173 &
-&&& \\
+& \\
 Chicago / 2 &
 -0.19 & 0.225 & 
 -8.37 & 0.224 & 
 -0.6 & 0.178 & 
-&&& \\
+& \\
 Chicago / 10 &
 -0.19 & 0.045 & 
 -8.37 & 0.216 & 
 -0.6 & 0.024 & 
-&&& \\
+& \\
 CSPhDs / 2 &
 -0.28 &	0.152 &
 -7.92 &	0.420 &
 -0.26 & 0.172 &
-&&& \\
+& \\
 CSPhDs / 10 &
 -0.28 &	0.085 &
 -7.92 &	0.412 &
 -0.26 & 0.208 &
-&&& \\
+& \\
 Euroroad / 2 &
 -0.36 &	0.267 &
 -1.95 &	0.452&
 0.027 &	0.384&
-&&& \\
+& \\
 Euroroad / 10 &
 -0.36 &	0.264 &
 -1.95 &	0.445 &
 0.03 &	0.370 &
-&&& \\
+& \\
 \hline \\
 \end{tabular}
 \end{center}
@@ -622,101 +622,88 @@ Euroroad / 10 &
 \caption{Compare curvature estimators, zero-one loss}
 \label{tab:compare_zero_one}
 \begin{center}
-\begin{tabular}{lcccccccccc}
+\begin{tabular}{lcccccccc}
 &
 \multicolumn{2}{c}{Ollivier} &
 \multicolumn{2}{c}{Forman} &
 \multicolumn{2}{c}{Avg. sectional} &
-\multicolumn{2}{c}{Grad. descent} &
-\multicolumn{2}{c}{Grid search} \\
-Dataset & c & loss  & c & loss  & c & loss & c & loss  & c & loss \\
+\multicolumn{2}{c}{Grad. descent} 
+%& \multicolumn{2}{c}{Grid search} 
+\\
+Dataset & c & loss  & c & loss  & c & loss & c & loss  
+%& c & loss 
+\\
 \hline \\
 $S_{100}$ / 2 &
-0.0 & 0.024 & 
+0.0 & 0.02 & 
 -97.0 & 0.004 & 
--1.0 & 0.05 &
-&&
-0.0 & 0.024
+-1.0 & 0.02 &
+&
+%& 0.0 & 0.024
 \\
 $T_{3,6}$ / 2 &
 -0.33 & 0.006 & 
 -2.0 & 0.005 & 
 -0.5 & 0.005 & 
-&&
-0.0 & 0.002 \\
+&
+%& 0.0 & 0.002 
+\\
 $C_{100}$ / 2 & 
 0.0 & 0.005 & 
 0.0 & 0.005 &
 0.01 & 0.009 & 
-&&
-0.0 & 0.004 \\
+&
+%& 0.0 & 0.004 
+\\
 $K_{100,100}$ / 2 &
 0.0 & 0.496 & 
 -196 & 0.491 & 
 0.008 & 0.497 & 
-&&
-0.5 & 0.486 \\
+&
+%& 0.5 & 0.486 
+\\
 $K_{100,100}$ / 10 &
 0.0 & 0.485 & 
 -196 & 0.492 & 
 0.008 & 0.480 & 
-&&
--0.5 & 0.466 \\
+&
+%& -0.5 & 0.466 
+\\
 Karate / 2 &
 0.01 & 0.135 & 
 -6.35 & 0.137 &
 0.30 & 0.123 &
-&&
--1.5 & 0.102\\
+&
+%&-1.5 & 0.102
+\\
 Conflict / 2 &
 -0.2 & 0.042 &
 -16.5 &	0.048 &
 0.25 & 0.059 &
-&&& \\
+& \\
 Conflict / 10 &
 -0.2 & 0.001 &
 -16.6 &	0.025 &
 0.25 & $10^{-4}$
-&&& \\
+& \\
 Chicago / 2 &
 -0.19 & 0.004 & 
 -8.37 & 0.005 & 
 -0.6 & 0.004 & 
-&&& \\
+& \\
 CSPhDs / 2 &
 -0.28 &	0.002 &
 -7.92 &	0.004 &
 -0.26 & 0.002 &
-&&& \\
+& \\
 Euroroad / 2 &
 -0.36 &	0.002 &
 -1.95 &	0.004 &
 0.027 &	0.005 &
-&&& \\
+& \\
 \end{tabular}
 \end{center}
 \end{table}
-
-\subsection{Experiments on synthetic graphs}
-
-\textcolor{red}{[This part will be removed]}
-
-For synthetic graphs, in most cases, we know what to expect and where is the optimal curvature. So, these experiments are expected to illustrate our theoretical observations. 
-
-In all experiments, we consider two dimensions: $d = 2$ and $d = 10$.
-
-\begin{itemize}
-    \item Star on $n+1$ nodes, $n = 5$ and $n = 10$. Loss: distortion. 
-    We want to illustrate the claim $C = -\infty$, i.e., to show that loss function decreases when $C$ becomes smaller. This experiment is done. 
-    \item Star on $n+1$ nodes, $n = 5$ and $n = 10$. Loss: zero-one. Here we want to show that optimal curvature is at most some constant. Which is about 1.23 for $n=5$, $d = 2$ and $-1.2$ for $n = 7$, $d = 2$ (we add this pair to illustrate negative curvature). This experiment is noisy (small graphs + discrete metric), but done. 
-    \item Cycle on $n+1$ nodes, $n = 5$, $n = 100$. Loss: distortion. We want to illustrate that global curvature do not depend on distortion. For $n = 5$ we have about 1.6, for $n = 100$ we have $n = 0.004$. This experiment is done.
-    \item Cycle on $n+1$ nodes, $n = 5$, $n = 100$. Loss: zero-one. Want to show that can be embedded in any curvature smaller than some positive value (we need enough space). This experiment is done.
-    \item Clique on $n$ nodes, $n = 5$, $n = 100$. Loss: distortion. We also add here $n = 4$ for $d = 2$ and $n = 12$ for $d = 10$. In two latter cases, We want to illustrate the following theoretical result: optimum is in some positive curvature (we have a formula, which agrees with figure) and in $-\infty$ (we see that error decreases for smaller curvatures). This experiment is done.
-   \item Clique on $n$ nodes, $n = 5$, $n = 100$. Loss: zero-one. Trivial experiment (zero loss), finished, will not add to the paper.
-   \item Tree with branching factor $3$ and depth $6$. Loss: distortion. Very nice plot, optimal distortion is about $-1/4$ for both $d$. This contradicts my initial intuition. \textbf{[TODO: explain the optimal curvature!]}
-   \item Tree with branching factor $3$ and depth $6$. Loss: zero-one. Slightly strange result: for $d = 0$ good curvature is 0 and below  (I expected more negative one). 
-   \item Complete bipartite graph, $n/2 = 5$, $n/2 = 100$. Loss: distortion. Interesting result, positive curvature (2-2.5), don't have theory for that. Plus some unexpected drop at about 0.5 on two plots... This experiment is done for now. 
-\end{itemize}
 
 \section{Conclusion}
 
@@ -733,9 +720,9 @@ In all experiments, we consider two dimensions: $d = 2$ and $d = 10$.
 
 \section{Geometrical properties of spaces of constant curvature}
 
-In this section, we \ph{recall} some useful equalities which will be used throughout the proofs.
+In this section, we recall some useful equalities which will be used throughout the proofs.
 
-In all proofs, we use notation $R$, where $R = \frac{1}{\sqrt{c}}$ in spherical space (corresponds to \ph{the} radius of a sphere) and \ph{in the hyperbolic case (c < 0)} $R = \frac{1}{\sqrt{-c}}$ can be considered as a scaling factor compared to the space of curvature~1.
+In all proofs, we use notation $R$, where $R = \frac{1}{\sqrt{c}}$ in spherical space (corresponds to the radius of a sphere) and in the hyperbolic case $(c < 0)$ $R = \frac{1}{\sqrt{-c}}$ can be considered as a scaling factor compared to the space of curvature~1.
 
 \paragraph{Law of cosines}
 
@@ -810,9 +797,9 @@ V_d(r)= d \, C_{d} \, R^d \int_{0}^{r} \left( \sinh \frac{x}{R} \right)^{d-1} d 
 
 \subsection{Proof of Lemma~\ref{lem:bipartite_ollivier} (bipartite graphs $K_{l,m}$)}
 
-Let use denote the node sets in \ph{$K_{l,m}$} by $U := \{u_1, \dots, u_l\}$ and $V := \{v_1, \dots, v_m\}$. We will prove that for any edge $(u, v)$, $W_1^{K_{l,m}}(m_{u},m_{v}) = 1$, which then implies that $\kappa(K_{l,m}) = 0$. 
+Let use denote the node sets in $K_{l,m}$ by $U := \{u_1, \dots, u_l\}$ and $V := \{v_1, \dots, v_m\}$. We will prove that for any edge $(u, v)$, $W_1^{K_{l,m}}(m_{u},m_{v}) = 1$, which then implies that $\kappa(K_{l,m}) = 0$. 
 
-Note that for any $u \in U, v \in V$ the joint neighborhood is $V \times U$. First we establish an upper bound by \ph{considering the product} joint probability density on $V \times U$
+Note that for any $u \in U, v \in V$ the joint neighborhood is $V \times U$. First we establish an upper bound by considering the product joint probability density on $V \times U$
 \[
 	\rho(x,y) =	\frac{1}{m l}.
 \]
@@ -840,7 +827,7 @@ which completes the proof.
 
 The general idea is the following: we take any curvature $c$ and prove a lower bound on distortion (for any given dimension $d$). Then, we obtain an upper bound on optimal distortion which tends to zero as $c \to -\infty$, which gives the claimed result $C_d^{dist}(S_n) = -\infty$.
 
-First, let us analyze the lower bound on distortion. Recall that distortion of a graph is \ph{the} average distortion over all pairs of nodes. Let $v$ be the central node and $v_1, \ldots, v_n$ ($n \ge 3$) be its neighbors. Then, for any embedding $f$, we have
+First, let us analyze the lower bound on distortion. Recall that distortion of a graph is the average distortion over all pairs of nodes. Let $v$ be the central node and $v_1, \ldots, v_n$ ($n \ge 3$) be its neighbors. Then, for any embedding $f$, we have
 \begin{multline*}
 D(S_n) = \frac{1}{\binom{n+1}{2}} \left( \sum_{v_i} {|d(f(v),f(v_i)) - 1|} + \sum_{v_i \neq v_j} \frac{|d(f(v_i),f(v_j)) - 2|}{2} \right) \\
 = \frac{1}{\binom{n+1}{2}} \sum_{1 \le i_1 < i_2 < i_3 \le n} \left(
@@ -858,32 +845,33 @@ then
 D(S_n) \ge \frac{{n\choose 3}}{2(n-2){n+1 \choose 2}} D_{min} = \frac{ (n-1)D_{min}}{6(n+1)}\,.
 \end{equation}
 Hence, it remains to find a lower bound on $D_{min}$, i.e., a lower bound for a weighted distortion of $S_3$ with central node $v$ and three leaves $v_1, v_2, v_3$.
-If we consider three angles at the node $v$, then at least one of them is $\alpha \le 2 \pi / 3$, so we can get a lower bound \ph{by only considering} this triangle, which is, w.l.o.g., formed by $v, v_1, v_2$.
+If we consider three angles at the node $v$, then at least one of them is $\alpha \le 2 \pi / 3$, so we can get a lower bound by only considering this triangle, which is, w.l.o.g., formed by $v, v_1, v_2$.
 \[
 D_{min} \ge  |d(f(v_1),f(v_2)) - 2| + \frac{|d(f(v_1),f(v)) - 1| + |d(f(v_2),f(v)) - 1|}{(n-1)/2}.
 \]
 
-Denote $d(f(v_1),f(v)) = x = 1 + \varepsilon$, $d(f(v_2),f(v)) = y = 1 + \delta$, $d(f(v_1),\ph{f(v_2)}) = z = 2 + \varepsilon + \delta - \varphi$ with some $\varepsilon, \delta$ and some $\varphi > 0$ (from triangle inequality). Assume that $|\varepsilon| < 1/2$ and $|\delta| < 1/2$ (otherwise the lower bound is trivial). Now we use the law of cosines to get a lower bound on $\varphi$.
-We consider Euclidean and hyperbolic spaces separately and note that the bound obtained in Euclidean space also holds in spherical \ph{spaces} (with any $c$).
+Denote $d(f(v_1),f(v)) = x = 1 + \varepsilon$, $d(f(v_2),f(v)) = y = 1 + \delta$, $d(f(v_1),f(v_2)) = z = 2 + \varepsilon + \delta - \varphi$ with some $\varepsilon, \delta$ and some $\varphi > 0$ (from triangle inequality). Assume that $|\varepsilon| < 1/2$ and $|\delta| < 1/2$ (otherwise the lower bound is trivial). Now we use the law of cosines to get a lower bound on $\varphi$.
+We consider Euclidean and hyperbolic spaces separately and note that the bound obtained in Euclidean space also holds in spherical spaces (with any $c$).
 
-In Euclidean space we have:
-\[
-z^2 = x^2 + y^2 - 2 x y \cos \alpha, 
-\]
-so 
-\[
-(x+y)^2 - z^2 = 2 x y \ph{\cos \alpha} = \Omega(1),
-\]
-from which $\varphi = x + y - z = \Omega(1)$. \ph{[I do not understand what asymptotics are considered here nor why the result for $\varphi$ follows.]}
+\textcolor{red}{In Euclidean space, using triangle inequality, we get  $\varphi = x + y - z > 0$. So, in Euclidean and spherical spaces $\varphi$ is bounded below by a constant.}
+%\[
+%z^2 = x^2 + y^2 - 2 x y \cos \alpha, 
+%\]
+%so 
+%\[
+%(x+y)^2 - z^2 = 2 x y \lt{(\cos \alpha+1)}.
+%\]
+%As $\alpha < \pi$, we get
+%$\varphi = x + y - z > 0$. 
 
 In hyperbolic space the law of cosines gives 
-(recall \ph{that} $R = \frac{1}{\sqrt{-c}}$):
+(recall that $R = \frac{1}{\sqrt{-c}}$):
 \[
 \cosh \frac{z}{R} = \cosh \frac{x}{R} \cosh \frac{y}{R} - \sinh \frac{x}{R} \sinh \frac{y}{R} \cos \alpha,
 \]
-from which we get \ph{[I do not see where this is coming from.]}
+from which, \lt{using $\cosh(x+y) =\cosh x\cosh y+\sinh x\sinh y$}, we get 
 \[
-\cosh \frac{x+y}{R} - \cosh \frac{z}{R} = \sinh \frac{x}{R} \sinh \frac{y}{R} (1 - \cos \alpha). %= \Omega\left(e^{(x+y)/R}\right).
+\cosh \frac{x+y}{R} - \cosh \frac{z}{R} = \sinh \frac{x}{R} \sinh \frac{y}{R} (1 + \cos \alpha). %= \Omega\left(e^{(x+y)/R}\right).
 \]
 If $R \to \infty$, then, similarly to Euclidean case, we get $\varphi = x + y - z = \Omega(1)$. Otherwise, we have
 \[
@@ -897,28 +885,35 @@ Note that $D_{min} \ge |z-2| + \frac{|x-1| + |y-1|}{(n-1)/2} =  |\varepsilon + \
 
 Now, let us get an upper bound on optimal distortion $D_{opt}(S_n)$. To do this, we explicitly construct an embedding with sufficiently low distortion $D(S_n)$.
 
-Let $v$ be the central node, then we spread all other nodes uniformly on a 2-dimensional circle of radius $1$ centred at $v$. The smallest angle between two points is $2 \pi / n$. Therefore, from the law of cosines, the distance between \ph{leafs} is at least $k$ with
+Let $v$ be the central node, then we spread all other nodes uniformly on a 2-dimensional circle of radius $1$ centred at $v$. The smallest angle between two points is $2 \pi / n$. Therefore, from the law of cosines, the distance between leaves is at least $k$ with
 \[
 \cosh \frac{k}{R} = 1  + \left(1 -  \cos \frac{2 \pi}{n}\right)  \sinh^2 \frac{1}{R} \,.
 \]
 
 
-So, $D(S_n)$ can be upper bounded as \ph{[This bound cannot be true since it only uses the distance between closest leafs]}
+So, $D_{opt}(S_n)$ can be upper bounded as \ph{[This bound cannot be true since it only uses the distance between closest leafs]} \lt{[Do not understand this comment. The distance between closest leaves is the ``worst'' one, others are closer to two, so they give less contribution to distortion]}
 \begin{multline*}
-D(S_n) \le \frac{{n \choose 2}}{2{n+1\choose 2}} \left(2 - R\cdot \mathrm{arccosh}\left( \left(1 - \cos \frac{2 \pi}{n}\right)\sinh^2\frac{1}{R}  + 1 \right)\right) \\
+D_{opt}(S_n) \le \frac{{n \choose 2}}{2{n+1\choose 2}} \left(2 - R\cdot \mathrm{arccosh}\left( \left(1 - \cos \frac{2 \pi}{n}\right)\sinh^2\frac{1}{R}  + 1 \right)\right) \\
 = \frac{(n-1)}{2(n+1)} \left(2 - R\cdot \mathrm{arccosh}\left( \left(1 - \cos \frac{2 \pi}{n}\right)\sinh^2\frac{1}{R}  + 1 \right)\right)
 \end{multline*}
 Note that $1 - \cos\frac{2\pi}{n} = \Theta\left(\frac{1}{n}\right)$ and $\sinh^2\left(\frac{1}{R}\right) = \Theta\left(e^{2/R}\right)$.
 Then, $\textrm{arccosh}\left(\Theta\left(\frac{1}{n} e^{2/R}\right) + 1 \right)$ behaves as $\sqrt{2e^{2/R}/n}$ if $2/R \ll \log n$ and as $\frac{2}{R} - \log n$ if $2/R \gg \log n$.
 Therefore, we get
 \[
-D(G) = O\left( R \log n \right) = O\left( \frac{\log n}{\sqrt{-c}} \right).
+D_{opt}(S_n) = O\left( R \log n \right) = O\left( \frac{\log n}{\sqrt{-c}} \right).
 \]
 
 \subsection{Proof of Theorem~\ref{thm:clique_distortion} (clique $K_n$)}
 
 \ph{[I do not understand this part. Where is the radius coming from?]}
-If $d = n-2$, then we are given $n-1$-simplex, which can be embedded into $n-2$-dimensional spherical space, the radius is $R = a\sqrt{\frac{n-1}{2n}}$, and we want
+\lt{[For simplex with side length $a$ radius of a circumscribed hypersphere is known, I took it from russian wikipedia, url is below. However, we do not need $a = 1$, we need distance on a sphere $= 1$, so I wrote the corresponding formula for this. I tried to improve the text below.]}
+\url{https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BC%D0%BF%D0%BB%D0%B5%D0%BA%D1%81#%D0%9E%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%BD%D0%B0%D1%8F_%D1%81%D1%84%D0%B5%D1%80%D0%B0}
+
+If $d = n-2$, then we are given $(n-1)$-simplex, which can be embedded into $n-2$-dimensional spherical space. Indeed, the radius of circumscribed hypersphere for $(n-1)$-simplex with side length $a$ is $R = a\sqrt{\frac{n-1}{2n}}$. Since we want \textit{spherical} distance between all points to be equal to one, we want
+\[
+\sin \frac{\alpha}{2} = \frac{a}{2R} \,\,\text{ for } \,\,\alpha = \frac{1}{R}.
+\]
+Hence,
 \[
 2 R \arcsin \frac{a}{2R} = 1,
 \]
@@ -946,15 +941,15 @@ Finally, let us show that if $c \to -\infty$, then optimal distortion $D_{opt}(K
 \subsection{Proof of Theorem~\ref{thm:star_threshold} (star $S_n$)}
 
 We show below that for any $n$, any dimension $d$ and some curvature $c$ there exists a perfect embedding.
-Therefore $C_d^{dist}(S_n)$ consists of \ph{curvatures} for which such perfect embedding exists. 
+Therefore $C_d^{dist}(S_n)$ consists of curvatures for which such perfect embedding exists. 
 
 First, let us note that if there exists a perfect embedding $f$ for some curvature $c$, then there exists a perfect embedding for any curvature $c' < c$. Indeed, w.l.o.g., we assume that the central node $v$ is mapped to the origin of a hyperspherical coordinate system and other points $v_1, \ldots, v_n$ can be described by their radii and angles. We know that the distance between $v$ and any $v_i$ is at most 1 and the distance between any pair $v_i, v_j$ is larger than one. Now we change curvature to $c' < c$ and keep hyperspherical coordinates the same. Then the distance between $v$ and any $v_i$ does not change, while the distance between nodes $v_i, v_j$ increases.
 
-Now, it is easy to see that $C$ increases with $d$: if there exists an embedding to some dimension $d$, then, obviously, the same embedding works for $d' > d$. Further, $C$ decreases with $n$ \ph{since if} there exists embedding of $S_n$, then we can easily construct an embedding of $S_{n'}$ for $n' < n$ by removing some nodes. 
+Now, it is easy to see that $C$ increases with $d$: if there exists an embedding to some dimension $d$, then, obviously, the same embedding works for $d' > d$. Further, $C$ decreases with $n$ since if there exists embedding of $S_n$, then we can easily construct an embedding of $S_{n'}$ for $n' < n$ by removing some nodes. 
 
 Now, let us construct a perfect embedding of $S_n$
 and estimate the required curvature.
-Recall that in a perfect \ph{embedding all leafs} have to be inside the ball of radius 1 around the central node $v$ and also the distance between any two leaves has to be larger than one. 
+Recall that in a perfect embedding all leaves have to be inside the ball of radius 1 around the central node $v$ and also the distance between any two leaves has to be larger than one. 
 
 It is easy to see that if we managed to spread $n$ points inside the ball of radius 1 with distances more than 1 between them, then we can move each point along the radius up to distance 1 from $v$ preserving this property. Therefore, it is sufficient to spread all points on a hypersphere. 
 
@@ -962,7 +957,7 @@ Let us first consider $d = 2$. In this case we can find an explicit analytic exp
 
 First, assume that $n > 6$. In this case we have to consider only hyperbolic space, since $n$ neighbors would not fit to a circle of radius 1 in neither spherical or Euclidean spaces.
 
-We will find such largest curvature $C$ which allows to have distance \textit{exactly} 1 between the closest \ph{leafs}. In this case we cannot embed $S_n$ \ph{in a} space of curvature $C$, but can embed \ph{in a} space of any smaller curvature. 
+We will find such largest curvature $C$ which allows to have distance exactly 1 between the closest leaves. In this case we cannot embed $S_n$ in a space of curvature $C$, but can embed in a space of any smaller curvature. 
 We use \Eqref{eq:hyp_eq} and let $\alpha = \frac{2\pi}{n}$:
 %\[
 %\cosh{\frac{1}{k}} = \cosh^2{\frac{1}{k}} - \sinh^2{\frac{1}{k}}\cos\alpha.
@@ -1026,14 +1021,14 @@ As for $S_n$, we prove that for $T_b$ a perfect embedding exists for $d = 2$ and
 \end{figure}
 
 
-For the lower bound on $C$, we have to guarantee that \ph{an} embedding exists. For this, we provide the following construction (see Figure~\ref{fig:trees} for an illustration).
+For the lower bound on $C$, we have to guarantee that an embedding exists. For this, we provide the following construction (see Figure~\ref{fig:trees} for an illustration).
 (Below we assume that the curvature is large enough for our construction to work, then we estimate the required curvature.)
 First, we take the node $v$ and consider a circle of radius 1 around this node. 
 We spread $b + 1$ neighbors uniformly around this node. For our construction to work, we need all distances between these nodes to be larger than 1.
-Now, at some step of the algorithm, assume that we have all nodes at level $l$ \ph{placed at some circle centered at $v$ and all distances between the nodes at level $l$ are larger than 1. Our aim is then to find positions for all nodes at level $l + 1$.} 
+Now, at some step of the algorithm, assume that we have all nodes at level $l$ placed at some circle centered at $v$ and all distances between the nodes at level $l$ are larger than 1. Our aim is then to find positions for all nodes at level $l + 1$.
 
 Let us take any node at $l$-th level. Consider two points $u_l$ and $u_r$ on the same circle at distance 1 from the node $u$ to the left and to the right, respectively.
-Let $u,u_l,z_l$ and $u,u_r,z_r$ \ph{form} equilateral triangles (with sides equal to 1). Then we let the points at $l+1$-th level to be spread on the circle centred at $v$ and passing through $z_l$ and $z_r$. The children of $u$ ($u_1, \ldots, u_{b}$) will be placed on the circular arc between $z_l$ and $z_r$. As usual, we want $u_i$ and $u_{i+1}$ to be at distance at least 1 from each other. Moreover, they have to be at distance at least 1 from children of other nodes. Also, note that placing $u_1, \ldots, u_{b}$ between $z_l$ and $z_r$ guarantees that these nodes are closer than 1 to their parent node $u$ but at the same time at a distance larger than 1 from all other nodes at $l$-th level. Also, all points at $l$-th level are far enough from points at $l+2$-th level. \ph{[Why $l+2$?]}
+Let $u,u_l,z_l$ and $u,u_r,z_r$ form equilateral triangles (with sides equal to 1). Then we let the points at $l+1$-th level to be spread on the circle centred at $v$ and passing through $z_l$ and $z_r$. The children of $u$ ($u_1, \ldots, u_{b}$) will be placed on the circular arc between $z_l$ and $z_r$. As usual, we want $u_i$ and $u_{i+1}$ to be at distance at least 1 from each other. Moreover, they have to be at distance at least 1 from children of other nodes. Also, note that placing $u_1, \ldots, u_{b}$ between $z_l$ and $z_r$ guarantees that these nodes are closer than 1 to their parent node $u$ but at the same time at a distance larger than 1 from all other nodes at $l$-th level. Also, all points at $l$-th level are far enough from points at $l+2$-th level. \ph{[Why $l+2$?]} \lt{[On level $l+1$ we already said that the neighbors are close enough and non-neighbors are far enough. However, we also now that $u$ is not connected to any node at level $l+2$ (and on all further levels).]}
 
 It remains to find a maximum curvature such that the required conditions are satisfied. Let $r$ and $r'$ be radii of circles at $l$-th and $l+1$-th levels and let $2\alpha = \angle u_l v u$. We know (the law of cosines and $\cos 2\alpha = 1 - 2\sin^2 \alpha$) that
 \begin{equation}\label{eq:1}
@@ -1047,7 +1042,7 @@ Now we note that $\sin^2 \frac{\alpha}{b} \ge \frac{\sin^2 \alpha}{b^2}$ for all
 \begin{equation}\label{eq:2}
 \cosh \frac{1}{R} \le 1 + 2 \sinh \frac{r'}{R} \cdot \frac{\sin^2 \alpha}{b^2} \,.
 \end{equation}
-Combining \Eqref{eq:1} and \Eqref{eq:1} \ph{[What is the second equation?]}, we obtain:
+Combining \Eqref{eq:1} and \lt{\Eqref{eq:2}}, we obtain:
 \[
 \sinh \frac{r'}{R} \ge b^2 \cdot \sinh \frac{r}{R}.
 \]
@@ -1068,74 +1063,10 @@ So, we have
 \]
 
 
-\section{Distortion of Random Geometric Graphs}
 
-\textbf{[Will see how the result will be reformulated if we rescale the graph to thresold one. Based on the obtained result, we will include this section or not.]}
+\section{Experiments}
 
-Consider the random graph $G_n^r$ constructed by choosing $n$ points uniformly in the square $[\sqrt{n}/2, \sqrt{n}/2]$ and connecting two points $u$ and $v$ if $d(u,v) \le r$. For the remainder of this section we will assume that $r \ge 244 \sqrt{\log(n)}$, which is slightly larger than the threshold value $r_c = \sqrt{\log(n)/\pi}$ at which point the graph $G_n^r$ becomes connected a.a.s. and furthermore that $r \le \sqrt{n}/2$. We will identify nodes $v \in V$ with points and let $(x_v,y_v)$ denote their corresponding coordinates.
-
-Clearly, the structure of the graph $G_n^r$ is completely determined by the coordinates $\{(x_v,y_v)\}_{v \in V}$ of the chosen points. Hence, the most natural and optimal embedding for this graph should be in the $2$-dimensional Euclidean plane using these original coordinates. However, if we do this then the distortion actually diverges.
-
-We use the following result from~\citep{diaz2016relation} concerning the stretch in $G_n^r$:
-
-\begin{theorem}\label{thm:stretch_rgg}
-Let $G_n^r$ be constructed as above. Then, for each pair of nodes $u,v \in V$ with $d(u, v) > r$, there exists sequences $a_n^-, a_n^+ \to 0$, depending on $r$, such that the following holds with probability $1 - o(n^{-5/2})$:
-\begin{enumerate}
-\item If $d(u,v) \ge \max\{12\log(n)^{3/2}/r, 21 r \log(n)\}$:
-\[
-	d_G(u,v) \ge \left\lfloor \frac{d(u,v)}{r}\left(1 + a_n^-\right)\right\rfloor
-\]
-\item if $r \ge 224 \sqrt{\log(n)}$:
-\[
-	d_G(u,v) \le \left\lceil \frac{d(u,v)}{r}\left(1 + a_n^+\right)\right\rceil
-\]
-\end{enumerate}
-\end{theorem}
-
-\begin{lemma}
-Let $f : V \to \mathbb{R}^2$ denote the embedding for the graph $G_n^r$ that assigns to each node $v$ it original coordinates $(x_v,y_v)$ and let $D_n(r)$ denote the distortion associated with this embedding. Then
-\[
-	\mathbb{E}[D_n(r)] = \Omega\left(\sqrt{\log(n)}\right).
-\]
-\end{lemma}
-
-\begin{proof}
-Let $S_n$ denote the event for which the statements of Theorem~\ref{thm:stretch_rgg} holds for all pairs $(u,v)$. Then since the probability that it holds for one pair is $1 - o(n^{-5/2})$, it follows that $\mathbb{P}(S_n) = 1 - o(n^{-1/2})$.
-
-On the event $S_n$, it follows from the second statement of Theorem~\ref{thm:stretch_rgg} that for all $u,v$ with $d(u,v) > r$
-\[
-	\left|\frac{d(u,v)}{d_G(u,v)} - 1\right| \ge \frac{d(u,v)}{d_G(u,v)} - 1
-	\ge \frac{r(d_G(u,v) - 1)}{d_G(u,v)(1+a_n^+)} - 1.
-\]
-Therefore, on the event $S_n$, we have that
-\begin{align*}
-	D_n(r) &= \frac{1}{\binom{n}{2}} \sum_{u \ne v} \left|\frac{d(u,v)}{d_G(u,v)} - 1\right|\\
-	&\ge \frac{1}{\binom{n}{2}} \sum_{u \ne v \atop d(u,v) > r} \left|\frac{d(u,v)}{d_G(u,v)} - 1\right|\\
-	&\ge \frac{1}{\binom{n}{2}} \sum_{u \ne v \atop d(u,v) > r} \left(\frac{r(d_G(u,v) - 1)}{d_G(u,v)(1+a_n^+)} - 1\right)\\
-	&\ge \left(\frac{r}{1 + a_n^+} - \frac{r}{d_G(u,v)(1+a_n^+)}\right) 
-		\frac{|\{u \ne v \, :\, d(u,v) > r\}|}{\binom{n}{2}} - 1\\
-	&\ge \left(\frac{r}{1 + a_n^+} - \frac{r}{n(1+a_n^+)}\right) 
-			\frac{|\{u \ne v \, :\, d(u,v) > r\}|}{\binom{n}{2}} - 1\\
-	&\ge 224 \sqrt{\log(n)} \frac{1 - \frac{1}{n}}{1 + a_n^+} \frac{|\{u \ne v \, :\, d(u,v) > r\}|}{\binom{n}{2}} - 1.
-\end{align*}
-Next we note that since $224 \pi \log(n) \le \pi r^2 \le \pi n/4$, we have that the expected number of nodes at least a distance $r$ away from a given node is at least $(n - \pi r^2) = \Omega(n)$ (center) and at most $n - \pi r^2/4 = O(n)$ (the corners). We conclude that
-\[
-	\mathbb{E}[|\{u \ne v \, :\, d(u,v) > r\}|] = \Theta\left(\binom{n}{2}\right).
-\]
-
-The result now follows since
-\begin{align*}
-	\mathbb{E}[D_n(r)] &\ge \mathbb{E}[D_n(r) 1_{S_n}] \\
-	&\ge 224 \sqrt{\log(n)} \frac{1 - \frac{1}{n}}{1 + a_n^+} 
-		\frac{\mathbb{E}[|\{u \ne v \, :\, d(u,v) > r\}|]}{\binom{n}{2}}
-		= \Omega(\sqrt{\log(n)}).
-\end{align*}
-\end{proof}
-
-
-\section{Experimental setup}
-
-\subsection{Datasets}
+\subsection{Datasets}\label{sec:datasets}
 
 Datasets used in our experiments are listed in Table~\ref{tab:datasets}. In all cases, we take only giant connection component (numbers of nodes and edges in Table~\ref{tab:datasets} correspond to already filtered dataset).
 
@@ -1154,13 +1085,22 @@ Chicago~\citep{eash1979equilibrium} & 822 & 821 \\
 CSPhDs~\citep{nooy2006exploratory} & 1025 & 1043 \\
 Euroroad~\citep{vsubelj2011robust} &  1039 & 1305 \\
 Power~\citep{watts1998collective} & 4941 & 6594 \\
+Facebook~\cite{leskovec2012learning} & 4039 & 88234 \\
 \end{tabular}
 \end{center}
 \end{table}
 
-\section{Effect of curvature on real datasets}
+\subsection{Experimental setup}\label{sec:setup}
 
-See Figure~\ref{fig:karate}.
+\subsection{Effect of curvature on real datasets}\label{sec:figures}
+
+\textcolor{red}{[Describe our modifications and give link to code]}
+
+\textcolor{red}{[Cite curvatures package]}
+
+\textcolor{red}{[Describe our zero-one loss optimizer]}
+
+See Figure~\ref{fig:karate}. \textcolor{red}{[add some conclusions]}
 
 \begin{figure}
     \centering
@@ -1184,6 +1124,14 @@ See Figure~\ref{fig:karate}.
     \includegraphics[width = 0.49 \textwidth]{chicago_zero_one.pdf}
     \caption{Effect of curvature, Chicago dataset}
     \label{fig:chicago}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.49 \textwidth]{CSPhDs_distortion.pdf}
+    \includegraphics[width = 0.49 \textwidth]{CSPhDs_zero_one.pdf}
+    \caption{Effect of curvature, CSPhDs dataset}
+    \label{fig:CSPhDs}
 \end{figure}
 
 \begin{figure}
