@@ -71,10 +71,10 @@ Address \\
 
 \begin{abstract}
 Recently, non-Euclidean spaces became popular for embedding structured data. However, determining suitable geometry and, in particular, curvature for a given dataset is still an open problem. 
-In this paper, we define a notion of global graph curvature\ph{, specifically catered to the problem of embedding graphs, and analyze the problem of estimating this curvature using only graph-based characteristics (without actual embedding the graph).}
+In this paper, we define a notion of global graph curvature, specifically catered to the problem of embedding graphs, and analyze the problem of estimating this curvature using only graph-based characteristics (without actual embedding the graph).
 We show that optimal curvature essentially depends on dimension and loss function one aims to minimize via embedding.
 We review the existing notions of local curvature (e.g., Ollivier-Ricci curvature) and analyze their properties theoretically and empirically. 
-In particular, we show that such curvatures are often unable to \ph{properly} estimate the global one. 
+In particular, we show that such curvatures are often unable to properly estimate the global one. 
 
 \textcolor{red}{[Hence, we propose a new estimator of global graph curvature which increases the quality of graph embeddings.]}
 \end{abstract}
@@ -83,30 +83,32 @@ In particular, we show that such curvatures are often unable to \ph{properly} es
 
 Representation learning is an important tool for learning from structured data such as graphs or texts~\citep{grover2016node2vec,perozzi2014deepwalk,mikolov2013distributed}.
 State-of-the-art algorithms typically use Euclidean space for embedding. 
-\ph{Recently, however, it was found that hyperbolic spaces demonstrated superior performance for various such tasks~\citep{nickel2018learning,sala2018representation}, while in some cases spherical spaces can be useful~\citep{liu2017sphereface}. A key characteristic classifying the above mentioned spaces is curvature, which is negative for hyperbolic spaces, zero for Euclidean and positive for spherical spaces. These findings therefore show that certain graphs are better represented in spaces with non-zero curvature. While some methods simply fix curvature (e.g., -1 for hyperbolic space) and then find the optimal embedding of the graph in the corresponding space \citep{nickel2018learning}, others actually try to learn the right curvature and embedding simultaneously~\cite{gu2019learning}.}
+Recently, however, it was found that hyperbolic spaces demonstrate superior performance for various tasks~\citep{nickel2018learning,sala2018representation}, while in some cases spherical spaces can be useful~\citep{liu2017sphereface}. A key characteristic classifying the above mentioned spaces is curvature, which is negative for hyperbolic spaces, zero for Euclidean and positive for spherical spaces. These findings therefore show that certain graphs are better represented in spaces with non-zero curvature. While some methods simply fix curvature (e.g., -1 for hyperbolic space) and then find the optimal embedding of the graph in the corresponding space \citep{nickel2018learning}, others actually try to learn the right curvature and embedding simultaneously~\citep{gu2019learning}.
 
-In this paper, we analyze the problem of determining a graph curvature suitable for an embedding \textit{without} actual embedding \ph{the graph itself}. The aim is to use some simple graph characteristics in order to understand whether it is reasonable to embed a graph into some non-Euclidean space and if yes, then which curvature to choose. 
-Having such an estimator would save computational resources, since learning an embedding is computationally expensive and should be \ph{done} for each space separately. 
+In this paper, we analyze the problem of determining a graph curvature suitable for an embedding \textit{without} actual embedding the graph itself. The aim is to use some simple graph characteristics in order to understand whether it is reasonable to embed a graph into some non-Euclidean space and if yes, then which curvature to choose. 
+Having such an estimator would save computational resources, since learning an embedding is computationally expensive and should be done for each space separately. 
 More importantly, it can also save human resources by showing whether it is worth investing resources in the implementation of more complex embedding algorithm.
 
-\ph{We make an important} fist step in this direction by introducing a concept of \textit{global} graph curvature, which depends on both dimension and loss function used for the embedding. We consider two loss function: distortion, which is widely used in embedding literature, and zero-one loss, which is more suitable for some applications, e.g., for graph reconstruction task. We demonstrate, both theoretically and empirically, that these loss functions lead to fundamentally different graph curvatures. We \ph{also} compare several estimators of the global curvature, in particular the ones based on well-known Ollivier-Ricci and Forman-Ricci \textit{local} graph curvatures. \ph{Our analysis shows that all these notions give curvatures that are far from the optimal curvature for embedding the graph. This raises the important question of how to properly estimate the best curvature for embedding graphs. Interestingly, we also find that in most cases the embedding is better in more negatively curved spaces.}
+We make an important fist step in this direction by introducing a concept of \textit{global} graph curvature, which depends on both dimension and loss function used for the embedding. We consider two loss function: distortion, which is widely used in embedding literature, and zero-one loss, which is more suitable for some applications, e.g., for graph reconstruction task. We demonstrate, both theoretically and empirically, that these loss functions lead to fundamentally different graph curvatures. 
+We also find out that zero-one loss is much easier to minimize and that Euclidean space is a good choice for this loss in many cases, while for distortion non-zero curvature is often optimal.
+We also compare several estimators of the global curvature, in particular the ones based on well-known Ollivier-Ricci and Forman-Ricci \textit{local} graph curvatures. Our analysis shows that all these notions give curvatures that are far from the optimal curvature for embedding the graph. This raises the important question of how to properly estimate the best curvature for embedding graphs. 
+%Interestingly, we also find that for some loss functions in most cases the embedding is better in more negatively curved spaces.
 
 \textcolor{red}{[Add about new estimator if we have one]}
-\textcolor{red}{[Some more conclusions? That zero-one loss prefers larger curvature? Anything else?]}
 
 \section{Background and related work}\label{sec:related_work}
 
 \paragraph{Embeddings} 
-In general, an embedding is a mapping $f: W \rightarrow U$, where $W$ and $U$ are some metric spaces. In this paper we focus on graph embeddings. Let $G = (V,E)$ be an unweighted graph, then $f: V \rightarrow U$ is an embedding of this graph to a metric space $U$. Graph embeddings are used in many applications~\lt{[Egor, can you help here with the most important references?]}
+In general, an embedding is a mapping $f: W \rightarrow U$, where $W$ and $U$ are some metric spaces. In this paper we focus on graph embeddings  \textcolor{brown}{[, where the first space is an unweighted graph $G = (V,E)$ equipped with the graph distance metric]}. Let $G = (V,E)$ be an unweighted graph, then $f: V \rightarrow U$ is an embedding of this graph to a metric space $U$. Graph embeddings are used in many applications~\lt{[Egor, can you help here with the most important references?]} \textcolor{brown}{[May be \cite{goyal2018graph}?]}
 
 There are several loss/quality functions used to measure the quality of such embedding. The most well-known one is \textit{distortion}:
 \[
 D(f) = \frac{1}{\binom{n}{2}} \sum_{u \neq v}  \frac{|d(f(u),f(v)) - d_G(u,v)|}{d_G(u,v)}.
 \]
 
-Distortion is a global metric, it takes into account all graph distance. However, in many practical applications it may not be a good choice. For example, in recommendation task, for a user-item pair we usually know whether they are connected (presence of click, like, etc.) or not. Graph distance do not make much sense in such applications. Additionally, as discussed in Section~\ref{sec:S_n} graph distances are hard to preserve: there are graphs on just 4 nodes which cannot be perfectly embedded in a space of any curvature and any dimension. 
+Distortion is a global metric, it takes into account all graph distance \textcolor{brown}{[s]}. However, in many practical applications it may not be a good choice. For example, in recommendation task, for a user-item pair we usually know whether they are connected (presence of click, like, etc.) or not. Graph distance do not make much sense in such applications.  \textcolor{brown}{[Not clear why. May be? "In recommendation task we usually deal with a partially observed graph, so a huge graph distance between nodes in the observed part does not necessarily mean that nodes are not connected in the full graph"]} Additionally, as discussed in Section~\ref{sec:S_n} graph distances are hard to preserve: there are graphs on just 4 nodes which cannot be perfectly embedded in a space of any curvature and any dimension. 
 
-Another measure, often used for embeddings is Mean Average Precision (MAP), which, for a given node $v$, compares the distance-based ranking of other embedded nodes with the graph-neighborhood-based ranking. MAP is scale invariant, since it cares only about ranking. Since changing curvature is equivalent to changing scale, MAP is insensitive to curvature.\footnote{In other words, it is sufficient to consider only the curvatures -1, 0, 1, corresponding to hyperbolic, Euclidean and spherical spaces. Moreover, considering small enough region in hyperbolic or spherical space we get geometry similar to the Euclidean one, so for MAP it is important to distinguish only between -1 and~1.} We consider another loss function, which is at the same time local and scale-depended. Let us define a class of \textit{threshold-based} loss function. Given an embedding of a graph $G$, We (re)construct a graph $G'$ in the following way: $v$ and $u$ are connected in $G'$ iff $d(v,u)\le 1$. Then, any loss function which is based on the comparison of $G$ and $G'$ is called threshold-based. While all our theoretical results hold for any threshold-based loss function (see Section~\ref{sec:global}), in our experiments we measure zero-one loss for the edge classification problem (whether a given pair is connected or not). This loss function is natural in many applications (graph reconstruction, link prediction, recommendations) and it is also much easier to optimize, as shown by our experiments.
+Another measure, often used for embeddings is Mean Average Precision (MAP), which, for a given node $v$, compares the distance-based ranking of other embedded nodes with the graph-neighborhood-based ranking. MAP is scale invariant, since it cares only about ranking. Since changing curvature is equivalent to changing scale, MAP is insensitive to curvature.\footnote{In other words, it is sufficient to consider only the curvatures -1, 0, 1, corresponding to hyperbolic, Euclidean and spherical spaces. Moreover, considering small enough region in hyperbolic or spherical space we get geometry similar to the Euclidean one, so for MAP it is important to distinguish only between -1 and~1.}  \textcolor{brown}{[Start new paragraph?]}  We consider another loss function, which is at the same time local and scale-depended.  \textcolor{brown}{[We should clarify why scale-dependency is important]} Let us define a class of \textit{threshold-based} loss function. Given an embedding of a graph $G$, We (re)construct a graph $G'$ in the following way: $v$ and $u$ are connected in $G'$ iff $d(v,u)\le 1$. Then, any loss function which is based on the comparison of $G$ and $G'$ is called threshold-based. While all our theoretical results hold for any threshold-based loss function (see Section~\ref{sec:global}), in our experiments we measure zero-one loss for the edge classification problem (whether a given pair is connected or not). This loss function is natural in many applications (graph reconstruction, link prediction, recommendations) and it is also much easier to optimize, as shown by our experiments.
 
 \paragraph{Hyperbolic and Spherical Spaces}
 
@@ -484,127 +486,131 @@ However, undirected bipartite graphs are hard to embed in Euclidean space: the b
 \caption{Compare curvature estimators, distortion}
 \label{tab:compare_distortion}
 \begin{center}
-\begin{tabular}{lcccccccccc}
+\begin{tabular}{lcccccc|cc}
 &
 \multicolumn{2}{c}{Ollivier} &
 \multicolumn{2}{c}{Forman} &
 \multicolumn{2}{c}{Avg. sectional} &
-\multicolumn{2}{c}{Grad. descent} &
-\multicolumn{2}{c}{Grid search} \\
-Dataset/dim & c & loss  & c & loss  & c & loss  & c & loss  & c & loss \\
+\multicolumn{2}{|c}{Grad. descent} \\
+%\multicolumn{2}{c}{Grid search} \\
+Dataset/dim & c & loss  & c & loss  & c & loss  & c & loss \\% & c & loss \\
  \hline \\
 $S_{100}$ / 2 &
 0.0 & 0.334 & 
--97.0 & 0.058 & 
+-97.0 & \textbf{0.058} & 
 -1.0 & 0.304 &
-& \\
+-1.45 & 0.289 \\
 %-2.0 & 0.275 \\
 $S_{100}$ / 10 &
 0.0 & 0.127 & 
--97.0 & 0.014 & 
+-97.0 & \textbf{0.014} & 
 -1.0 & 0.1 & 
-& \\
+-30.2 & 0.025 \\
 %-2.0 & 0.083\\
 $T_{3,6}$ / 2 &
--0.33 & 0.136 & 
+-0.33 & \textbf{0.136} & 
 -2.0 & 0.254 & 
 -0.5 & 0.174 & 
-& \\
+-9.77 & 0.271  \\
 %-0.2 & 0.141 \\
 $T_{3,6}$ / 10 &
--0.33 & 0.016 & 
+-0.33 & \textbf{0.016} & 
 -2.0 & 0.243 & 
 -0.5 & 0.036 & 
-& \\
+0.0 & 0.077 \\
 %-0.2 & 0.017 \\
 $K_{100}$ / 2 & 
 0.99 & 0.348 & 
 100 & 0.841 & 
-0.125 & 0.342 & 
-& \\
+0.125 & \textbf{0.342} & 
+-48.7 & \textbf{0.163} \\
 %3.6 & 0.322 \\
 $K_{100}$ / 10 & 
 0.99 & 0.134 & 
 100 & 0.841 & 
-0.125 & 0.124 & 
-& \\
+0.125 & \textbf{0.124} & 
+-305 & \textbf{0.015} \\
 %-1.9 & 0.108 \\
 $C_{100}$ / 2 & 
-0.0 & 0.106 & 
-0.0 & 0.106 & 
+0.0 & \textbf{0.106} & 
+0.0 & \textbf{0.106} & 
 0.01 & 0.257 &
-& \\
+0.0 & \textbf{0.106}  \\
 %0.0 & 0.106 \\
 $C_{100}$ / 10 & 
-0.0 & 0.106 & 
-0.0 & 0.106 & 
+0.0 & \textbf{0.106} & 
+0.0 & \textbf{0.106} & 
 0.01 & 0.255 & 
-& \\
+0.0 & \textbf{0.106} \\
 %0.0 & 0.106 \\
 $K_{100,100}$ / 2 &
 0.0 & 0.372 & 
--196 & 0.294 & 
+-196 & \textbf{0.294} & 
 0.008 & 0.372 & 
-& \\
+2.1 & 0.309 \\
 %2.2 & 0.306 \\
 $K_{100,100}$ / 10 &
 0.0 & 0.301 & 
--196 & 0.275 & 
+-196 & \textbf{0.275} & 
 0.008 & 0.301 & 
-& \\
+-139 & \textbf{0.27} \\
 %2.4 & 0.250 \\
 Karate / 2 &
-0.01 & 0.197 & 
+0.01 & \textbf{0.197} & 
 -6.35 & 0.248 &
 0.30 & 0.206 &
-& \\
+-1.46 & \textbf{0.173} \\
 %-1.8 & 0.160 \\
 Karate / 10 &
-0.01 & 0.105 & 
+0.01 & \textbf{0.105} & 
 -6.35 & 0.157 &
 0.30 & 0.126 &
-& \\
+0.0 & 0.105 \\
 %-0.4 & 0.100 \\
 Conflict / 2 &
--0.2 &	0.229 &
+-0.2 &	\textbf{0.229} &
 -16.5 &	0.261 &
 0.25 & 	0.269 &
-& \\
+0.0 & \textbf{0.229} \\
 Conflict / 10 &
--0.2 & 0.078 &
+-0.2 & \textbf{0.078} &
 -16.5 &	0.243 &
 0.25 &	0.173 &
-& \\
+0.0 & 0.085  \\
 Chicago / 2 &
 -0.19 & 0.225 & 
 -8.37 & 0.224 & 
--0.6 & 0.178 & 
-& \\
+-0.6 & \textbf{0.178} & 
+0.0 & 0.277 \\
 Chicago / 10 &
 -0.19 & 0.045 & 
 -8.37 & 0.216 & 
--0.6 & 0.024 & 
-& \\
+-0.6 & \textbf{0.024} & 
+0.0 & 0.080  \\
 CSPhDs / 2 &
--0.28 &	0.152 &
+-0.28 &	\textbf{0.152} &
 -7.92 &	0.420 &
 -0.26 & 0.172 &
-& \\
+0.0 & 0.209 \\
 CSPhDs / 10 &
--0.28 &	0.085 &
+-0.28 &	\textbf{0.085} &
 -7.92 &	0.412 &
 -0.26 & 0.208 &
-& \\
+0.0 & \textbf{0.056} \\
 Euroroad / 2 &
--0.36 &	0.267 &
+-0.36 &	\textbf{0.267} &
 -1.95 &	0.452&
 0.027 &	0.384&
-& \\
+0.0 & \textbf{0.147}\\
 Euroroad / 10 &
--0.36 &	0.264 &
+-0.36 &	\textbf{0.264} &
 -1.95 &	0.445 &
 0.03 &	0.370 &
-& \\
+0.0 & \textbf{0.052}  \\
+%EuroSiS / 2 &
+%-29.08258444375581 & 0.197 & 
+%-0.17470077893508176 & 0.2472 & 
+%0.25671845128897763 & 0.2984 & 
 \hline \\
 \end{tabular}
 \end{center}
@@ -614,12 +620,12 @@ Euroroad / 10 &
 \caption{Compare curvature estimators, zero-one loss}
 \label{tab:compare_zero_one}
 \begin{center}
-\begin{tabular}{lcccccccc}
+\begin{tabular}{lcccccc|cc}
 &
 \multicolumn{2}{c}{Ollivier} &
 \multicolumn{2}{c}{Forman} &
 \multicolumn{2}{c}{Avg. sectional} &
-\multicolumn{2}{c}{Grad. descent} 
+\multicolumn{2}{|c}{Grad. descent} 
 %& \multicolumn{2}{c}{Grid search} 
 \\
 Dataset & c & loss  & c & loss  & c & loss & c & loss  
@@ -628,71 +634,71 @@ Dataset & c & loss  & c & loss  & c & loss & c & loss
 \hline \\
 $S_{100}$ / 2 &
 0.0 & 0.02 & 
--97.0 & 0.004 & 
+-97.0 & \textbf{0.004} & 
 -1.0 & 0.02 &
-&
+0.0 & 0.029
 %& 0.0 & 0.024
 \\
 $T_{3,6}$ / 2 &
 -0.33 & 0.006 & 
--2.0 & 0.005 & 
--0.5 & 0.005 & 
-&
+-2.0 & \textbf{0.005} & 
+-0.5 & \textbf{0.005} & 
+0 & \textbf{0.002}  
 %& 0.0 & 0.002 
 \\
 $C_{100}$ / 2 & 
-0.0 & 0.005 & 
-0.0 & 0.005 &
+0.0 & \textbf{0.005} & 
+0.0 & \textbf{0.005} &
 0.01 & 0.009 & 
-&
+0.163 & 0.012
 %& 0.0 & 0.004 
 \\
 $K_{100,100}$ / 2 &
 0.0 & 0.496 & 
--196 & 0.491 & 
+-196 & \textbf{0.491} & 
 0.008 & 0.497 & 
-&
+-531 & 0.493 
 %& 0.5 & 0.486 
 \\
 $K_{100,100}$ / 10 &
 0.0 & 0.485 & 
 -196 & 0.492 & 
-0.008 & 0.480 & 
-&
+0.008 & \textbf{0.480} & 
+-124 & 0.490 
 %& -0.5 & 0.466 
 \\
 Karate / 2 &
 0.01 & 0.135 & 
 -6.35 & 0.137 &
-0.30 & 0.123 &
-&
+0.30 & \textbf{0.123} &
+-19.1 & \textbf{0.116} 
 %&-1.5 & 0.102
 \\
 Conflict / 2 &
--0.2 & 0.042 &
+-0.2 & \textbf{0.042} &
 -16.5 &	0.048 &
 0.25 & 0.059 &
-& \\
+0.0 & \textbf{0.032} \\
 Conflict / 10 &
 -0.2 & 0.001 &
 -16.6 &	0.025 &
-0.25 & $10^{-4}$
-& \\
+0.25 & \textbf{$10^{-4}$} &
+0.0 & \textbf{0.0}  \\
 Chicago / 2 &
--0.19 & 0.004 & 
+-0.19 & \textbf{0.004} & 
 -8.37 & 0.005 & 
--0.6 & 0.004 & 
-& \\
+-0.6 & \textbf{0.004} & 
+0.0 & \textbf{0.002}  \\
 CSPhDs / 2 &
--0.28 &	0.002 &
+-0.28 &	\textbf{0.002} &
 -7.92 &	0.004 &
--0.26 & 0.002 &
-& \\
+-0.26 & \textbf{0.002} &
+0.0 & \textbf{0.002}  \\
 Euroroad / 2 &
--0.36 &	0.002 &
+-0.36 &	\textbf{0.002} &
 -1.95 &	0.004 &
 0.027 &	0.005 &
-& \\
+0.0 & \textbf{0.002} \\
 \end{tabular}
 \end{center}
 \end{table}
@@ -1044,10 +1050,10 @@ Combining \Eqref{eq:1} and \lt{\Eqref{eq:2}}, we obtain:
 \]
 To achieve this, it is sufficient to have: \ph{[Why? I do not see this.]}
 \[
-\frac{r' - r}{R} \ge \log b,
+\frac{r' - r}{R} \ge 2 \log b,
 \]
 \[
-R \le \frac{r' - r}{\log b}.
+R \le \frac{r' - r}{2 \log b}.
 \]
 It remains to find the lower bound for $r' - r$ and it is easy to see that $r' - r$ decreases with $r$. Therefore, it is sufficient to consider only the second step of the construction procedure, when we move from the circle of radius 1 to the next one. In this case, $r = 1$ and 
 \[
@@ -1080,6 +1086,7 @@ Conflict~\citep{ward2007disputes} & 127 & 253 \\
 Chicago~\citep{eash1979equilibrium} & 822 & 821 \\
 CSPhDs~\citep{nooy2006exploratory} & 1025 & 1043 \\
 Euroroad~\citep{vsubelj2011robust} &  1039 & 1305 \\
+EuroSiS~\citep{khokhar2015gephi} & 1272 & 6424 \\
 Power~\citep{watts1998collective} & 4941 & 6594 \\
 Facebook~\cite{leskovec2012learning} & 4039 & 88234 \\
 \end{tabular}
@@ -1088,15 +1095,16 @@ Facebook~\cite{leskovec2012learning} & 4039 & 88234 \\
 
 \subsection{Experimental setup}\label{sec:setup}
 
-\subsection{Effect of curvature on real datasets}\label{sec:figures}
-
 \textcolor{red}{[Describe our modifications and give link to code]}
 
 \textcolor{red}{[Cite curvatures package]}
 
 \textcolor{red}{[Describe our zero-one loss optimizer]}
 
-See Figure~\ref{fig:karate}. \textcolor{red}{[add some conclusions]}
+\subsection{Effect of curvature on real datasets}\label{sec:figures}
+
+We show the dependence of distortion and zero-one loss on curvature for several datasets on Figures~\ref{fig:karate}-\ref{fig:power}.
+
 
 \begin{figure}
     \centering
