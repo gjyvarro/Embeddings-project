@@ -84,12 +84,12 @@ Representation learning is an important tool for learning from structured data s
 State-of-the-art algorithms typically use Euclidean space for embedding. 
 Recently, however, it was found that hyperbolic spaces demonstrate superior performance for various tasks~\citep{nickel2018learning,sala2018representation}, while in some cases spherical spaces can be useful~\citep{liu2017sphereface}. A key characteristic classifying the above-mentioned spaces is curvature, which is negative for hyperbolic spaces, zero for Euclidean and positive for spherical spaces. These findings, therefore, show that certain graphs are better represented in spaces with non-zero curvature. While some methods simply fix curvature (e.g., -1 for hyperbolic space) and then find the optimal embedding of the graph in the corresponding space \citep{nickel2018learning}, others try to learn the right curvature and embedding simultaneously~\citep{gu2019learning}.
 
-In this paper, we analyze the problem of determining a graph curvature suitable for an embedding \textit{without} actual embedding the graph itself. The aim is to use some simple graph characteristics to understand whether it is reasonable to embed a graph into some non-Euclidean space and if yes, then which curvature to choose. 
+In this paper, we analyze the problem of determining a graph curvature suitable for \ph{embedding} \textit{without} actual embedding the graph itself. The aim is to use some simple graph characteristics to understand whether it is reasonable to embed a graph into some non-Euclidean space and if yes, then which curvature to choose. 
 Having such an estimator would save computational resources, since learning an embedding is computationally expensive and should be done for each space separately. 
 More importantly, it can also save human resources by showing whether it is worth investing resources in the implementation of a more complex embedding algorithm.
 
 We make an important first step in this direction by introducing a concept of \textit{global} graph curvature, which depends on both dimension and loss function used for the embedding. We consider two loss functions: distortion, which is widely used in embedding literature, and zero-one loss, which is more suitable for some practical applications. We demonstrate, both theoretically and empirically, that these loss functions lead to fundamentally different graph curvatures. 
-In particular, we find out that zero-one loss is much easier to minimize and that Euclidean space is a good choice for this loss in many cases, while for distortion non-zero curvature is often optimal.
+In particular, we find \ph{that} zero-one loss is much easier to minimize and that Euclidean space is a good choice for this loss in many cases, while for distortion non-zero curvature is often optimal.
 We also compare several estimators of the global curvature, in particular, the ones based on well-known Ollivier-Ricci and Forman-Ricci \textit{local} graph curvatures. Our analysis shows that all these notions give curvatures that are far from the optimal curvature for embedding the graph. This raises the important question of how to properly estimate the best curvature for embedding graphs. 
 We approach this problem by introducing a new curvature estimator specifically designed for zero-one loss function. This estimator agrees with our theoretical results and also turns out to be conservative: it predicts zero curvature for many datasets, which agrees with the experiments.
 
@@ -105,19 +105,19 @@ Depending on an application, different loss/quality functions are used to measur
 D(f) = \frac{1}{\binom{n}{2}} \sum_{u \neq v}  \frac{|d(f(u),f(v)) - d_G(u,v)|}{d_G(u,v)}.
 \]
 
-Distortion is a global metric, it takes into account all graph distances. However, in many practical applications, it may not be a good choice. For example, in the recommendation task we usually deal with a partially observed graph, so a huge graph distance between nodes in the observed part does not necessarily mean that the nodes are not connected in the full graph. Additionally, as discussed in Section~\ref{sec:S_n}, graph distances are hard to preserve: there are graphs on just 4 nodes that cannot be perfectly embedded in a space of any curvature and any dimension. 
+Distortion is a global metric, it takes into account all graph distances. However, in many practical applications, it may not be a good choice. For example, in \ph{recommendation tasks} we usually deal with a partially observed graph, so a huge graph distance between nodes in the observed part does not necessarily mean that the nodes are not connected in the full graph. Additionally, as discussed in Section~\ref{sec:S_n}, graph distances are hard to preserve: there are graphs on just 4 nodes that cannot be perfectly embedded in a space of any curvature and any dimension. 
 
 Another measure, often used for embeddings, is Mean Average Precision (MAP), which, for a given node $v$, compares the distance-based ranking of other embedded nodes with the graph-neighborhood-based ranking. In contrast to distortion, MAP is scale-invariant, as it cares only about the order. Since changing curvature is equivalent to changing scale, MAP is insensitive to curvature.\footnote{In other words, it is sufficient to consider only the curvatures -1, 0, 1, corresponding to hyperbolic, Euclidean and spherical spaces. Moreover, by considering a small enough region in hyperbolic or spherical space we get geometry similar to the Euclidean one, so for MAP it is important to distinguish only between -1 and~1.} 
 However, in practical applications like recommendation systems, ranking scores are usually complemented by minimum score thresholds to have personalized sizes of top recommended items.
 This motivated us to consider another loss function, which is at the same time local and scale-dependent. 
 
-Let us define the following class of \textit{threshold-based} loss functions. Given an embedding of a graph $G$, we (re)construct a graph $G'$ in the following way: $v$ and $u$ are connected in $G'$ iff $d(v,u)\le 1$. Then, any loss function which is based on the comparison of $G$ and $G'$ is called threshold-based. While all our theoretical results hold for \textit{any} threshold-based loss function (see Section~\ref{sec:global}), in our experiments we measure zero-one loss for the edge classification problem (whether a given node pair is connected or not), as described in Appendix~\ref{sec:setup}. This loss function is natural in many applications (graph reconstruction, link prediction, recommendations) and it is also much easier to optimize, as shown by our experiments.
+Let us define the following class of \textit{threshold-based} loss functions. Given an embedding \ph{$f$} of a graph $G$, we (re)construct a graph $G'$ in the following way: $v$ and $u$ are connected in $G'$ iff \ph{$d(f(v),f(u))\le 1$}. Then, any loss function which is based on the comparison of $G$ and $G'$ is called threshold-based. While all our theoretical results hold for \textit{any} threshold-based loss function (see Section~\ref{sec:global}), in our experiments we measure zero-one loss for the edge classification problem (whether a given node pair is connected or not), as described in Appendix~\ref{sec:setup}. This loss function is natural in many applications (graph reconstruction, link prediction, recommendations) and it is also much easier to optimize, as shown by our experiments.
 
 \paragraph{Hyperbolic and Spherical Spaces}
 
-For many years, Euclidean space was the primary choice for data embeddings~\citep{goyal2018graph}. However, it turned out that many observed datasets are well fitted into hyperbolic space~\citep{krioukov2010hyperbolic}. \citet{nickel2017poincare} have shown that such hyperbolic embeddings can improve state-of-the-art quality in several practical tasks, e.g., lexical entailment and link prediction. On the other hand, spherical spaces are also used for embeddings~\citep{liu2017sphereface}. \citet{gu2019learning} goes further by suggesting mixed spaces: product manifolds combining multiple copies of spherical, hyperbolic, and Euclidean spaces. 
+For many years, Euclidean space was the primary choice for data embeddings~\citep{goyal2018graph}. However, it turned out that many observed datasets are well fitted into hyperbolic space~\citep{krioukov2010hyperbolic}. \citet{nickel2017poincare} have shown that such hyperbolic embeddings can improve state-of-the-art quality in several practical tasks, e.g., lexical entailment and link prediction. On the other hand, spherical spaces are also used for embeddings~\citep{liu2017sphereface}. \citet{gu2019learning} goes \ph{even} further by suggesting mixed spaces: product manifolds combining multiple copies of spherical, hyperbolic, and Euclidean spaces. 
 
-The main advantage of hyperbolic space is that it is ``larger'': the volume of a ball grows exponentially with radius. Hence, such spaces are well suited for tree-like structures. On the other hand, spherical spaces are suitable for embedding cycles~\citep{gu2019learning}. Spherical and hyperbolic spaces are parametrized by \textit{curvature} $c$, which is positive for spherical space and negative for hyperbolic space. As $c \to 0$, geometry of both these spaces becomes similar to the Euclidean one. We discuss some geometrical properties of these different spaces in Appendix~\ref{sec:properties}.
+The main advantage of hyperbolic space is that it is ``larger'': the volume of a ball grows exponentially with \ph{its} radius. Hence, such spaces are well suited for tree-like structures. On the other hand, spherical spaces are suitable for embedding cycles~\citep{gu2019learning}. Spherical and hyperbolic spaces are parametrized by \textit{curvature} $c$, which is positive for spherical space and negative for hyperbolic space. As $c \to 0$, geometry of both these spaces becomes similar to the Euclidean one. We discuss some geometrical properties of these different spaces in Appendix~\ref{sec:properties}.
 
 
 \section{Local graph curvatures}
@@ -132,7 +132,7 @@ Formally, for a graph $G$ we consider the shortest path metric on $G$, denoted b
 \begin{equation}\label{eq:def_classic_ollivier_graphs}
 	\kappa_G(u,v) = 1 - W_1^G(m_v, m_u).
 \end{equation}
-Note that Ollivier curvature always belongs to the interval $[-2,1]$~\citep{jost2014ollivier}.
+\ph{We note} that Ollivier curvature always belongs to the interval $[-2,1]$~\citep{jost2014ollivier}.
 
 \paragraph{Forman curvature}
 
@@ -147,14 +147,14 @@ F_G(u,v)
 = 4 - (\mathrm{deg}(v) + \mathrm{deg}(u)).
 \end{equation}
 
-Forman was interested in a general discretization of curvature for Riemannian manifolds and his formula includes faces of any dimension. Although this can be translated to graphs~\citep{weber2017coarse}, the formula becomes quite cumbersome. Therefore, in~\Eqref{eq:forman2} only $1$-dimensional faces (edges) are included. One can extend this expression by including higher dimensional faces. This was considered in~\citep{samal2018comparative}, where $2$-dimensional faces on three nodes (triangles) were considered. In the case of an unweighted graph, we then obtain
+Forman was interested in a general discretization of curvature for Riemannian manifolds and his formula includes faces of any dimension. Although this can be translated to graphs~\citep{weber2017coarse}, the formula becomes quite cumbersome. Therefore, in~\Eqref{eq:forman2} only $1$-dimensional faces (edges) are included. One can extend this expression by including higher dimensional faces. This was considered in~\citep{samal2018comparative}, where $2$-dimensional faces on three nodes (triangles) were \ph{included}. In the case of an unweighted graph, we then obtain
 \begin{equation}\label{eq:forman2}
 	\hat F_G(u,v) = F(u,v) + 3\Delta_{uv} 
 	= 4 - \mathrm{deg}(v) - \mathrm{deg}(u) + 3\Delta_{uv},
 \end{equation}
 where $\Delta_{uv}$ is the number of triangles that contain the edge $(u,v)$. 
 
-Based on the definitions, both Forman curvatures, especially $F_G(u,v)$, are expected to often be highly negative. Indeed, we further observe this in Sections~\ref{sec:theory} and~\ref{sec:experiments}.
+Based on the definitions, both Forman curvatures, especially $F_G(u,v)$, are expected to often be highly negative. Indeed, \ph{this is what we observe} in Sections~\ref{sec:theory} and~\ref{sec:experiments}.
 
 \paragraph{Heuristic sectional curvature}
 
