@@ -439,7 +439,9 @@ However, undirected bipartite graphs are hard to embed in Euclidean space: the b
  
 \subsection{Volume-based approximation}
 
-Based o
+Based on the intuition obtained in the previous section, we propose a new heuristic curvature estimator which is specifically designed for threshold-based loss. As we show above, for threshold-based loss in simple graphs, we just need enough space for nodes at distance at most $k$ from a given one. Therefore, to estimate curvature, we compare the number of nodes at distance exactly $k$ from a node with the area of a hypersphere of radius $k$ in a space of curvature $c$. The detailed description of the procedure is given in Appendix~\ref{sec:new_curvature}. As a result, we obtain an approximation of the minimal curvature suitable for embedding.  Then, we take the minimum among this value and zero as a curvature. Based on the theoretical results, we say that a spherical space is expected to be not useful for threshold-based losses, so it is not worth effort to embed there. On the other hand, when the estimated bound is negative, we take the largest value to avoid possible precision problems~\cite{sala2018representation}.
+
+A nice feature of the proposed estimator is that it
  
 \section{Experiments}\label{sec:experiments}
 
@@ -688,7 +690,7 @@ CSPhDs / 2 &
 -0.28 &	\textbf{0.002} &
 -7.92 &	0.004 &
 -0.26 & \textbf{0.002} &
-&&
+0.0 & \textbf{0.002} &
 0.0 & \textbf{0.002}  \\
 Euroroad / 2 &
 -0.36 &	\textbf{0.002} &
