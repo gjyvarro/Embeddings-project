@@ -439,9 +439,9 @@ However, undirected bipartite graphs are hard to embed in Euclidean space: the b
  
 \subsection{Volume-based approximation}
 
-Based on the intuition obtained in the previous section, we propose a new heuristic curvature estimator which is specifically designed for threshold-based loss. As we show above, for threshold-based loss in simple graphs, we just need enough space for nodes at distance at most $k$ from a given one. Therefore, to estimate curvature, we compare the number of nodes at distance exactly $k$ from a node with the area of a hypersphere of radius $k$ in a space of curvature $c$. The detailed description of the procedure is given in Appendix~\ref{sec:new_curvature}. As a result, we obtain an approximation of the minimal curvature suitable for embedding.  Then, we take the minimum among this value and zero as a curvature. Based on the theoretical results, we say that a spherical space is expected to be not useful for threshold-based losses, so it is not worth effort to embed there. On the other hand, when the estimated bound is negative, we take the largest value to avoid possible precision problems~\cite{sala2018representation}.
+Based on the intuition obtained in the previous section, we propose a new heuristic curvature estimator which is specifically designed for threshold-based loss. As we show above, for threshold-based loss in simple graphs, we just need enough space for nodes at distance at most $k$ from a given one. Therefore, to estimate curvature, we compare the number of nodes at distance exactly $k$ from a node (discounted using the number of edges between them) with the area of a hypersphere of radius $k$ in a space of curvature $c$. The detailed description of the procedure is given in Appendix~\ref{sec:new_curvature}. As a result, we obtain an approximation of the minimal curvature suitable for embedding.  Then, we take the minimum among this value and zero as a curvature. Based on the theoretical results, we say that a spherical space is expected to be not useful for threshold-based losses, so it is not worth efforts to embed there. On the other hand, when the estimated bound is negative, we take the largest value to avoid possible precision problems~\cite{sala2018representation}.
 
-A nice feature of the proposed estimator is that it
+A nice feature of the proposed estimator is that it depends on dimension. Moreover, the dependence on dimension is natural: when $d$ becomes larger, curvature becomes smaller. Also, we show in the experiments that this estimator is conservative, i.e., in many cases it predicts curvature 0, which agrees with experiments. However, the problem of a proper global curvature estimation is still wide open.
  
 \section{Experiments}\label{sec:experiments}
 
@@ -1105,6 +1105,13 @@ So, we have
 \[
 -C = \frac{1}{R^2} \le \left( \frac{2\,\log b}{2 \, \mathrm{arccosh} \frac{\cosh 1}{\cosh 1/2} - 1} \right)^2.
 \]
+
+\section{Volume-based curvature approximation}
+
+In this section, we describe the proposed curvature approximation. An input parameter of this estimator is the maximum neighborhood size $k_{max}$ (we fix $k_{max} = 3$ in the experiments). We take a node $v$ and for any $k \le k_{max}$ we compute the number of nodes $N_k(v)$ at distance exactly $k$ from it.
+Then, we discount this value using the nubmer of edges between the nodes.
+This captures our intuition that we need enough space to place the neighbors, but the connected neighbors are not required to be far away from each other.
+Formally, let $E_k(v)$ be the number of non-edges between the pairs of nodes at distance $k$. Then, we say that $N_k'(v)$ is such that ${N_k'(v) \choose 2} = E_k(v)$.  Finally, we compute such curvature $c_k(v)$ that the area of a hypersphere or radius $k$ is equal to $N_k'(v)$. And our estimate for $v$ is $c(v) = \min_{k \le k_{max}} c_k(v)$ (the worst-case curvature). To get a curvature of the whole graph, we take a median of all $c_k(v)$. (Similarly to other curvature estimators, one can consider a subsample of nodes instead of the whole node set to speed up the computation).
 
 \section{Experiments}
 
