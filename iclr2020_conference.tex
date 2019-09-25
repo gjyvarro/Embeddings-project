@@ -603,9 +603,9 @@ Facebook / 10 &
 
 In this section, we compare all discussed curvature estimators empirically. Our experiments are based on a publicly available implementation of graph embedding by~\citet{gu2019learning}.\footnote{\url{https://github.com/HazyResearch/hyperbolics}} The main advantage of this algorithm is that it works for any curvature: negative, positive or zero. We modified the implementation for our task: in particular, we added a regime responsible for minimizing zero-one loss function. The detailed description of our experimental setup is given in Appendix~\ref{sec:setup}, the datasets and their properties are listed in Appendix~\ref{sec:datasets}.
 
-The results of the comparison for distortion and zero-one loss are presented in Tables~\ref{tab:compare_distortion} and~\ref{tab:compare_zero_one}, respectively. We also added a method based on the gradient descent, proposed by~\citet{gu2019learning}. This method is used here only for an illustration, since our aim is to compare estimators which do not do actual embedding.
+The results of the comparison for distortion and zero-one loss are presented in Tables~\ref{tab:compare_distortion} and~\ref{tab:compare_zero_one}, respectively. We also added a method based on the gradient descent, proposed by~\citet{gu2019learning}. This method is used here only \ph{as} an illustration, since our aim is to compare estimators which do not do actual embedding.
 Also, the gradient descent algorithm uses the best space based on the value of the loss function, while all other curvature estimators do not use such information.
-In tables we mark in bold both the global winner and the winner among all curvatures except the gradient descent one. 
+\ph{We marked} in bold both the global winner and the winner among all curvatures except the gradient descent one. 
 
 Table~\ref{tab:compare_distortion} analyzes distortion, here we compare Ollivier, Forman and average sectional curvatures and see that all of them have unstable performance. Also, even gradient descent method is not always the best (in both tables). In Table~\ref{tab:compare_zero_one} we also add volume-based estimator, which is designed for zero-one loss. 
 One can see that it is usually the best one. 
@@ -829,7 +829,15 @@ V_d(r)= d \, C_{d} \, R^d \int_{0}^{r} \left( \sinh \frac{x}{R} \right)^{d-1} d 
 
 \subsection{Proof of Lemma~\ref{lem:bipartite_ollivier} (Ollivier curvature for bipartite graphs)}\label{app:bipartite_ollivier}
 
-Let use denote the node sets in $K_{l,m}$ by $U := \{u_1, \dots, u_l\}$ and $V := \{v_1, \dots, v_m\}$. We will prove that for any edge $(u, v)$, $W_1^{K_{l,m}}(m_{u},m_{v}) = 1$, which then implies that $\kappa(K_{l,m}) = 0$. 
+Let use denote the node sets in $K_{l,m}$ by $U := \{u_1, \dots, u_l\}$ and $V := \{v_1, \dots, v_m\}$. We will prove that for any edge $(u, v)$, $W_1^{K_{l,m}}(m_{u},m_{v}) = 1$, which then implies that $\kappa(K_{l,m}) = 0$. \ph{For this we use the dual representation for the Wasserstein distance, see~\cite{ollivier2009ricci} for more details. This states that on the one hand
+\[
+	W^{G}_1(m_u,m_v) = \inf_{\rho} \sum_{v^\prime \sim v} \sum_{u^\prime \sim u} d_G(v^\prime, u^\prime) \rho(v^\prime, u^\prime),
+\]
+where the infimum is taken over all joint probability measures on the product of the neighborhoods of $v$ and $u$, while on the other hand
+\[
+	W^{G}_1(m_u,m_v) = \sup_{f} \left( \frac{1}{\mathrm{deg}(v) }\sum_{v^\prime \sim v} f(v^\prime) - \frac{1}{\mathrm{deg}(u) }\sum_{u^\prime \sim u} f(u^\prime)\right),
+\]
+where the supremum is taken over all $1$-Lipschitz functions, i.e $|f(u) - f(v)| \le d_G(u,v)$.}
 
 Note that for any $u \in U, v \in V$ the joint neighborhood is $V \times U$. First we establish an upper bound by considering the product joint probability density on $V \times U$
 \[
@@ -1124,7 +1132,7 @@ Formally, let $E_k(v)$ be the number of non-edges between the pairs of nodes at 
 
 \subsection{Datasets}\label{sec:datasets}
 
-Datasets used in our experiments are listed in Table~\ref{tab:datasets}. In all cases, we take only giant connection component (numbers of nodes and edges in Table~\ref{tab:datasets} correspond to already filtered dataset).
+Datasets used in our experiments are listed in Table~\ref{tab:datasets}. In all cases, we take only \ph{the giant connected} component (numbers of nodes and edges in Table~\ref{tab:datasets} correspond to already filtered dataset).
 
 \begin{table}[t]
 \caption{Dataset description}
@@ -1166,15 +1174,15 @@ $ \mathrm{ReLu}(x) = \max(0, x), \varepsilon = 0.001$.
 In our experiments we observed that such loss function outperforms other analogues (e.g., MSE and sigmoid-based smoothing).
 
 Note that in experiments we use only the more advanced Forman curvature $\hat{F}(G)$.
-For computing Ollivier and Forman curvature we use the open source package by~\citet{ni2015ricci}.\footnote{https://github.com/saibalmars/GraphRicciCurvature}
+For computing Ollivier and Forman curvature we use the open source package by~\citet{ni2015ricci}.\footnote{\url{https://github.com/saibalmars/GraphRicciCurvature}}
 
-For the embedding algorithm, in all experiments we fix \textit{epochs = 1000} and we also try several learning rates (usually from 0.01 to $10^4$). We noticed that learning rate significantly affect the performance of the learning algorithm and also the optimal learning rate is usually smaller for smaller datasets and it is larger for spaces of negative curvature. We also use the option \textit{use\_adagrad = True} since we noticed that it inproves the embedding to Euclidean spaces (otherwise there is a peak in distortion at $c = 0$).
+For the embedding algorithm, in all experiments we fix \textit{epochs = 1000} and we also try several learning rates (usually from 0.01 to $10^4$). We noticed that learning rate significantly affect the performance of the learning algorithm and also the optimal learning rate is usually smaller for smaller datasets and it is larger for spaces of negative curvature. We also use the option \textit{use\_adagrad = True} since we noticed that it inproves the embedding \ph{into} Euclidean spaces (otherwise there is a peak in distortion at $c = 0$).
 
-Let us emphasize that in our experiments we do not care about overfitting problem, because we do not analyze the embedding algorithm, our aim is to find a curvature which minimizes loss function. (It can be thought that we focus on graph reconstruction task).
+Let us emphasize that in our experiments we do not care about \ph{overfitting}, because we do not analyze the embedding algorithm, our aim is to find a curvature which minimizes loss function. (It can be thought \ph{of as though} we focus on graph reconstruction task).
 
 To plot all the figures we try curvatures in some range (usually between -2 and 1) with step size 0.1.
 
-Our code is publicly available.\footnote{https://drive.google.com/open?id=12i5LD6yTyFRDrgkMJEencDAI0Au6Isrn}
+Our code is publicly available.\footnote{\url{https://drive.google.com/open?id=12i5LD6yTyFRDrgkMJEencDAI0Au6Isrn}}
 
 \subsection{Effect of curvature on real datasets}\label{sec:figures}
 
