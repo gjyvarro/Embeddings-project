@@ -210,7 +210,7 @@ Let us discuss how local graph curvatures can be used to estimate the global one
 
 It is important to note that all curvatures discussed above do \textit{not} depend on neither dimension $d$ nor loss function $L$. However, as we show below, global curvature defined in Section~\ref{sec:global_curvature_definition} significantly depends on them.
 
-Let us also mention that there is a concept of Gromov's hyperbolicity~\citep{gromov1987hyperbolic}, which is sometimes used to decide whether it is reasonable to embed a graph to a hyperbolic space. However, first, this estimate cannot be easily converted to curvature, and, second, it does not tell anything about the sphericity of data.
+Let us also mention that there is a concept of Gromov's hyperbolicity~\citep{gromov1987hyperbolic}, which is sometimes used to decide whether it is reasonable to embed a graph to a hyperbolic space. However, first, this \ph{estimator} cannot be easily converted to curvature, and, second, it does not \ph{say} anything about the sphericity of data.
 
 \subsection{Theoretical analysis of global curvature and its approximations}\label{sec:theory}
 
@@ -255,8 +255,8 @@ If $c \to -\infty$, then the optimal distortion $D_{opt}(S_n) = \Theta\left(\fra
 Therefore, for any $S_n$ we have $C_d^{dist}(S_n) = -\infty$.
 \end{theorem}
 
-This result is illustrated on Figure~\ref{fig:star} (left): distortion decreases as curvature becomes smaller.
-The intuition behind this result is the following: we cannot embed a star $S_3$ with zero distortion to a space of any constant curvature and any dimension, because in case of zero distortion the central node $v$ has to lie on the geodesics between all pairs of leaves, so all 4 nodes have to belong to one geodesics, which is impossible. Moreover, the same problem occurs if any graph $G$ contains $S_3$ as an induced subgraph.
+This result is illustrated \ph{in} Figure~\ref{fig:star} (left): distortion decreases as curvature becomes smaller.
+The intuition behind this result is the following: we cannot embed a star $S_3$ with zero distortion \ph{into} a space of any constant curvature and any dimension, because in case of zero distortion the central node $v$ has to lie on the geodesics between all pairs of leaves, so all 4 nodes have to belong to one geodesics, which is impossible. Moreover, the same problem occurs if any graph $G$ contains $S_3$ as an induced subgraph.
 On the other hand, if $c \to -\infty$, we can spread all leaves of $S_n$ uniformly on a circle of radius 1 around the central node and distortion of such construction will tend to zero since the distance between the pairs of leaves will tend to 2 (triangles become thinner). 
 Further we will see that if we minimize a threshold-based loss, then any tree can be perfectly embedded with $d = 2$.
 
@@ -372,11 +372,11 @@ Here we have that
 %\begin{equation}\label{eq:cycle_distortion}
 $	C_d^{dist}(C_n) = \left(\frac{2\pi}{n}\right)^2.$
 %\end{equation}
-Indeed, if we consider any three consequent nodes, then the middle one should lie on the geodetic between the other two. So, they all lie on a great circle (of length $n$) from which the proposition follows.
+Indeed, if we consider any three consequent nodes, then the middle one should lie on the geodetic between the other two. So, they all lie on a great circle (of length $n$) from which the \ph{result} follows.
 In particular, $C_d^{dist}(C_5) \approx 1.58$, $C_d^{dist}(C_{100}) \approx 0.004$, which is illustrated on Figure~\ref{fig:cycle} (left).
 
 \paragraph{Threshold-based curvature} 
-It is easy to see that $C_d^{thr}(C_n) = (-\infty, C)$ with some $C>0$, which decreases with $n$ and increases with $d$ (see Figure~\ref{fig:cycle}, right). A simple lower bound for $C$ is $C \ge \left(\frac{4\pi}{n}\right)^2$, since for such curvature we can embed all nodes to a great circle with distances 1/2 between the closest ones. 
+It is easy to see that $C_d^{thr}(C_n) = (-\infty, C)$ with some $C>0$, which decreases with $n$ and increases with $d$ (see Figure~\ref{fig:cycle}, right). A simple lower bound for $C$ is $C \ge \left(\frac{4\pi}{n}\right)^2$, since for such curvature we can embed all nodes \ph{into} a great circle with distances 1/2 between the closest ones. 
 
 
 \subsubsection{Complete bipartite graph $K_{l,m}$}
@@ -415,7 +415,7 @@ $
 $
 In particular, if $m = l$ we get $\xi({K_{l,m}}) = \frac{1}{2m - 3}$. 
 \end{lemma}
-This lemma implies that for balanced complete bipartite graphs $\xi({K_{l,m}})$ is positive, but tends to zero as graph grows.
+This lemma implies that for balanced complete bipartite graphs $\xi({K_{l,m}})$ is positive, but tends to zero as \ph{the} graph grows.
 
 
 
@@ -439,9 +439,9 @@ However, undirected bipartite graphs are hard to embed in Euclidean space: the b
  
 \subsection{Volume-based approximation}
 
-Based on the intuition obtained in the previous section, we propose a new heuristic curvature estimator which is specifically designed for threshold-based loss. As we show above, for threshold-based loss in simple graphs, we just need enough space for nodes at distance at most $k$ from a given one. Therefore, to estimate curvature, we compare the number of nodes at distance exactly $k$ from a node (discounted using the number of edges between them) with the area of a hypersphere of radius $k$ in a space of curvature $c$. The detailed description of the procedure is given in Appendix~\ref{sec:new_curvature}. As a result, we obtain an approximation of the minimal curvature suitable for embedding.  Then, we take the minimum among this value and zero as a curvature. Based on the theoretical results, we say that a spherical space is expected to be not useful for threshold-based losses, so it is not worth efforts to embed there. On the other hand, when the estimated bound is negative, we take the largest value to avoid possible precision problems~\cite{sala2018representation}.
+Based on the intuition obtained in the previous section, we propose a new heuristic curvature estimator which is specifically designed for threshold-based loss. As we show above, for threshold-based loss in simple graphs, we just need enough space for nodes at distance at most $k$ from a given one. Therefore, to estimate curvature, we compare the number of nodes at distance exactly $k$ from a node (discounted using the number of edges between them) with the area of a hypersphere of radius $k$ in a space of curvature $c$. The detailed description of the procedure is given in Appendix~\ref{sec:new_curvature}. As a result, we obtain an approximation of the minimal curvature suitable for embedding.  Then, we take the minimum among this value and zero as \ph{the} curvature. Based on the theoretical results, we say that a spherical space is expected to be not useful for threshold-based losses, so it is not worth \ph{the effort} to embed there. On the other hand, when the estimated bound is negative, we take the largest value to avoid possible precision problems~\cite{sala2018representation}.
 
-A nice feature of the proposed estimator is that it depends on dimension. Moreover, the dependence on dimension is natural: when $d$ becomes larger, curvature becomes smaller. Also, we show in the experiments that this estimator is conservative, i.e., in many cases it predicts curvature 0, which agrees with experiments. However, the problem of a proper global curvature estimation is still wide open.
+A nice feature of the proposed estimator is that it depends on dimension. Moreover, the dependence on dimension is natural: when $d$ becomes larger, curvature becomes smaller. Also, we show in the experiments that this estimator is conservative, i.e., in many cases it predicts curvature 0, which agrees with experiments. However, \ph{despite the potential of this new estimator,} the problem of proper global curvature estimation is still wide open.
  
 \section{Experiments}\label{sec:experiments}
 
@@ -1109,9 +1109,9 @@ So, we have
 \section{Volume-based curvature approximation}
 
 In this section, we describe the proposed curvature approximation. An input parameter of this estimator is the maximum neighborhood size $k_{max}$ (we fix $k_{max} = 3$ in the experiments). We take a node $v$ and for any $k \le k_{max}$ we compute the number of nodes $N_k(v)$ at distance exactly $k$ from it.
-Then, we discount this value using the nubmer of edges between the nodes.
+Then, we discount this value using the \ph{number} of edges between the nodes.
 This captures our intuition that we need enough space to place the neighbors, but the connected neighbors are not required to be far away from each other.
-Formally, let $E_k(v)$ be the number of non-edges between the pairs of nodes at distance $k$. Then, we say that $N_k'(v)$ is such that ${N_k'(v) \choose 2} = E_k(v)$.  Finally, we compute such curvature $c_k(v)$ that the area of a hypersphere or radius $k$ is equal to $N_k'(v)$. And our estimate for $v$ is $c(v) = \min_{k \le k_{max}} c_k(v)$ (the worst-case curvature). To get a curvature of the whole graph, we take a median of all $c_k(v)$. (Similarly to other curvature estimators, one can consider a subsample of nodes instead of the whole node set to speed up the computation).
+Formally, let $E_k(v)$ be the number of non-edges between the pairs of nodes at distance $k$. Then, we say that $N_k'(v)$ is such that ${N_k'(v) \choose 2} = E_k(v)$.  Finally, we compute \ph{the curvature $c_k(v)$ such that} the area of a hypersphere or radius $k$ is equal to $N_k'(v)$. And our estimate for $v$ is $c(v) = \min_{k \le k_{max}} c_k(v)$ (the worst-case curvature). To get a curvature of the whole graph, we take a median of all $c_k(v)$. (Similarly to other curvature estimators, one can consider a subsample of nodes instead of the whole node set to speed up the computation).
 
 \section{Experiments}
 
