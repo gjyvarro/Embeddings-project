@@ -445,11 +445,6 @@ A nice feature of the proposed estimator is that it depends on dimension. Moreov
  
 \section{Experiments}\label{sec:experiments}
 
-In this section, we compare all discussed curvature estimators empirically. Our experiments are based on a publicly available implementation of graph embedding by~\citet{gu2019learning}.\footnote{\url{https://github.com/HazyResearch/hyperbolics}} The main advantage of this algorithm is that it works for any curvature: negative, positive or zero. We modified the implementation for our task: in particular, we added a regime responsible for minimizing zero-one loss function. The detailed description of our experimental setup is given in Appendix~\ref{sec:setup}, the datasets and their properties are listed in Appendix~\ref{sec:datasets}.
-
-We compared all curvature estimators, the results are presented in Tables~\ref{tab:compare_distortion} and~\ref{tab:compare_zero_one}. We also added a method based by gradient descent, proposed by~\citet{gu2019learning}. This method is used here for an illustration, since our aim is to compare estimators which do not do actual embedding. 
-In tables we mark in bold both the global winner and the winner among all curvatures except the gradient descent one. One of the conclusions is that no estimator, including the gradient descent one, is able to estimate the curvature of all datasets well.
-
 \begin{table}[t]
 \caption{Compare curvature estimators, distortion}
 \label{tab:compare_distortion}
@@ -606,6 +601,18 @@ Facebook / 10 &
 \end{center}
 \end{table}
 
+In this section, we compare all discussed curvature estimators empirically. Our experiments are based on a publicly available implementation of graph embedding by~\citet{gu2019learning}.\footnote{\url{https://github.com/HazyResearch/hyperbolics}} The main advantage of this algorithm is that it works for any curvature: negative, positive or zero. We modified the implementation for our task: in particular, we added a regime responsible for minimizing zero-one loss function. The detailed description of our experimental setup is given in Appendix~\ref{sec:setup}, the datasets and their properties are listed in Appendix~\ref{sec:datasets}.
+
+The results of the comparison for distortion and zero-one loss are presented in Tables~\ref{tab:compare_distortion} and~\ref{tab:compare_zero_one}, respectively. We also added a method based on the gradient descent, proposed by~\citet{gu2019learning}. This method is used here only for an illustration, since our aim is to compare estimators which do not do actual embedding.
+Also, the gradient descent algorithm uses the best space based on the value of the loss function, while all other curvature estimators do not use such information.
+In tables we mark in bold both the global winner and the winner among all curvatures except the gradient descent one. 
+
+Table~\ref{tab:compare_distortion} analyzes distortion, here we compare Ollivier, Forman and average sectional curvatures and see that all of them have unstable performance. Also, even gradient descent method is not always the best (in both tables). In Table~\ref{tab:compare_zero_one} we also add volume-based estimator, which is designed for zero-one loss. 
+One can see that it is usually the best one. 
+However, one of the reasons is that it often predicts zero curvature. In Appendix~\ref{sec:figures}, we present additional figures that illustrate the fundamental difference between distortion and zero-one loss: zero-one loss is often optimal in a space of zero curvature.
+
+
+
 \begin{table}[t]
 \caption{Compare curvature estimators, zero-one loss}
 \label{tab:compare_zero_one}
@@ -701,8 +708,8 @@ Euroroad / 2 &
 EuroSiS / 2 &
 -0.17 & \textbf{0.009} & 
 -29.1 & 0.017 & 
-0.26 & 0.054 & 
-&&
+0.26 & 0.058 & 
+-3.79 & 0.016 &
 0.0 & 0.010  \\
 EuroSiS / 10 &
 -0.17 & \textbf{0.003} & 
@@ -716,14 +723,14 @@ EuroSiS / 10 &
 Facebook / 2 &
 0.308 & 0.058 & 
 -44.7 & 0.059 & 
-0.15 & 0.033 & 
-&&
-0.0 & 0.019 \\
+0.15 & \textbf{0.033} & 
+-11.2 & 0.040 &
+0.0 & \textbf{0.019} \\
 Facebook / 10 &
-0.308 & 0.007 & 
+0.308 & \textbf{0.007} & 
 -44.7 & 0.050 & 
-0.15 & 0.007 & 
-&&
+0.15 & \textbf{0.007} & 
+0.0 & 0.013 &
 0.0 & 0.013 \\
 \end{tabular}
 \end{center}
