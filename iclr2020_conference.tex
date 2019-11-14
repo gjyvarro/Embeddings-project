@@ -71,12 +71,7 @@ Address \\
 \begin{abstract}
 Recently, non-Euclidean spaces became popular for embedding structured data. However, determining suitable geometry and, in particular, curvature for a given dataset is still an open problem. 
 In this paper, we define a notion of global graph curvature, specifically catered to the problem of embedding graphs, and analyze the problem of estimating this curvature using only graph-based characteristics (without actual embedding the graph).
-We show that optimal curvature essentially depends on dimensionality of the embedding space and loss function one aims to minimize via embedding.
-We review the existing notions of local curvature (e.g., Ollivier-Ricci curvature) and analyze their properties theoretically and empirically. 
-In particular, we show that such curvatures are often unable to properly estimate the global one. 
-We also make an important observation: larger dimensionality usually leads to less negative optimal curvature.
-We propose a new estimator of global graph curvature which, in contrast to the existing ones, reflects this property as it is dimension-specific.
-We demonstrate that for a given dimension the new estimator is able to distinguish between ``hyperbolic'' and ``Euclidean'' networks. 
+We show that optimal curvature essentially depends on the dimensionality of the embedding space and loss function one aims to minimize via embedding. We review existing notions of local curvature (e.g., Ollivier-Ricci curvature) and analyze their properties theoretically and empirically. In particular, we show that such curvatures are often unable to properly estimate the global one. We also make an important observation: larger dimensionality usually leads to less negative optimal curvature. We propose a new estimator of global graph curvature which, in contrast to the existing ones, reflects this property as it is dimension-specific. We demonstrate that for a given dimension the new estimator is able to distinguish between ``hyperbolic'' and ``Euclidean'' networks. 
 
 \end{abstract}
 
@@ -90,9 +85,9 @@ In this paper, we analyze the problem of determining a graph curvature suitable 
 Having such an estimator would save computational resources, since learning an embedding is computationally expensive and should be done for each space separately. 
 More importantly, it can also save human resources by showing whether it is worth investing resources in the implementation of a more complex embedding algorithm.
 
-We make an important first step in this direction by introducing a concept of \textit{global} graph curvature, which depends on both dimension and loss function used for the embedding. We consider two loss functions: \emph{distortion}, which is widely used in embedding literature, and \emph{threshold-based} loss (see Section~\ref{sec:related_work}), which is more suitable for some practical applications. We demonstrate, both theoretically and empirically, that these loss functions lead to fundamentally different graph curvatures. 
+We make an important first step in this direction by introducing a concept of \textit{global} graph curvature, which depends on both the dimension and loss function used for the embedding. We consider two loss functions: \emph{distortion}, which is widely used in embedding literature, and \emph{threshold-based} loss (see Section~\ref{sec:related_work}), which is more suitable for some practical applications. We demonstrate, both theoretically and empirically, that these loss functions lead to fundamentally different graph curvatures. 
 We also compare several estimators of the global curvature, in particular, the ones based on well-known Ollivier-Ricci and Forman-Ricci \textit{local} graph curvatures. Our analysis shows that all these notions give curvatures that are far from the optimal curvature for embedding the graph (in particular, because they are dimension-independent). This raises the important question of how to properly estimate the best curvature for embedding graphs. 
-We approach this problem by introducing a new curvature estimator which is, in contrast to all existing ones, is dimension-specific. This estimator agrees with our theoretical results and is also able to distinguish between ``hyperbolic'' and ``Euclidean'' networks.
+We approach this problem by introducing a new curvature estimator which, in contrast to all existing ones, is dimension-specific. This estimator agrees with our theoretical results and is also able to distinguish between ``hyperbolic'' and ``Euclidean'' networks.
 
 One important insight, which we gained based on both theoretical and empirical analysis, is the fact that the optimal curvature is usually smaller for smaller dimensions. In other words, if for some dimension the optimal curvature is highly negative, it usually becomes close to zero as dimensionality grows.
 
@@ -275,7 +270,7 @@ Here we have the following theorem (the proof is in Appendix~\ref{app:star_thres
 $C_d^{thr}(S_n) = (-\infty, C)$ for some $C = C(n,d)$, which increases with $d$ and decreases with $n$. In particular, for $d = 2$, if $n < 6$, then $C = \left(\arccos \frac{\cos \frac{2\pi}{n}}{1 - \cos \frac{2\pi}{n}}\right)^2$; if $n = 6$, then $C = 0$; if $n > 6$, then $C = - \left(2\,\mathrm{arccosh}\frac{1}{2\sin \frac{\pi}{n}}\right)^2$.
 \end{theorem}
 
-The result is illustrated on Figure~\ref{fig:star} (right). Note that zero-one loss can be noisy, especially on small graphs, since it is threshold-based, i.e., discrete.
+The result is illustrated in Figure~\ref{fig:star} (right). Note that zero-one loss can be noisy, especially on small graphs, since it is threshold-based, i.e., discrete.
 
 \subsubsection{Tree $T_b$ with branching factor $b$}
 
@@ -346,7 +341,7 @@ The following theorem analyzes $C_d^{dist}(K_n)$ if $d = n-2$ (see Appendix~\ref
 $C_{n-2}^{dist}(K_n) = \bigg\{-\infty,  4 \left(\arcsin \sqrt{\frac{n}{2(n-1)}}\right)^2\bigg\}$.
 \end{theorem}
 
-This result is illustrated on Figure~\ref{fig:clique}. For $n = 4, d = 2$ we expect to see the minimum at about $3.65$, for $n = 12, d = 2$ we expect $2.76$, which is indeed the case. For other parameters, we do not have theoretical results, however we see sudden drops in positive curvature. Finally, as expected, distortion decreases as curvature becomes small. 
+This result is illustrated in Figure~\ref{fig:clique}. For $n = 4, d = 2$ we expect to see the minimum at about $3.65$, for $n = 12, d = 2$ we expect $2.76$, which is indeed the case. For other parameters, we do not have theoretical results, however we see sudden drops in positive curvature. Finally, as expected, distortion decreases as curvature becomes small. 
 
 \paragraph{Threshold-based curvature} 
 $C_d^{thr}(K_n) = \R$, since we can embed any complete graph perfectly by mapping all nodes to one point. 
@@ -382,7 +377,7 @@ Here we have that
 $	C_d^{dist}(C_n) = \left(\frac{2\pi}{n}\right)^2.$
 %\end{equation}
 Indeed, if we consider any three consequent nodes, then the middle one should lie on the geodetic between the other two. So, they all lie on a great circle (of length $n$) from which the result follows.
-In particular, $C_d^{dist}(C_5) \approx 1.58$, $C_d^{dist}(C_{100}) \approx 0.004$, which is illustrated on Figure~\ref{fig:cycle} (left).
+In particular, $C_d^{dist}(C_5) \approx 1.58$, $C_d^{dist}(C_{100}) \approx 0.004$, which is illustrated in Figure~\ref{fig:cycle} (left).
 
 \paragraph{Threshold-based curvature} 
 It is easy to see that $C_d^{thr}(C_n) = (-\infty, C)$ with some $C>0$, which decreases with $n$ and increases with $d$ (see Figure~\ref{fig:cycle}, right). A simple lower bound for $C$ is $C \ge \left(\frac{4\pi}{n}\right)^2$, since for such curvature we can embed all nodes into a great circle with distances 1/2 between the closest ones. 
@@ -444,7 +439,7 @@ Indeed, the result for $K_{2,2}$ follows from the corresponding result on cycle 
 \paragraph{Threshold-based curvature} 
  
 Threshold-based embeddings to Euclidean spaces are well studied. In particular, it is know that for any graph $G(V,E)$ a perfect threshold embedding  exists for some $d \le |V|$~\citep{maehara1984space}. 
-However, undirected bipartite graphs are hard to embed in Euclidean space: the bound $d = O(n)$ is known~\citep{maehara1984space}. We empirically observe that they are similarly hard to embed to both spherical and hyperbolic spaces, as shown on Figure~\ref{fig:bipartite} (right). Empirically, these graphs are insensitive to curvature (given that it is not too large).
+However, undirected bipartite graphs are hard to embed in Euclidean space: the bound $d = O(n)$ is known~\citep{maehara1984space}. We empirically observe that they are similarly hard to embed to both spherical and hyperbolic spaces, as shown in Figure~\ref{fig:bipartite} (right). Empirically, these graphs are insensitive to curvature (given that it is not too large).
  
 \subsection{Volume-based approximation}
 
@@ -452,7 +447,7 @@ Let us propose a new heuristic curvature estimator which is motivated by the int
 Therefore, the natural idea is to estimate the volume we need for embedding nodes that are at distance at most $k$ from a given one and then compute the curvature needed to get such volume. 
 We compare the number of nodes at distance exactly $k$ from a node (discounted using the number of edges between them) with the area of a hypersphere of radius $k$ in a space of curvature $c$. The detailed description of the procedure is given in Appendix~\ref{sec:new_curvature}. 
 %As a result, we obtain an approximation of the curvature suitable for embedding.  Then, we take the minimum among this value and zero as the curvature. Based on the theoretical results, we say that a spherical space is expected to be not useful for threshold-based losses, so it is not worth the effort to embed there. On the other hand, when the estimated bound is negative, we take the largest value to avoid possible precision problems~\cite{sala2018representation}.
-A nice feature of the proposed estimator is that it depends on dimension. Moreover, this dependence is natural: when $d$ becomes larger, curvature becomes smaller. As we show in the experiments on various datasets, similar property is observed for the optimal curvature.
+A nice feature of the proposed estimator is that it depends on dimension. Moreover, this dependence is natural: when $d$ becomes larger, curvature becomes smaller in absolute value. As we show in the experiments on various datasets, a similar property is observed for the optimal curvature.
 Also, it turns out that for a given dimension the new estimator is able to distinguish well between negatively curved and neutral networks.
 %Also, we show in the experiments that this estimator is conservative, i.e., in many cases it predicts curvature 0, which agrees with experiments. 
 However, despite the potential of this new estimator, the problem of proper global curvature estimation is still wide open.
@@ -1044,11 +1039,11 @@ So, we have
 \section{Combinations of simple graphs}\label{sec:combinations}
 
 In this section, in order to get additional intuition, we illustrate how combining several simple subgraphs may affect the optimal curvature. 
-We choose distortion for this illustrative example, since for this loss we theoretically obtained non-trivial result: for some simple graphs the optimal curvature is negative, while for other it is positive.
+We choose distortion for this illustrative example, since for this loss we theoretically obtained non-trivial results: for some simple graphs the optimal curvature is negative, while for other it is positive.
 
 Indeed, for trees (and, in particular, stars) the optimal curvature is minus infinity and for cycles the optimal curvature is positive. Our intuition is that combining stars and cycles in one graph would give optimal curvature located between the curvatures of these simple graph. 
 
-Indeed, we observe such expected behavior for two illustrative examples shown on Figures~\ref{fig:star} and~\ref{fig:stars}. On Figure~\ref{fig:star} we take a cycle of length 10 and iteratively add edges to one of its nodes, i.e., we create a star on one node. On Figure~\ref{fig:stars} we take the same cycle and add small stars sequentially to several its nodes: on the left figure we just add one dangling edge for each node (i.e., create a star subgraph on 4 nodes), on the right we add two edges. In all cases, the optimal curvature drifts from a positive one for a cycle to negative values. This drift is more pronounced on Figure~\ref{fig:star}, where we create one but large star.
+Indeed, we observe such expected behavior for two illustrative examples shown in Figures~\ref{fig:star} and~\ref{fig:stars}. In Figure~\ref{fig:star} we take a cycle of length 10 and iteratively add edges to one of its nodes, i.e., we create a star on one node. In Figure~\ref{fig:stars} we take the same cycle and add small stars sequentially to several of its nodes: in the left figure we just add one dangling edge for each node (i.e., create a star subgraph on 4 nodes), in the right figure  we add two edges. In all cases, the optimal curvature drifts from a positive one for a cycle to negative values. This drift is more pronounced In Figure~\ref{fig:star}, where we create just one (relatively) large star.
 
 \begin{figure}
     \centering
