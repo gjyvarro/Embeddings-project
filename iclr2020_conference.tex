@@ -1118,40 +1118,7 @@ However, due to the fact that the real-world graphs are usually sparse, optimizi
 \frac{\sum_{i,j}  I[v_i \sim v_j] \cdot I[d(f(v_i)f(v_j)) > 1]}{2 \sum_{i,j}  I[v_i \sim v_j] } + \frac{\sum_{i,j} (1 - I[v_i \sim v_j]) \cdot I[d(f(v_i),f(v_j)) \le 1]}{2 \sum_{i,j} (1 - I[v_i \sim v_j])}\,.
 \]
 
-The recent study by~\cite{gosgens2019systematic}
-
-\subsection{Experimental setup}\label{sec:setup}
-
-Our experiments are based on a publicly available implementation of graph embedding by~\citet{gu2019learning}.\footnote{\url{https://github.com/HazyResearch/hyperbolics}} The main advantage of this algorithm is that it works for any curvature: negative, positive or zero. 
-
-We modified the implementation for our task: in particular, we added a regime responsible for minimizing zero-one loss function. 
-%Let $e_{ij}$ be the adjacency matrix of a graoh $G$, 
-Zero-one loss is equal to
-\[
-\sum_{i,j}  I[v_i \sim v_j] \cdot I[d(f(v_i)f(v_j)) > 1] + (1 - I[v_i \sim v_j]) \cdot I[d(f(v_i),f(v_j)) \le 1].
-\]
-This function is not differentiable, so we replace it by gradient descent friendly function which we call ReLuLoss:
-\[
-\sum_{i,j}  I[v_i \sim v_j] \cdot \mathrm{ReLu}(d(f(v_i),f(v_j)) - (1 - \varepsilon)) + (1 - I[v_i \sim v_j]) \cdot \mathrm{ReLu}((1 + \varepsilon) -d(f(v_i),f(v_j)),
-\]
-where 
-$ \mathrm{ReLu}(x) = \max(0, x), \varepsilon = 0.001$.
-In our experiments we observed that such loss function outperforms other analogues (e.g., MSE and sigmoid-based smoothing).
-
-Note that in experiments we use only the more advanced Forman curvature $\hat{F}(G)$.
-For computing Ollivier and Forman curvature we use the open source package by~\citet{ni2015ricci}.\footnote{\url{https://github.com/saibalmars/GraphRicciCurvature}}
-
-For the embedding algorithm, in all experiments we fix \textit{epochs = 1000} and we also try several learning rates (usually from 0.01 to $10^4$). We noticed that learning rate significantly affect the performance of the learning algorithm and also the optimal learning rate is usually smaller for smaller datasets and it is larger for spaces of negative curvature. We also use the option \textit{use\_adagrad = True} since we noticed that it inproves the embedding into Euclidean spaces (otherwise there is a peak in distortion at $c = 0$).
-
-Let us emphasize that in our experiments we do not care about overfitting, because we do not analyze the embedding algorithm, our aim is to find a curvature which minimizes loss function. (It can be also thought of as though we focus on graph reconstruction task).
-
-To plot all the figures we try curvatures in some range (usually between -2 and 1) with step size 0.1.
-
-Our code is publicly available.\footnote{\url{https://drive.google.com/open?id=12i5LD6yTyFRDrgkMJEencDAI0Au6Isrn}}
-
-\subsection{Comparison of curvatures on synthetic datasets}\label{sec:compare_synth}
-
-See the results in Tables~\ref{tab:compare_distortion_synth} and~\ref{tab:compare_zero_one_synth}.
+The recent study by~\cite{gosgens2019systematic} analyses the problem of bias discussed above in detail. It formally defines and analyzes a \textit{constant baseline} requirement and shows that it is satisfied, in particular, by Pearson correlation coefficient between the vectors consisting of $I[v_i \sim v_j]$ and $I[d(f(v_i)f(v_j)) > 1]$. So, we add the corresponding Pearson loss (one minus correlation coefficient) to our experiments.
 
 \begin{table}[t]
 \caption{Compare curvature estimators, distortion, synthetic datasets}
@@ -1234,30 +1201,30 @@ $K_{100,100}$ / 10 &
 \caption{Compare curvature estimators, zero-one loss, synthetic datasets}
 \label{tab:compare_zero_one_synth}
 \begin{center}
-\begin{tabular}{lcccccccc|cc}
+\begin{tabular}{lcccccc|cc}
 &
 \multicolumn{2}{c}{Ollivier} &
 \multicolumn{2}{c}{Forman} &
 \multicolumn{2}{c}{Avg. sectional} &
-\multicolumn{2}{c}{Volume} &
+%\multicolumn{2}{c}{Volume} &
 \multicolumn{2}{|c}{Grad. descent} 
 %& \multicolumn{2}{c}{Grid search} 
 \\
-Dataset & c & loss  & c & loss  & c & loss & c & loss & c & loss  
+Dataset & c & loss  & c & loss  & c & loss & c & loss %& c & loss  
 \\
 \hline \\
 $S_{100}$ / 2 &
 0.0 & 0.02 & 
 -97.0 & \textbf{0.004} & 
 -1.0 & 0.027 &
--4.39 & 0.033 &
+%-4.39 & 0.033 &
 0.0 & 0.02
 \\
 $T_{3,6}$ / 2 &
 -0.33 & 0.006 & 
--2.0 & 0.005 & 
--0.5 & 0.005 & 
-0.0 & \textbf{0.002}  &
+-2.0 & \textbf{0.005} & 
+-0.5 & \textbf{0.005} & 
+%0.0 & \textbf{0.002}  &
 0.0 & \textbf{0.002}  
 %& 0.0 & 0.002 
 \\
@@ -1265,7 +1232,7 @@ $C_{100}$ / 2 &
 0.0 & \textbf{0.005} & 
 0.0 & \textbf{0.005} &
 0.01 & 0.009 & 
-0.0 & \textbf{0.005} &
+%0.0 & \textbf{0.005} &
 0.16 & 0.012
 %& 0.0 & 0.004 
 \\
@@ -1273,7 +1240,7 @@ $K_{100,100}$ / 2 &
 0.0 & 0.496 & 
 -196 & \textbf{0.492} & 
 0.008 & 0.496 & 
--25.9 & 0.494 & 
+%-25.9 & 0.494 & 
 -531 & 0.493 
 %& 0.5 & 0.486 
 \\
@@ -1281,12 +1248,47 @@ $K_{100,100}$ / 10 &
 0.0 & 0.489 & 
 -196 & 0.491 & 
 0.008 & \textbf{0.480} & 
--0.93 & \textbf{0.480} &
+%-0.93 & \textbf{0.480} &
 -124 & 0.490 
 \\
 \end{tabular}
 \end{center}
 \end{table}
+
+\subsection{Experimental setup}\label{sec:setup}
+
+Our experiments are based on a publicly available implementation of graph embedding by~\citet{gu2019learning}.\footnote{\url{https://github.com/HazyResearch/hyperbolics}} The main advantage of this algorithm is that it works for any curvature: negative, positive or zero. 
+
+We modified the implementation for our task: in particular, we added a regime responsible for minimizing threshold-based loss functions. 
+%Let $e_{ij}$ be the adjacency matrix of a graoh $G$, 
+E.g., zero-one loss is equal to
+\[
+\sum_{i,j}  I[v_i \sim v_j] \cdot I[d(f(v_i)f(v_j)) > 1] + (1 - I[v_i \sim v_j]) \cdot I[d(f(v_i),f(v_j)) \le 1].
+\]
+This function is not differentiable, so we replace it by gradient descent friendly function which we call ReLuLoss:
+\[
+\sum_{i,j}  I[v_i \sim v_j] \cdot \mathrm{ReLu}(d(f(v_i),f(v_j)) - (1 - \varepsilon)) + (1 - I[v_i \sim v_j]) \cdot \mathrm{ReLu}((1 + \varepsilon) -d(f(v_i),f(v_j)),
+\]
+where 
+$ \mathrm{ReLu}(x) = \max(0, x), \varepsilon = 0.001$.
+In our experiments we observed that such loss function outperforms other analogues (e.g., MSE and sigmoid-based smoothing) since it speeds up the convergence. To adapt to various threshold-based loss functions, we also reserve several iterations to gradient steps based on the corresponding sigmoid-based smoothing.
+
+Note that in experiments we use only the more advanced Forman curvature $\hat{F}(G)$.
+For computing Ollivier and Forman curvature we use the open source package by~\citet{ni2015ricci}.\footnote{\url{https://github.com/saibalmars/GraphRicciCurvature}}
+
+For the embedding algorithm, in all experiments we fix \textit{epochs = 1000} and we also try several learning rates (usually from 0.01 to $10^4$). We noticed that learning rate significantly affect the performance of the learning algorithm and also the optimal learning rate is usually smaller for smaller datasets and it is larger for spaces of negative curvature. We also use the option \textit{use\_adagrad = True} since we noticed that it inproves the embedding into Euclidean spaces (otherwise there is a peak in distortion at $c = 0$).
+
+Let us emphasize that in our experiments we do not care about overfitting, because we do not analyze the embedding algorithm, our aim is to find a curvature which minimizes loss function. (It can be also thought of as though we focus on graph reconstruction task).
+
+To plot all the figures we try curvatures in some range (usually between -2 and 1) with step size 0.1.
+
+Our code is publicly available.\footnote{\url{https://drive.google.com/open?id=12i5LD6yTyFRDrgkMJEencDAI0Au6Isrn}}
+
+\subsection{Comparison of curvatures on synthetic datasets}\label{sec:compare_synth}
+
+See the results in Tables~\ref{tab:compare_distortion_synth} and~\ref{tab:compare_zero_one_synth}.
+
+
 
 \subsection{Effect of dimension and loss function}\label{sec:figures}
 
@@ -1347,6 +1349,8 @@ In this section, we visualize the dependence of the loss function on curvature (
     \centering
     \includegraphics[width = 0.49 \textwidth]{chicago_distortion.pdf}
     \includegraphics[width = 0.49 \textwidth]{chicago_zero_one.pdf}
+    \includegraphics[width = 0.49 \textwidth]{chicago_pearson.pdf}
+    \includegraphics[width = 0.49 \textwidth]{chicago_balanced_zero_one.pdf}
     \caption{Effect of curvature, Chicago dataset}
     \label{fig:chicago}
 \end{figure}
@@ -1355,6 +1359,8 @@ In this section, we visualize the dependence of the loss function on curvature (
     \centering
     \includegraphics[width = 0.49 \textwidth]{CSPhDs_distortion.pdf}
     \includegraphics[width = 0.49 \textwidth]{CSPhDs_zero_one.pdf}
+    \includegraphics[width = 0.49 \textwidth]{CSPhDs_pearson.pdf}
+    \includegraphics[width = 0.49 \textwidth]{CSPhDs_balanced_zero_one.pdf}
     \caption{Effect of curvature, CSPhDs dataset}
     \label{fig:CSPhDs}
 \end{figure}
