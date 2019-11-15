@@ -99,7 +99,7 @@ These results and insights can eventually be extrapolated to analyze curvature i
 \section{Background and related work}\label{sec:related_work}
 
 \paragraph{Graph embeddings} 
-For an unweighted graph $G = (V,E)$ equipped with the shortest path distance metric $d_G$, a graph embedding $f$ is a map $f: V \rightarrow U$, where $U$ is a metric space.
+For an unweighted connected graph $G = (V,E)$ equipped with the shortest path distance metric $d_G$, a graph embedding $f$ is a map $f: V \rightarrow U$, where $U$ is a metric space.
 We refer to \cite{goyal2018graph} for a survey of several graph embedding methods and their applications. 
 
 The goal of an embedding is to preserve some structural properties of a graph.
@@ -108,13 +108,13 @@ Depending on an application, different loss/quality functions are used to measur
 D(f) = \frac{1}{\binom{n}{2}} \sum_{u \neq v}  \frac{|d(f(u),f(v)) - d_G(u,v)|}{d_G(u,v)}.
 \]
 
-Distortion is a global metric, it takes into account all graph distances. However, in many practical applications, it may not be a good choice. For example, in recommendation tasks, we usually deal with a partially observed graph, so a huge graph distance between nodes in the observed part does not necessarily mean that the nodes are not connected in the full graph. Additionally, as discussed in Section~\ref{sec:S_n}, graph distances are hard to preserve: there are graphs on just 4 nodes that cannot be perfectly embedded in a space of any curvature and any dimension. 
+Distortion is a global metric, it takes into account all graph distances. However, in many practical applications, it may not be a good choice. For example, in recommendation tasks, we usually deal with a partially observed graph, so a huge graph distance between nodes in the observed part does not necessarily mean that the nodes are not connected in the full graph. Additionally, as discussed in Section~\ref{sec:S_n}, graph distances are hard to preserve: there are simple graphs on just 4 nodes that can be perfectly embedded only in a space of curvature $-\infty$ for any dimension.
 
 Another measure, often used for embeddings, is Mean Average Precision (MAP), which, for a given node $v$, compares the distance-based ranking of other embedded nodes with the graph-neighborhood-based ranking. In contrast to distortion, MAP is scale-invariant, as it cares only about the order. Since changing curvature is equivalent to changing scale, MAP is insensitive to curvature.\footnote{In other words, it is sufficient to consider only the curvatures -1, 0, 1, corresponding to hyperbolic, Euclidean and spherical spaces. Moreover, by considering a small enough region in hyperbolic or spherical space we get geometry similar to the Euclidean one, so for MAP it is important to distinguish only between -1 and~1.} 
 However, in practical applications like recommendation systems, ranking scores are usually complemented by minimum score thresholds to have personalized sizes of top recommended items.
 This motivated us to consider another loss function, which is at the same time local and scale-dependent. 
 
-Let us define the following class of \textit{threshold-based} loss functions. Given an embedding $f$ of a graph $G$, we (re)construct a graph $G'$ in the following way: $v$ and $u$ are connected in $G'$ iff $d(f(v),f(u))\le 1$. Then, any loss function which is based on the comparison of $G$ and $G'$ is called threshold-based. While all our theoretical results hold for \textit{any} threshold-based loss function (see Section~\ref{sec:global}), in our experiments we measure and compare several functions of this type including, e.g., zero-one loss for the edge classification problem (whether a given node pair is connected or not), see Appendix~\ref{sec:setup} for definitions and discussion. Such loss functions are natural in many applications (graph reconstruction, link prediction, recommendations).
+Let us define the following class of \textit{threshold-based} loss functions. Given an embedding $f$ of a graph $G$, we (re)construct a graph $G'$ in the following way: $v$ and $u$ are connected in $G'$ iff $d(f(v),f(u))\le 1$. Then, any loss function which is based on the comparison of $G$ and $G'$ is called threshold-based. While all our theoretical results hold for \textit{any} threshold-based loss function (see Section~\ref{sec:global}), in our experiments we measure and compare several functions of this type including, e.g., zero-one loss for the edge classification problem (whether a given node pair is connected or not), see Appendix~\ref{sec:threshold} for definitions and discussion. Such loss functions are natural in many applications (graph reconstruction, link prediction, recommendations).
 
 \paragraph{Hyperbolic and Spherical Spaces}
 
@@ -341,7 +341,8 @@ The following theorem analyzes $C_d^{dist}(K_n)$ if $d = n-2$ (see Appendix~\ref
 $C_{n-2}^{dist}(K_n) = \bigg\{-\infty,  4 \left(\arcsin \sqrt{\frac{n}{2(n-1)}}\right)^2\bigg\}$.
 \end{theorem}
 
-This result is illustrated in Figure~\ref{fig:clique}. For $n = 4, d = 2$ we expect to see the minimum at about $3.65$, for $n = 12, d = 2$ we expect $2.76$, which is indeed the case. For other parameters, we do not have theoretical results, however we see sudden drops in positive curvature. Finally, as expected, distortion decreases as curvature becomes small. 
+Note that the optimal curvature $-\infty$ appears here since embedding of a complete graph can be reduced to embedding of a weighted star.
+This theorem is illustrated in Figure~\ref{fig:clique}. For $n = 4, d = 2$ we expect to see the minimum at about $3.65$, for $n = 12, d = 2$ we expect $2.76$, which is indeed the case. For other parameters, we do not have theoretical results, however we see sudden drops in positive curvature. Finally, as expected, distortion decreases as curvature becomes small. 
 
 \paragraph{Threshold-based curvature} 
 $C_d^{thr}(K_n) = \R$, since we can embed any complete graph perfectly by mapping all nodes to one point. 
@@ -557,27 +558,34 @@ Facebook / 10 &
 
 In this section, we compare all discussed curvature estimators empirically. Our experiments are based on a publicly available implementation of graph embedding by~\citet{gu2019learning}.\footnote{\url{https://github.com/HazyResearch/hyperbolics}} The main advantage of this algorithm is that it works for any curvature: negative, positive or zero. We modified the implementation for our task: in particular, we added a regime responsible for minimizing threshold-based loss functions. The detailed description of our experimental setup is given in Appendix~\ref{sec:setup}, the datasets and their properties are listed in Appendix~\ref{sec:datasets}.
 
-The results of the comparison for distortion and zero-one loss are presented in Tables~\ref{tab:compare_distortion} and~\ref{tab:compare_zero_one} (similar results on synthetic graphs are in Appendix~\ref{sec:compare_synth}), respectively.\footnote{Dimension 10 is not included for zero-one loss if for all curvatures a perfect embedding is possible.} We also added a method based on the gradient descent, proposed by~\citet{gu2019learning}. This method is used here only as an illustration, since our aim is to compare estimators which do not do actual embedding.
+The results of the comparison for distortion and zero-one loss are presented in Tables~\ref{tab:compare_distortion} and~\ref{tab:compare_zero_one}, 
+%(similar results on synthetic graphs are in Appendix~\ref{sec:compare_synth}), 
+respectively.\footnote{Dimension 10 is not included for zero-one loss if for all curvatures a perfect embedding is possible.} We also added a method based on the gradient descent, proposed by~\citet{gu2019learning}. This method is used here only as an illustration, since our aim is to compare estimators which do not do actual embedding.
 Also, the gradient descent algorithm uses the best space based on the value of the loss function, while all other curvature estimators do not use such information.
-We marked in bold both the global winner and the winner among all curvatures except the gradient descent one. 
+We marked in bold both the global winner and the winner among all curvatures except the gradient descent one. The main goal of this experiment is to show that all known curvatures (Ollivier, Forman and average sectional) have unstable performance
+and even gradient descent method is not always the best (in both tables). 
+Another important conclusion is that the optimal curvature depends on both dimension and loss function. We show more evidence for that in our extensive analysis in Appendix~\ref{sec:figures}, where we consider more datasets and more threshold-based loss functions. The experiments also confirm that         hyperbolically curved networks often becomes less hyperbolic in larger dimensions. 
 
-Table~\ref{tab:compare_distortion} analyzes distortion, here we compare Ollivier, Forman and average sectional curvatures and see that all of them have unstable performance. Also, even gradient descent method is not always the best (in both tables). In Table~\ref{tab:compare_zero_one} we also add volume-based estimator, which is designed for zero-one loss. 
-One can see that it is often the best one and one of the reasons is that it often predicts zero curvature. In Appendix~\ref{sec:figures}, we present additional figures that illustrate the fundamental difference between distortion and zero-one loss: zero-one loss is often optimal in a space of zero curvature.
+In our experiments with the proposed volume-based estimator (see Appendix~\ref{sec:volume_empirical}), we noticed that it is able to predict well whether the hyperbolic space is needed for an embedding or Euclidean space is enough. However, the magnitude for the predicted curvature can be not optimal. Volume-based estimator also predicts that for large dimensions Euclidean space is often a good choice.
+
+
+%In Table~\ref{tab:compare_zero_one} we also add volume-based estimator, which is designed for zero-one loss. 
+%One can see that it is often the best one and one of the reasons is that it often predicts zero curvature. In Appendix~\ref{sec:figures}, we present additional figures that illustrate the fundamental difference between distortion and zero-one loss: zero-one loss is often optimal in a space of zero curvature.
 
 \begin{table}[t]
 \caption{Compare curvature estimators, zero-one loss}
 \label{tab:compare_zero_one}
 \begin{center}
-\begin{tabular}{lcccccccc|cc}
+\begin{tabular}{lcccccc|cc}
 &
 \multicolumn{2}{c}{Ollivier} &
 \multicolumn{2}{c}{Forman} &
 \multicolumn{2}{c}{Avg. sectional} &
-\multicolumn{2}{c}{Volume} &
+%\multicolumn{2}{c}{Volume} &
 \multicolumn{2}{|c}{Grad. descent} 
 %& \multicolumn{2}{c}{Grid search} 
 \\
-Dataset & c & loss  & c & loss  & c & loss & c & loss & c & loss  
+Dataset & c & loss  & c & loss  & c & loss & c & loss %& c & loss  
 \\
 \hline \\
 %Karate / 2 &
@@ -592,61 +600,61 @@ Conflict / 2 &
 -0.2 & \textbf{0.032} &
 -16.6 &\textbf{0.032} &
 0.25 & 0.060 &
--2.21 & \textbf{0.032} &
+%-2.21 & \textbf{0.032} &
 0.0 & \textbf{0.032} \\
 Conflict / 10 &
 -0.2 & 0.001 &
 -16.6 &	0.025 &
-0.25 & $10^{-4}$ &
-0.0 & \textbf{0.0} &
+0.25 & $\mathbf{10^{-4}}$ &
+%0.0 & \textbf{0.0} &
 0.0 & \textbf{0.0}  \\
 Chicago / 2 &
--0.19 & 0.004 & 
+-0.19 & \textbf{0.004} & 
 -8.37 & 0.005 & 
--0.6 & 0.004 & 
-0.0 & \textbf{0.002} &
+-0.6 & \textbf{0.004} & 
+%0.0 & \textbf{0.002} &
 0.0 & \textbf{0.002}  \\
 CSPhDs / 2 &
 -0.28 &	\textbf{0.002} &
 -7.92 &	0.004 &
 -0.26 & \textbf{0.002} &
-0.0 & \textbf{0.002} &
+%0.0 & \textbf{0.002} &
 0.0 & \textbf{0.002}  \\
 Euroroad / 2 &
 -0.36 &	\textbf{0.002} &
 -1.95 &	0.004 &
 0.027 &	0.005 &
-0.0 & \textbf{0.002} &
+%0.0 & \textbf{0.002} &
 0.0 & \textbf{0.002} \\
 EuroSiS / 2 &
 -0.17 & \textbf{0.009} & 
 -29.1 & 0.017 & 
 0.26 & 0.058 & 
--3.79 & 0.016 &
+%-3.79 & 0.016 &
 0.0 & 0.010  \\
 EuroSiS / 10 &
 -0.17 & \textbf{0.003} & 
 -29.1 & 0.012 & 
 0.26 & \textbf{0.003} & 
-0.0 & 0.007 &
+%0.0 & 0.007 &
 0.0 & 0.007\\
 Power / 2 &
 -0.35 & \textbf{0.002} &
  -2.85 & 0.006 &
  0.02 & 0.006 &
-0.0 & \textbf{0.002} &
+%0.0 & \textbf{0.002} &
 0.0 & \textbf{0.002}  \\
 Facebook / 2 &
 0.308 & 0.058 & 
 -44.7 & 0.059 & 
-0.15 & \textbf{0.033} & 
--11.2 & 0.040 &
+%0.15 & \textbf{0.033} & 
+-11.2 & \textbf{0.040} &
 0.0 & \textbf{0.019} \\
 Facebook / 10 &
 0.308 & \textbf{0.007} & 
 -44.7 & 0.050 & 
 0.15 & \textbf{0.007} & 
-0.0 & 0.013 &
+%0.0 & 0.013 &
 0.0 & 0.013 \\
 \end{tabular}
 \end{center}
@@ -654,7 +662,7 @@ Facebook / 10 &
 
 \section{Conclusion}
 
-In this paper, we introduced a concept of global graph curvature motivated by the task of embedding graphs. The global graph curvature depends on the loss function and dimension of a space. To get an intuition about how this curvature behaves, we theoretically and empirically analyzed it for several simple graphs. We compared the global graph curvature and several approximations based on well-known local graph curvatures. We also demonstrated that the choice of loss function fundamentally affects the global curvature. We noticed that for zero-one loss it is usually optimal to choose zero curvature (Euclidean space) and proposed a simple estimator which decides whether it is reasonable to embed into a negatively curved space. Our work shows that the problem of finding the rights space for graph embedding is interesting and non-trivial and we hope our results will encourage further research on global graph curvature.
+In this paper, we introduced a concept of global graph curvature motivated by the practical task of embedding graphs. This curvature depends on the loss function and dimension of a space. To get an intuition about how global graph curvature behaves, we theoretically and empirically analyzed it for several simple graphs. We compared (theoretically and empirically) the global graph curvature and several approximations based on well-known local graph curvatures and showed that they essentially differ. We demonstrated that dimensionality and the choice of a loss function fundamentally affect the global curvature and, in particular, when dimension is larger the optimal curvature usually becomes less negative, which agrees with our theoretical analysis. We also proposed a simple dimension-specific estimator which decides whether it is reasonable to embed into a negatively curved space. Our work shows that the problem of finding the rights space for graph embedding is interesting and non-trivial and we hope our results will encourage further research on global graph curvature.
 %and analyzed estimating of this curvature using only graph-based characteristics. 
 %\subsubsection*{Author Contributions}
 
@@ -1081,18 +1089,36 @@ Datasets used in our experiments are listed in Table~\ref{tab:datasets}. In all 
 %\multicolumn{1}{c}{\bf PART}  &\multicolumn{1}{c}{\bf DESCRIPTION}
 Dataset & num. nodes & num. edges \\
  \hline \\
-%Karate club~\citep{zachary1977information} 
-%    	& 34 & 78   \\
+Karate club~\citep{zachary1977information} 
+    	& 34 & 78   \\
+Dolphins~\citep{lusseau2003bottlenose} & 62 & 159   \\
+Football~\citep{newman2004finding} & 115 & 613   \\
+Political books~\citep{newman2006modularity} & 105 & 441 \\
 Conflict~\citep{ward2007disputes} & 127 & 253 \\
 Chicago~\citep{eash1979equilibrium} & 822 & 821 \\
 CSPhDs~\citep{nooy2006exploratory} & 1025 & 1043 \\
 Euroroad~\citep{vsubelj2011robust} &  1039 & 1305 \\
+Political blogs~\citep{adamic2005political} &  1222 &  16714 \\
 EuroSiS~\citep{khokhar2015gephi} & 1272 & 6424 \\
 Power~\citep{watts1998collective} & 4941 & 6594 \\
-Facebook~\cite{leskovec2012learning} & 4039 & 88234 \\
+Facebook~\citep{leskovec2012learning} & 4039 & 88234 \\
 \end{tabular}
 \end{center}
 \end{table}
+
+\subsection{Threshold-based loss functions}\label{sec:threshold}
+
+While our theoretical results in Section~\ref{sec:global} hold for any threshold-based loss function, we noticed that for less trivial datasets, where the perfect embedding is impossible, the choice of the loss function becomes important. In most of the experiments we use zero-one loss function:
+\[
+\frac{1}{{n \choose 2}} \sum_{i,j}  I[v_i \sim v_j] \cdot I[d(f(v_i)f(v_j)) > 1] + (1 - I[v_i \sim v_j]) \cdot I[d(f(v_i),f(v_j)) \le 1]
+\]
+which essentially measures how well the values $I[d(f(v_i)f(v_j)) > 1]$ approximate $I[v_i \sim v_j]$.
+However, due to the fact that the real-world graphs are usually sparse, optimizing zero-one loss may lead to algorithms biased towards sparse embeddings. A standard solution to this is to consider balanced accuracy instead of accuracy, which leads to balanced zero-one loss:
+\[
+\frac{\sum_{i,j}  I[v_i \sim v_j] \cdot I[d(f(v_i)f(v_j)) > 1]}{2 \sum_{i,j}  I[v_i \sim v_j] } + \frac{\sum_{i,j} (1 - I[v_i \sim v_j]) \cdot I[d(f(v_i),f(v_j)) \le 1]}{2 \sum_{i,j} (1 - I[v_i \sim v_j])}\,.
+\]
+
+The recent study by~\cite{gosgens2019systematic}
 
 \subsection{Experimental setup}\label{sec:setup}
 
@@ -1102,7 +1128,7 @@ We modified the implementation for our task: in particular, we added a regime re
 %Let $e_{ij}$ be the adjacency matrix of a graoh $G$, 
 Zero-one loss is equal to
 \[
-\sum_{i,j}  I[v_i \sim v_j] \cdot I[d(f(v_i)f(v_j) > 1] + (1 - I[v_i \sim v_j]) \cdot I[d(f(v_i),f(v_j)) \le 1].
+\sum_{i,j}  I[v_i \sim v_j] \cdot I[d(f(v_i)f(v_j)) > 1] + (1 - I[v_i \sim v_j]) \cdot I[d(f(v_i),f(v_j)) \le 1].
 \]
 This function is not differentiable, so we replace it by gradient descent friendly function which we call ReLuLoss:
 \[
@@ -1278,21 +1304,41 @@ In this section, we visualize the dependence of the loss function on curvature (
 
 \begin{figure}
     \centering
-    \includegraphics[width = 0.49 \textwidth]{conflict_distortion.pdf}
-    \includegraphics[width = 0.49 \textwidth]{conflict_zero_one.pdf}
-    \includegraphics[width = 0.49 \textwidth]{conflict_pearson.pdf}
-    \includegraphics[width = 0.49 \textwidth]{conflict_balanced_zero_one.pdf}
-    \caption{Effect of curvature, Conflict dataset}
-    \label{fig:conflict}
-\end{figure}
-
-\begin{figure}
-    \centering
     \includegraphics[width = 0.49 \textwidth]{dolphins_distortion.pdf}
     \includegraphics[width = 0.49 \textwidth]{dolphins_zero_one.pdf}
     \includegraphics[width = 0.49 \textwidth]{dolphins_pearson.pdf}
     \includegraphics[width = 0.49 \textwidth]{dolphins_balanced_zero_one.pdf}
     \caption{Effect of curvature, Dolphins dataset}
+    \label{fig:dolphins}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.49 \textwidth]{football_distortion.pdf}
+    \includegraphics[width = 0.49 \textwidth]{football_zero_one.pdf}
+    \includegraphics[width = 0.49 \textwidth]{football_pearson.pdf}
+    \includegraphics[width = 0.49 \textwidth]{football_balanced_zero_one.pdf}
+    \caption{Effect of curvature, Football dataset}
+    \label{fig:football}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.49 \textwidth]{polbooks_distortion.pdf}
+    \includegraphics[width = 0.49 \textwidth]{polbooks_zero_one.pdf}
+    \includegraphics[width = 0.49 \textwidth]{polbooks_pearson.pdf}
+    \includegraphics[width = 0.49 \textwidth]{polbooks_balanced_zero_one.pdf}
+    \caption{Effect of curvature, Political books dataset}
+    \label{fig:polbooks}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 0.49 \textwidth]{conflict_distortion.pdf}
+    \includegraphics[width = 0.49 \textwidth]{conflict_zero_one.pdf}
+    \includegraphics[width = 0.49 \textwidth]{conflict_pearson.pdf}
+    \includegraphics[width = 0.49 \textwidth]{conflict_balanced_zero_one.pdf}
+    \caption{Effect of curvature, Conflict dataset}
     \label{fig:conflict}
 \end{figure}
 
@@ -1336,6 +1382,8 @@ In this section, we visualize the dependence of the loss function on curvature (
     \caption{Effect of curvature, Power dataset}
     \label{fig:power}
 \end{figure}
+
+\subsection{Empirical analysis of volume-based curvature}\label{sec:volume_empirical}
 
 
 \end{document}
