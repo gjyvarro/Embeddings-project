@@ -103,12 +103,12 @@ For an unweighted connected graph $G = (V,E)$ equipped with the shortest path di
 We refer to \cite{goyal2018graph} for a survey of several graph embedding methods and their applications. 
 
 The goal of an embedding is to preserve some structural properties of a graph.
-Depending on an application, different loss/quality functions are used to measure the quality of a graph embedding. The most well-known is \textit{distortion}:
+Depending on an application, different loss/quality functions are used to measure the quality of a graph embedding. The most well-known is \textit{distortion}:\footnote{There are other definitions of distortion in the literature, see, e.g.,~\citep{sala2018representation}.}
 \[
 D(f) = \frac{1}{\binom{n}{2}} \sum_{u \neq v}  \frac{|d(f(u),f(v)) - d_G(u,v)|}{d_G(u,v)}.
 \]
 
-Distortion is a global metric, it takes into account all graph distances. However, in many practical applications, it may not be a good choice. For example, in recommendation tasks, we usually deal with a partially observed graph, so a huge graph distance between nodes in the observed part does not necessarily mean that the nodes are not connected in the full graph. Additionally, as discussed in Section~\ref{sec:S_n}, graph distances are hard to preserve: there are simple graphs on just 4 nodes that can be perfectly embedded only in a space of curvature $-\infty$ for any dimension.
+Distortion is a global metric, it takes into account all graph distances. However, in some practical applications, it may not be the best choice. For example, in recommendation tasks, we usually deal with a partially observed graph, so a huge graph distance between nodes in the observed part does not necessarily mean that the nodes are not connected in the full graph. Additionally, as discussed in Section~\ref{sec:S_n}, graph distances are hard to preserve: there are simple graphs on just 4 nodes that can be perfectly embedded only in a space of curvature $-\infty$ for any dimension.
 
 Another measure, often used for embeddings, is Mean Average Precision (MAP), which, for a given node $v$, compares the distance-based ranking of other embedded nodes with the graph-neighborhood-based ranking. In contrast to distortion, MAP is scale-invariant, as it cares only about the order. Since changing curvature is equivalent to changing scale, MAP is insensitive to curvature.\footnote{In other words, it is sufficient to consider only the curvatures -1, 0, 1, corresponding to hyperbolic, Euclidean and spherical spaces. Moreover, by considering a small enough region in hyperbolic or spherical space we get geometry similar to the Euclidean one, so for MAP it is important to distinguish only between -1 and~1.} 
 However, in practical applications like recommendation systems, ranking scores are usually complemented by minimum score thresholds to have personalized sizes of top recommended items.
@@ -1098,7 +1098,7 @@ Conflict~\citep{ward2007disputes} & 127 & 253 \\
 Chicago~\citep{eash1979equilibrium} & 822 & 821 \\
 CSPhDs~\citep{nooy2006exploratory} & 1025 & 1043 \\
 Euroroad~\citep{vsubelj2011robust} &  1039 & 1305 \\
-Political blogs~\citep{adamic2005political} &  1222 &  16714 \\
+%Political blogs~\citep{adamic2005political} &  1222 &  16714 \\
 EuroSiS~\citep{khokhar2015gephi} & 1272 & 6424 \\
 Power~\citep{watts1998collective} & 4941 & 6594 \\
 Facebook~\citep{leskovec2012learning} & 4039 & 88234 \\
@@ -1292,7 +1292,7 @@ See the results in Tables~\ref{tab:compare_distortion_synth} and~\ref{tab:compar
 
 \subsection{Effect of dimension and loss function}\label{sec:figures}
 
-In this section, we visualize the dependence of the loss function on curvature (see Figures~\ref{fig:karate}-\ref{fig:facebook}). In particular, we demonstrate that the optimal curvature significantly depends on both loss function and dimension. More precisely, while our theoretical results hold for any threshold-based loss function, for less trivial graphs the optimal curvature depends on the particular choice.\footnote{We note that the curves corresponding to threshold-based losses are noisy since such loss functions are discrete and multimodal, so they are harder to optimize. To smooth the results, we added several tricks to the optimizer and also choose the optimum embedding based on several random restarts of the algorithm. Although the results are still noisy, the general trends are usually clearly seen.} 
+In this section, we visualize the dependence of the loss function on curvature (see Figures~\ref{fig:karate}-\ref{fig:facebook}). In particular, we demonstrate that the optimal curvature significantly depends on both loss function and dimension. More precisely, while our theoretical results hold for any threshold-based loss function, for less trivial graphs the optimal curvature depends on the particular choice.\footnote{We note that the curves corresponding to threshold-based losses are noisy, especially for small datasets, since such loss functions are discrete and multimodal, so they are harder to optimize. To smooth the results, we added several tricks to the optimizer and also choose the optimum embedding based on several random restarts of the algorithm. Although the results are still noisy, the general trends are usually clearly seen.} 
 
 The obtained results support our intuition (based on theoretical results) that while hyperbolic space helps in many cases for small dimensions, it becomes less pronounced in larger dimensions. This is most clearly seen for distortion loss (see, e.g., Karate club, Football, CSPhDs, Euroroad, EuroSiS, Power).
 
@@ -1400,15 +1400,15 @@ The obtained results support our intuition (based on theoretical results) that w
 \begin{figure}
     \centering
     \includegraphics[width = 0.49 \textwidth]{facebook_distortion.pdf}
-    \includegraphics[width = 0.49 \textwidth]{facebook_balanced_zero_one.pdf}
-    \caption{Effect of curvature, Facebook dataset}
+    %\includegraphics[width = 0.49 %\textwidth]{facebook_balanced_zero_one.pdf}
+    \caption{Effect of curvature, Facebook dataset, distortion loss}
     \label{fig:facebook}
 \end{figure}
 
 \subsection{Empirical analysis of volume-based curvature}\label{sec:volume_empirical}
 
-As discussed in the previous section, optimizing distortion leads to more stable results than threshold-based losses, so we focus on this loss here. It turns out that the proposed volume-based estimator is able to reflect well whether it is reasonable to embed a network to a hyperbolic space for a given loss function if we care about distortion. Table~\ref{tab:volume-based} shows the estimated values of a curvature.\footnote{The value 0.1 appears due to a technical reason: in spherical space of large curvature balls of radius $k$ can be not well defined.} 
-One can see that for $d = 2$ in many cases significantly negative curvature is predected which is indeed confirmed by our experiments, shown in Figures~\ref{fig:karate}-\ref{fig:facebook} (distortion loss). Non-negative curvature is predicted for Chicago, CSPhDs, Euroroad and Power and indeed for these datasets the optimal curvature is close to zero. In contrast, for $d = 10$ negative curvature is never predicted, which agrees with the experiment well. So, in these cases it is not reasonable to embed networks to a hyperbolic space.
+As discussed in the previous section, optimizing distortion leads to more stable results than threshold-based losses, so we focus on this loss here. It turns out that the proposed volume-based estimator is able to reflect well whether it is reasonable to embed a network to a hyperbolic space for a given loss function if we care about distortion. Table~\ref{tab:volume-based} shows the estimated values of a curvature.\footnote{The value 0.1 appears due to a technical reason: in spherical space of large curvature there can be no points at distance $k$, so we limit considered curvatures.} 
+One can see that for $d = 2$ in many cases significantly negative curvature is predicted which is indeed confirmed by our experiments, shown in Figures~\ref{fig:karate}-\ref{fig:facebook} (distortion loss). Non-negative curvature is predicted for Chicago, CSPhDs, Euroroad and Power and indeed for these datasets the optimal curvature is close to zero. In contrast, for $d = 10$ negative curvature is never predicted, which agrees with the experiment well. So, in these cases it is not reasonable to embed networks to a hyperbolic space.
 
 \begin{table}[t]
 \caption{Volume-based curvature}
@@ -1416,7 +1416,7 @@ One can see that for $d = 2$ in many cases significantly negative curvature is p
 \begin{center}
 \begin{tabular}{lcc}
 Dataset & $d = 2$ & $d = 10$ \\
- \hline \\
+\hline \\
 Karate club & -6.7 & 0.1 \\
 Dolphins & -3.3 & 0.1 \\
 Football & -2.1 & 0.1 \\
@@ -1425,7 +1425,7 @@ Conflict & -1.8 & 0.1 \\
 Chicago & 0.1 & 0.1 \\
 CSPhDs & 0.07 & 0.1 \\
 Euroroad & 0.1 & 0.1 \\
-Political blogs & -9.6 & 0.1 \\
+%Political blogs & -9.6 & 0.1 \\
 EuroSiS & -3.7 & 0.1 \\
 Power & 0.1 & 0.1 \\
 Facebook & -11 & 0.1 \\
