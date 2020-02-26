@@ -41,7 +41,7 @@ Recently, non-Euclidean spaces became popular for embedding structured data. How
 In this paper, we define a notion of \textit{global graph curvature}, specifically catered to the problem of embedding graphs.
 We theoretically analyze this value and show that the optimal curvature essentially depends on the dimensionality of the embedding space and loss function one aims to minimize via embedding. 
 We also review existing notions of local curvature (e.g., Ollivier-Ricci curvature) and conduct a theoretical analysis of their properties. 
-In particular, we demonstrate that such curvatures are unable to properly estimate the global one. 
+In particular, we demonstrate that such curvatures are unable to estimate the global one. 
 
 \keywords{Graph embedding \and Curvature \and Non-Euclidean spaces}
 \end{abstract}
@@ -53,19 +53,18 @@ In particular, we demonstrate that such curvatures are unable to properly estima
 
 Representation learning is an important tool for learning from structured data such as graphs or texts~\cite{grover2016node2vec,mikolov2013distributed,perozzi2014deepwalk}.
 State-of-the-art algorithms typically use Euclidean space for embedding. 
-Recently, however, it was found that hyperbolic spaces demonstrate superior performance for various tasks~\cite{nickel2018learning,sala2018representation}, while in some cases spherical spaces can be useful~\cite{liu2017sphereface}. A key characteristic classifying the above-mentioned spaces is curvature, which is negative for hyperbolic spaces, zero for Euclidean and positive for spherical spaces. These findings, therefore, show that certain graphs are better represented in spaces with non-zero curvature. While some methods simply fix curvature (e.g., -1 for hyperbolic space) and then find the optimal embedding of the graph in the corresponding space \cite{nickel2018learning}, others try to learn the right curvature and embedding simultaneously~\cite{gu2019learning}.
+Recently, however, it was found that hyperbolic spaces demonstrate superior performance for various tasks~\cite{nickel2018learning,sala2018representation}, while in some cases spherical spaces can be useful~\cite{liu2017sphereface}. A key characteristic classifying the above-mentioned spaces is curvature, which is negative for hyperbolic spaces, zero for Euclidean, and positive for spherical spaces. These findings, therefore, show that certain graphs are better represented in spaces with non-zero curvature. While some methods simply fix the curvature (e.g., -1 for hyperbolic space) and then find the optimal embedding of the graph in the corresponding space \cite{nickel2018learning}, others try to learn the right curvature and embedding simultaneously~\cite{gu2019learning}.
 
-In this paper, we \ch{consider the problem} of determining a graph curvature suitable for embedding \textit{without} actual embedding the graph itself (using only some simple graph characteristics). 
+In this paper, we consider the problem of determining a graph curvature suitable for embedding \textit{without} actual embedding the graph itself (using only some simple graph characteristics). 
 We first introduce a concept of \textit{global} graph curvature, which depends on both the dimension and loss function used for the embedding. 
 We theoretically analyze this curvature considering two loss functions: \emph{distortion}, which is widely used in embedding literature, and \emph{threshold-based} loss (see Section~\ref{sec:related_work}), which is more suitable for some practical applications. 
 We prove that these loss functions lead to fundamentally different graph curvatures. 
 We also conduct a systematic analysis of several existing estimators of global curvature, in particular, the ones based on the well-known Ollivier-Ricci and Forman-Ricci \textit{local} graph curvatures. 
 We prove that all these notions give curvatures that are far from the optimal curvature for embedding the graph (in particular, because they are dimension-independent). 
 
-One important insight, which we gained based on our theoretical analysis, is the fact that the optimal curvature is usually smaller for smaller dimensions. In other words, a network which seems to be negatively curved (for some small dimension) usually becomes more neutral as dimensionality grows. \textbf{[Maybe rewrite or remove]}
-\textbf{[How relevant is the dimension for embedding applications? Given that our curvature notion is dimension dependent its novelty and applicability depends on this relevance I think.]}
+One insight, which we gained based on our theoretical analysis, is the fact that the optimal curvature is often smaller for smaller dimensions. In other words, while hyperbolic space may be needed for some small dimension, Euclidean space may be enough for a larger one.
 
-Our analysis shows that the problem of estimating the global graph curvature is non-trivial. \ch{Moreover, it provides important first steps towards understanding this concept from both a theoretical and practical aspect. This will aid future researchers studying this important topic.}  
+Our analysis shows that the problem of estimating the global graph curvature is non-trivial. Moreover, it provides important first steps towards understanding this concept from both theoretical and practical aspects. This will aid future researchers studying this important topic.
 
 \section{Background and related work}\label{sec:related_work}
 
@@ -73,19 +72,19 @@ Our analysis shows that the problem of estimating the global graph curvature is 
 For an unweighted connected graph $G = (V,E)$ equipped with the shortest path distance metric $d_G$, a graph embedding $f$ is a map $f: V \rightarrow U$, where $U$ is a metric space. We refer to \cite{goyal2018graph} for a survey of several graph embedding methods and their applications. 
 
 The goal of an embedding is to preserve some structural properties of a graph.
-Depending on \ch{the} application, different loss/quality functions are used to measure the quality of a graph embedding. The most well-known is \textit{distortion}:\footnote{There are other definitions of distortion in the literature, see, e.g.,~\cite{sala2018representation}.}
+Depending on the application, different loss/quality functions are used to measure the quality of a graph embedding. The most well-known is \textit{distortion}:\footnote{There are other definitions of distortion in the literature, see, e.g.,~\cite{sala2018representation}.}
 \[
 D(f) = \frac{1}{{n \choose 2}} \sum_{u \neq v}  \frac{|d(f(u),f(v)) - d_G(u,v)|}{d_G(u,v)},
 \]
-\ch{where $d$ denotes the distance metric in $U$.}
+where $d$ denotes the distance metric in $U$.
 
-Distortion is a global metric, it takes into account all graph distances. However, in some practical applications, it may not be the best choice. For example, in recommendation tasks, we usually deal with a partially observed graph, so a huge graph distance between nodes in the observed part does not necessarily mean that the nodes are not connected \ch{by a short path} in the full graph. Additionally, as \ch{we shall see} in Section~\ref{sec:S_n}, graph distances are hard to preserve: there are simple graphs on just 4 nodes that can be perfectly embedded only in a space of curvature $-\infty$ for any dimension.
+Distortion is a global metric, it takes into account all graph distances. However, in some practical applications, it may not be the best choice. For example, in recommendation tasks, we usually deal with a partially observed graph, so a huge graph distance between nodes in the observed part does not necessarily mean that the nodes are not connected by a short path in the full graph. Additionally, as we shall see in Section~\ref{sec:S_n}, graph distances are hard to preserve: there are simple graphs on just 4 nodes that can be perfectly embedded only in a space of curvature $-\infty$ for any dimension.
 
 Another measure, often used for embeddings, is Mean Average Precision (MAP), which, for a given node, compares the distance-based ranking of other embedded nodes with the graph-neighborhood-based ranking. 
-We do not consider MAP in our analysis \ch{since} it cares only about the order and so is curvature-invariant.  
+We do not consider MAP in our analysis since it cares only about the order and so is curvature-invariant.  
 Indeed, changing curvature is equivalent to changing scale, so it is sufficient to consider only the curvatures -1, 0, 1, corresponding to hyperbolic, Euclidean and spherical spaces. Moreover, by considering a small enough region in hyperbolic or spherical space we get geometry similar to the Euclidean one, so for MAP it is important to distinguish only between -1 and~1.
 
-\ch{We also consider} the following class of \textit{threshold-based} loss functions. Given an embedding $f$ of a graph $G$, we (re)construct a graph $G'$ in the following way: $v$ and $u$ are connected in $G'$ iff $d(f(v),f(u))\le 1$. Then, any loss function which is based on the comparison of $G$ and $G'$ is called threshold-based. 
+We also consider the following class of \textit{threshold-based} loss functions. Given an embedding $f$ of a graph $G$, we (re)construct a graph $G'$ in the following way: $v$ and $u$ are connected in $G'$ iff $d(f(v),f(u))\le 1$. Then, any loss function which is based on the comparison of $G$ and $G'$ is called threshold-based. 
 Such loss functions are natural in many applications (graph reconstruction, link prediction, recommendations).
 While many particular choices are possible, our theoretical results hold for \textit{any} threshold-based loss function.
 
@@ -99,7 +98,7 @@ The main advantage of hyperbolic space is that it is ``larger'': the volume of a
 
 \section{Local graph curvatures}
 
-While in this paper we \ch{analyze \textit{global}} graph curvature, there are several \textit{local} ones proposed in the literature. Many of them are based on the notion of sectional curvature and Ricci curvature defined for Riemannian manifolds. Intuitively, Ricci curvature controls whether the distance between small spheres is smaller or larger than the distance between the centers of the spheres. \ch{For example, ricci} curvature is positive if small spheres are closer than their centers are. We refer to~\cite{jost2009geometry,oneill1983semiriemannian} for more details on Ricci curvature.
+While in this paper we analyze \textit{global} graph curvature, there are several \textit{local} ones proposed in the literature. Many of them are based on the notion of sectional curvature and Ricci curvature defined for Riemannian manifolds. Intuitively, Ricci curvature controls whether the distance between small spheres is smaller or larger than the distance between the centers of the spheres. For example, Ricci curvature is positive if small spheres are closer than their centers are. We refer to~\cite{jost2009geometry,oneill1983semiriemannian} for more details on Ricci curvature.
 
 \subsubsection{Ollivier curvature}
 
@@ -121,7 +120,7 @@ F_G(u,v)
 = 4 - (\mathrm{deg}(v) + \mathrm{deg}(u)).
 \end{equation}
 
-Forman was interested in a general discretization of curvature for Riemannian manifolds and his formula includes faces of any dimension. Although this can be translated to graphs~\cite{weber2017coarse}, the formula becomes quite cumbersome. Therefore, \ch{in~Equation \ref{eq:forman1}} only $1$-dimensional faces (edges) are included. One can extend this expression by including higher dimensional faces. This was considered in~\cite{samal2018comparative}, where $2$-dimensional faces on three nodes (triangles) were included. In the case of an unweighted graph, we then obtain
+Forman was interested in a general discretization of curvature for Riemannian manifolds and his formula includes faces of any dimension. Although this can be translated to graphs~\cite{weber2017coarse}, the formula becomes quite cumbersome. Therefore, in~Equation~\ref{eq:forman1} only $1$-dimensional faces (edges) are included. One can extend this expression by including higher dimensional faces. This was considered in~\cite{samal2018comparative}, where $2$-dimensional faces on three nodes (triangles) were included. In the case of an unweighted graph, we then obtain
 \begin{equation}\label{eq:forman2}
 	\hat F_G(u,v) = F(u,v) + 3\Delta_{uv} 
 	= 4 - \mathrm{deg}(v) - \mathrm{deg}(u) + 3\Delta_{uv},
@@ -158,7 +157,7 @@ In this section, we propose a practice-driven definition of global graph curvatu
 
 \subsection{Definition}\label{sec:global_curvature_definition}
 
-For a graph $G$, let $f(G)$ be an embedding of this graph into a $d$-dimensional space of constant curvature $c$ (spherical, Euclidean or hyperbolic). \textbf{[Is it a problem that we use $d$ for dimension but sometimes also for distance metric?]}
+For a graph $G$, let $f(G)$ be an embedding of this graph into a $d$-dimensional space of constant curvature $c$ (spherical, Euclidean or hyperbolic).
 Assume that we are given a loss function $L(f)$ for the embedding task (see Section~\ref{sec:related_work}).
 Now, let $L_{opt}(G,d,c)$ be the optimal loss for given $d$ and $c$:
 $L_{opt}(G,d,c) = \min_{f} L(f).$
@@ -184,13 +183,13 @@ Let us discuss how local graph curvatures can be used to estimate the global one
 
 It is important to note that all curvatures discussed above do \textit{not} depend on neither dimension $d$ nor loss function $L$. However, as we show below, global curvature defined in Section~\ref{sec:global_curvature_definition} significantly depends on them.
 
-Let us also mention that there is a concept of Gromov's hyperbolicity~\cite{gromov1987hyperbolic}, which is sometimes used to decide whether it is reasonable to embed a graph to a hyperbolic space. However, first, this estimator cannot be easily converted to curvature, and, second, it does not say anything about the \ch{embedding in spherical spaces.}
+Let us also mention that there is a concept of Gromov's hyperbolicity~\cite{gromov1987hyperbolic}, which is sometimes used to decide whether it is reasonable to embed a graph to a hyperbolic space. However, first, this estimator cannot be easily converted to curvature, and, second, it does not say anything about the embedding in spherical spaces.
 
 \section{Theoretical analysis of global curvature}\label{sec:theory}
 
 To better understand the performance of the proposed approximations of global graph curvature,
 we consider several basic graphs and compare their global curvature and approximations. 
-By studying these graphs we \ch{also gain insights} into how classic graph topologies influence the curvature of the space in which they can be properly embedded. 
+By studying these graphs we also gain insights into how classic graph topologies influence the curvature of the space in which they can be properly embedded. 
 
 \subsection{Star $S_n$}\label{sec:S_n}
 
@@ -222,7 +221,7 @@ If $c \to -\infty$, then the optimal distortion $D_{opt}(S_n) = \Theta\left(\fra
 Therefore, for any $S_n$ we have $C_d^{dist}(S_n) = -\infty$.
 \end{theorem}
 
-The intuition behind this result is the following: we cannot embed a star $S_3$ with zero distortion into a \ch{any space of constant curvature} and any dimension, because in case of zero distortion the central node $v$ has to lie on the geodesics between all pairs of leaves, so all 4 nodes have to belong to one geodesics, which is impossible. Moreover, the same problem occurs if any graph $G$ contains $S_3$ as an induced subgraph.
+The intuition behind this result is the following: we cannot embed a star $S_3$ with zero distortion into any space of constant curvature and any dimension, because in case of zero distortion the central node $v$ has to lie on the geodesics between all pairs of leaves, so all 4 nodes have to belong to one geodesics, which is impossible. Moreover, the same problem occurs if any graph $G$ contains $S_3$ as an induced subgraph.
 On the other hand, if $c \to -\infty$, we can spread all leaves of $S_n$ uniformly on a circle of radius 1 around the central node and distortion of such construction will tend to zero since the distance between the pairs of leaves will tend to 2 (triangles become thinner). 
 The formal proof of Theorem~\ref{thm:star_distortion} can be found in Appendix~\ref{sec:proof:star_distortion}.
 Further we will see that if we minimize a threshold-based loss, then any tree can be perfectly embedded with $d = 2$.
@@ -240,67 +239,23 @@ $C_d^{thr}(S_n) = (-\infty, C)$ for some $C = C(n,d)$, which increases with $d$ 
 
 \begin{proof}
 
-We show below that for any $n$ and $d$ and some curvature $c$ there exists a perfect embedding.
+We show that for any $n$ and $d$ and some curvature $c$ there exists a perfect embedding (preserving all edges).
 Therefore $C_d^{dist}(S_n)$ consists of curvatures for which such perfect embedding exists. 
 Note that if there exists a perfect embedding $f$ for some curvature $c$, then there exists a perfect embedding for any curvature $c' < c$. Indeed, w.l.o.g., we assume that the central node $v$ is mapped to the origin of a hyperspherical coordinate system and other points $v_1, \ldots, v_n$ can be described by their radii and angles. We know that the distance between $v$ and any $v_i$ is at most 1 and the distance between any pair $v_i, v_j$ is larger than one. Now we change curvature to $c' < c$ and keep hyperspherical coordinates the same. Then the distance between $v$ and any $v_i$ does not change, while the distance between nodes $v_i, v_j$ increases.
 
-It is easy to see that $C$ increases with $d$: if there exists an embedding to some dimension $d$, then, obviously, the same embedding works for $d' > d$. Further, $C$ decreases with $n$ since if there \ch{exists an embedding} of $S_n$, then we can easily construct an embedding of $S_{n'}$ for $n' < n$ by removing some nodes. 
+It is easy to see that $C$ increases with $d$: if there exists an embedding to some dimension $d$, then, obviously, the same embedding works for $d' > d$. Further, $C$ decreases with $n$ since if there exists an embedding of $S_n$, then we can easily construct an embedding of $S_{n'}$ for $n' < n$ by removing some nodes. 
 
-Now, let us construct a perfect embedding of $S_n$ for $d = 2$
-and estimate the required curvature.
-Recall that in a perfect embedding all leaves have to be inside the ball of radius 1 around the central node $v$ and also the distance between any two leaves has to be larger than one. 
-It is easy to see that if we managed to spread $n$ points inside the ball of radius 1 with distances more than 1 between them, then we can move each point along the radius up to distance 1 from $v$ preserving this property. Therefore, it is sufficient to spread all points on a hypersphere. 
+The rest of the proof (constructing a perfect embedding for $d = 2$) is technical and can be found in Appendix~\ref{app:proof:star_threshold}. The main idea is that when we embed a star aiming to minimize a threshold-based loss, we just need a curvature to be small enough to spread all neighbors of a central node sufficiently far away from each other.
 
-First, assume that $n > 6$. In this case we have to consider only hyperbolic space, since $n$ neighbors would not fit to a circle of radius 1 in neither spherical nor Euclidean spaces.
-
-We will find \ch{the} largest curvature $C$ which allows to have distance exactly 1 between the closest leaves. In this case we cannot embed $S_n$ in a space of curvature $C$, but can embed in a space of any smaller curvature. 
-We use \eqref{eq:hyp_eq} and let $\alpha = \frac{2\pi}{n}$:
-%\[
-%\cosh{\frac{1}{k}} = \cosh^2{\frac{1}{k}} - \sinh^2{\frac{1}{k}}\cos\alpha.
-%\]
-%\[
-%\cosh{\frac{1}{k}} = 1 +  (1- \cos\alpha) \sinh^2{\frac{1}{k}}.
-%\]
-%\[
-%\cosh{\frac{1}{k}} = 1 +  2\sin^2 \frac{\alpha}{2} \sinh^2{\frac{1}{k}}.
-%\]
-%\[
-%\frac{1}{2\sin^2 \frac{\alpha}{2}} = \frac{\sinh^2{\frac{1}{k}}}{\cosh{\frac{1}{k}} - 1}.
-%\]
-%\[
-%\frac{1}{2\sin \frac{\alpha}{2}} = \frac{\sinh{\frac{1}{k}}}{\sqrt{2}\sqrt{\cosh{\frac{1}{k}} - 1}}.
-%\]
-\[
-\cosh\frac{1}{2R} = \frac{1}{2\sin \frac{\alpha}{2}},
-\]
-\[
-R = \frac{1}{2\,\textrm{arccosh}\frac{1}{2\sin \frac{\alpha}{2}}},
-\]
-\[
-C = - \left(2\,\textrm{arccosh}\frac{1}{2\sin \frac{\alpha}{2}}\right)^2.
-\]
-\textbf{[ This last steps needs a bit more explanation. We should mention the relation between the radius and the curvature.]}
-Note that if $n$ is large, then $\sin \frac{\alpha}{2} = \sin\frac{\pi}{n-1} \sim \frac{\pi}{n-1}$. Then,  $\textrm{arccosh}\frac{1}{2\sin \frac{\alpha}{2}} \sim \textrm{arccosh}\frac{n-1}{2\pi} \sim \log n$, so we get $C \sim - 4 \log^2 n$. 
-
-Now, let us consider $n \le 6$. Obviously, for $n = 6$ we have $C = 0$. \textbf{[ I guess this is obvious because it is in Euclidean space. Maybe we should explain this a bit more.]}
-
-If $n < 6$, then $C > 0$. We use \eqref{eq:sph_eq}:
-\[
-\cos{\frac{1}{R}} = \frac{\cos \alpha}{1 - \cos \alpha},
-\]
-\[
-C = \left(\arccos \frac{\cos \alpha}{1 - \cos \alpha}\right)^2.
-\]
-\textbf{[Here we should emphasize that we consider a spherical space and use the corresponding law of cosines.]}
 \end{proof}
 
 \subsection{Tree $T_b$ with branching factor $b$}
 
-We consider a tree $T_b$, $b \ge 2$. For symmetry, assume that the first node has $b+1$ children, while all other nodes have a parent and $b$ children. \ch{For Ollivier, Forman curvature, we give the results for the case that the depth $M$ of $T_b$ tends to infinite. While for threshold-based curvature we will consider a tree of infinite depth.} In \ch{all} other cases, our statements hold for any finite tree $T$.
+We consider a tree $T_b$, $b \ge 2$. For symmetry, assume that the first node has $b+1$ children, while all other nodes have a parent and $b$ children. For Ollivier and Forman curvatures, we give the results for the case when the depth $M$ of $T_b$ tends to infinity. For threshold-based curvature we will consider a tree of infinite depth. In the other cases, our statements hold for any finite tree $T$.
 
 \subsubsection{Ollivier curvature} 
 
-\ch{Let $E_b(M)$ denote the number of edges in the tree $T_b(M)$ of depth $M \ge 2$ and observe that $E_b(M) = (b+1) \sum_{m =0}^{M-1} b^m$. There are two types of edges: those adjacent to a leaf node and those not adjacent to a leaf node. For the former, we have that one node has degree $1$ and hence~\eqref{eq:ollivier_tree} implies that Ollivier curvature of these edges is $0$. For edges $(u,v)$ that are not adjacent to a leaf node~\eqref{eq:ollivier_tree} implies that $\kappa_{T_b(M)}(u,v) = -2 \left(1 - \frac{1}{b+1} - \frac{1}{b+1} \right) = -\frac{2(b-1)}{b+1}$. Since there are $E_b(M-1)$ edges of this type we get
+Let $E_b(M)$ denote the number of edges in the tree $T_b(M)$ of depth $M \ge 2$ and observe that $E_b(M) = (b+1) \sum_{m =0}^{M-1} b^m$. There are two types of edges: those adjacent to a leaf node and those not adjacent to a leaf node. For the former, we have that one node has degree $1$ and hence~\eqref{eq:ollivier_tree} implies that Ollivier curvature of these edges is $0$. For edges $(u,v)$ that are not adjacent to a leaf node~\eqref{eq:ollivier_tree} implies that $\kappa_{T_b(M)}(u,v) = -2 \left(1 - \frac{1}{b+1} - \frac{1}{b+1} \right) = -\frac{2(b-1)}{b+1}$. Since there are $E_b(M-1)$ edges of this type we get
 \begin{align*}
 	\kappa(T_b(M)) = -\frac{2(b-1)}{b+1}\frac{E_b(M-1)}{E_b(M)},
 \end{align*}
@@ -310,13 +265,12 @@ Finally we note that $E_b(M-1) = \frac{E_b(M) - (b+1)}{b}$ and $E_b(M) \to \inft
 \[
 	\kappa(T_b(M)) = -\frac{2(b-1)}{b+1} \left(\frac{1}{b} - \frac{b+1}{b E_b(M)}\right) \to -\frac{2(b-1)}{b(b+1)}.
 \]
-}
 
 %We can use \eqref{eq:ollivier_tree} and get
 %$\kappa_{T_b}(u,v) = -2 \left(1 - \frac{1}{b+1} - \frac{1}{b+1} \right) = - 2 + \frac{4}{b+1}$ for any edge. So, $\kappa(T_b) = -2 + \frac{4}{b+1}$, which is negative.
 
 \subsubsection{Forman curvature} 
-\ch{It is easy to see that for an edge $(u,v)$ adjacent to a leaf node $F_{T_b(M)}(u,v) = \hat{F}_{T_b(M)}(u,v) = 2 - b$ while edges $(u^\prime, v^\prime)$ that are not adjacent to a leaf node $F_{T_b(M)}(u,v) = \hat{F}_{T_b(M)}(u,v) = 2 - 2b$. Hence we obtain that
+It is easy to see that for an edge $(u,v)$ adjacent to a leaf node $F_{T_b(M)}(u,v) = \hat{F}_{T_b(M)}(u,v) = 2 - b$ while edges $(u^\prime, v^\prime)$ that are not adjacent to a leaf node $F_{T_b(M)}(u,v) = \hat{F}_{T_b(M)}(u,v) = 2 - 2b$. Hence we obtain that
 \begin{align*}
 	F(T_b(M)) &= \hat{F}(T_b(M)) \\
 	&= \frac{1}{E_b(M)} \left(E_b(M-1)(2-2b) + (E_b(M) - E_b(M-1))(2-b)\right)\\
@@ -326,7 +280,7 @@ where we used the relation between $E_b(M-1)$ and $E_b(M)$. From this it follows
 \[
 	F(T_b(M)) = \hat{F}(T_b(M)) \to (1-b),
 \]
-which is negative.}
+which is negative.
 
 %It is easy to see that we have 
 %$F(T_b) = \hat F(T_b) = 4 - 2(b+1) = 2(1-b)$.
@@ -338,7 +292,7 @@ which is negative.}
 
 \subsubsection{Distortion-based curvature} 
 
-On the one hand, our result for $S_n$ implies that if a graph contains $S_3$, then it cannot be embedded with zero distortion in any space. One the other hand, \cite{sarkar2011low} proves that if we scale all edges by a sufficiently large factor $\tau$, then the obtained tree can be embedded \ch{in} the hyperbolic plane with distortion at most $1 + \varepsilon$ with arbitrary small $\varepsilon$. Note that multiplying graph edges by $\tau$ is equivalent to changing curvature from $1$ to $\tau^2$. As a result, \cite{sarkar2011low} proves that we can achieve an arbitrary small distortion if $c \to -\infty$.
+On the one hand, our result for $S_n$ implies that if a graph contains $S_3$, then it cannot be embedded with zero distortion in any space. One the other hand, \cite{sarkar2011low} proves that if we scale all edges by a sufficiently large factor $\tau$, then the obtained tree can be embedded in the hyperbolic plane with distortion at most $1 + \varepsilon$ with arbitrary small $\varepsilon$. Note that multiplying graph edges by $\tau$ is equivalent to changing curvature from $1$ to $\tau^2$. As a result, \cite{sarkar2011low} proves that we can achieve an arbitrary small distortion if $c \to -\infty$.
 Hence, $C_d^{dist}(T) = -\infty$ for any $T$.
 
 \subsubsection{Threshold-based curvature} 
@@ -362,7 +316,7 @@ As for $S_n$, we prove that for $T_b$ a perfect embedding exists for $d = 2$ and
 \begin{figure}
     \centering
     \includegraphics[width = 0.5 \textwidth]{trees.pdf}
-    \caption{Threshold-based embedding of trees. \ch{The nodes $u_l, u$ and $u_r$ are at level $l$ while $u_1,u_2,u_3$ are at level $l+1$.}}
+    \caption{Threshold-based embedding of trees. The nodes $u_l, u$ and $u_r$ are at level $l$ while $u_1,u_2,u_3$ are at level $l+1$.}
     \label{fig:trees}
 \end{figure}
 
@@ -380,11 +334,11 @@ It remains to find a maximum curvature such that the required conditions are sat
 \begin{equation}\label{eq:1}
 \cosh \frac{1}{R} = 1 + 2 \sinh \frac{r}{R} \sin^2 \alpha \,.
 \end{equation}
-\ch{So} the only condition we need for the whole procedure to work is that we have enough space on the circular arc for placing $b$ nodes there:
+So the only condition we need for the whole procedure to work is that we have enough space on the circular arc for placing $b$ nodes there:
 \[
 \cosh \frac{1}{R} \le 1 + 2 \sinh \frac{r'}{R} \sin^2 \frac{\alpha}{b} \,.
 \]
-\ch{We} note that $\sin^2 \frac{\alpha}{b} \ge \frac{\sin^2 \alpha}{b^2}$ for all $b \ge 1$. Therefore, it is sufficient to have
+We note that $\sin^2 \frac{\alpha}{b} \ge \frac{\sin^2 \alpha}{b^2}$ for all $b \ge 1$. Therefore, it is sufficient to have
 \begin{equation}\label{eq:2}
 \cosh \frac{1}{R} \le 1 + 2 \sinh \frac{r'}{R} \cdot \frac{\sin^2 \alpha}{b^2} \,.
 \end{equation}
@@ -446,7 +400,7 @@ and solving this equation for $a$ yields
 \[
 a  = \sqrt{\frac{2n}{(n-1)}}\frac{1}{2\arcsin \sqrt{\frac{n}{2(n-1)}}}.
 \]
-\textbf{[I remember that it took me some time to properly follow this argument in the previous versions. Now I again have to spend some time to understand this. Could we maybe add some additional explanation?]}
+%\textbf{[I remember that it took me some time to properly follow this argument in the previous versions. Now I again have to spend some time to understand this. Could we maybe add some additional explanation?]}
 Plugging this back into the formula for the radius $R$ we obtain
 \[
 R = \frac{1}{2\arcsin \sqrt{\frac{n}{2(n-1)}}},
@@ -538,7 +492,7 @@ which completes the proof.
 \end{proof}
 
 \subsubsection{Forman curvature} 
-\ch{On readily verifies that}
+It is easy to see that
 $F(K_{l,m}) = \hat F(K_{l,m}) = 4 - l - m$. 
 
 %\subsubsection{Approximate Ollivier curvature} 
@@ -597,13 +551,15 @@ We introduced a concept of global graph curvature motivated by the practical tas
 \bibliography{curvature}
 %
 
+\newpage
+
 \appendix
 
 \section{Geometrical properties of spaces of constant curvature}\label{sec:properties}
 
 In this section, we recall some useful equalities which will be used throughout the proofs.
 
-Recall that we use notation $R$, where $R = \frac{1}{\sqrt{c}}$ in spherical space (corresponds to the radius of a sphere) and  $R = \frac{1}{\sqrt{-c}}$ in the hyperbolic case (can be considered as a scaling factor compared to the space of curvature~1).
+We use notation $R$, where $R = \frac{1}{\sqrt{c}}$ in spherical space (corresponds to the radius of a sphere) and  $R = \frac{1}{\sqrt{-c}}$ in the hyperbolic case (can be considered as a scaling factor compared to the space of curvature~1).
 
 \subsubsection{Law of cosines}
 
@@ -772,6 +728,55 @@ Therefore, we get
 D_{opt}(S_n) = O\left( R \log n \right) = O\left( \frac{\log n}{\sqrt{-c}} \right).
 \]
 
+
+
+\section{Proof of Theorem~\ref{thm:star_threshold}}\label{app:proof:star_threshold}
+
+Let us construct a perfect embedding of $S_n$ for $d = 2$
+and estimate the required curvature.
+Recall that in a perfect embedding all leaves have to be inside the ball of radius 1 around the central node $v$ and also the distance between any two leaves has to be larger than one. 
+It is easy to see that if we managed to spread $n$ points inside the ball of radius 1 with distances more than 1 between them, then we can move each point along the radius up to distance 1 from $v$ preserving this property. Therefore, it is sufficient to spread all points on a hypersphere.
+
+First, assume that $n > 6$. In this case we have to consider only hyperbolic space, since $n$ neighbors would not fit to a circle of radius 1 in neither spherical nor Euclidean spaces.
+We will find the largest curvature $C$ which allows to have distance exactly 1 between the closest leaves. In this case we cannot embed $S_n$ in a space of curvature $C$, but can embed in a space of any smaller curvature. 
+We use \eqref{eq:hyp_eq} (where $R = \frac{1}{\sqrt{-C}}$) and let $\alpha = \frac{2\pi}{n}$:
+%\[
+%\cosh{\frac{1}{k}} = \cosh^2{\frac{1}{k}} - \sinh^2{\frac{1}{k}}\cos\alpha.
+%\]
+%\[
+%\cosh{\frac{1}{k}} = 1 +  (1- \cos\alpha) \sinh^2{\frac{1}{k}}.
+%\]
+%\[
+%\cosh{\frac{1}{k}} = 1 +  2\sin^2 \frac{\alpha}{2} \sinh^2{\frac{1}{k}}.
+%\]
+%\[
+%\frac{1}{2\sin^2 \frac{\alpha}{2}} = \frac{\sinh^2{\frac{1}{k}}}{\cosh{\frac{1}{k}} - 1}.
+%\]
+%\[
+%\frac{1}{2\sin \frac{\alpha}{2}} = \frac{\sinh{\frac{1}{k}}}{\sqrt{2}\sqrt{\cosh{\frac{1}{k}} - 1}}.
+%\]
+\[
+\cosh\frac{1}{2R} = \frac{1}{2\sin \frac{\alpha}{2}},
+\]
+\[
+R = \frac{1}{2\,\textrm{arccosh}\frac{1}{2\sin \frac{\alpha}{2}}},
+\]
+\[
+C = - \left(2\,\textrm{arccosh}\frac{1}{2\sin \frac{\alpha}{2}}\right)^2.
+\]
+Note that if $n$ is large, then $\sin \frac{\alpha}{2} = \sin\frac{\pi}{n-1} \sim \frac{\pi}{n-1}$. Then,  $\textrm{arccosh}\frac{1}{2\sin \frac{\alpha}{2}} \sim \textrm{arccosh}\frac{n-1}{2\pi} \sim \log n$, so we get $C \sim - 4 \log^2 n$. 
+
+Now, let us consider $n \le 6$. Obviously, for $n = 6$ we have $C = 0$. 
+%\textbf{[ I guess this is obvious because it is in Euclidean space. Maybe we should explain this a bit more.]}
+
+If $n < 6$, then $C > 0$. 
+In this case we consider a spherical space and use the corresponding law of cosines~\eqref{eq:sph_eq}:
+\[
+\cos{\frac{1}{R}} = \frac{\cos \alpha}{1 - \cos \alpha},
+\]
+\[
+C = \left(\arccos \frac{\cos \alpha}{1 - \cos \alpha}\right)^2.
+\]
 
 
 \end{document}
