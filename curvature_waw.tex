@@ -41,7 +41,9 @@ Recently, non-Euclidean spaces became popular for embedding structured data. How
 In this paper, we define a notion of \textit{global graph curvature}, specifically catered to the problem of embedding graphs.
 We theoretically analyze this value and show that the optimal curvature essentially depends on the dimensionality of the embedding space and loss function one aims to minimize via embedding. 
 We also review existing notions of local curvature (e.g., Ollivier-Ricci curvature) and conduct a theoretical analysis of their properties. 
-In particular, we demonstrate that such curvatures are unable to estimate the global one. 
+\ch{In particular, we demonstrate that the
+global curvature differs significantly from the aggregations of local ones. 
+Thus, the proposed measure is non-trivial and it requires new empirical estimators as well as separate theoretical analysis.}
 
 \keywords{Graph embedding \and Curvature \and Non-Euclidean spaces}
 \end{abstract}
@@ -55,7 +57,7 @@ Representation learning is an important tool for learning from structured data s
 State-of-the-art algorithms typically use Euclidean space for embedding. 
 Recently, however, it was found that hyperbolic spaces demonstrate superior performance for various tasks~\cite{nickel2018learning,sala2018representation}, while in some cases spherical spaces can be useful~\cite{liu2017sphereface}. A key characteristic classifying the above-mentioned spaces is curvature, which is negative for hyperbolic spaces, zero for Euclidean, and positive for spherical spaces. These findings, therefore, show that certain graphs are better represented in spaces with non-zero curvature. While some methods simply fix the curvature (e.g., -1 for hyperbolic space) and then find the optimal embedding of the graph in the corresponding space \cite{nickel2018learning}, others try to learn the right curvature and embedding simultaneously~\cite{gu2019learning}.
 
-In this paper, we consider the problem of determining a graph curvature suitable for embedding \textit{without} actual embedding the graph itself (using only some simple graph characteristics). 
+In this paper, we consider the problem of determining a graph curvature suitable for embedding. 
 We first introduce a concept of \textit{global} graph curvature, which depends on both the dimension and loss function used for the embedding. 
 We theoretically analyze this curvature considering two loss functions: \emph{distortion}, which is widely used in embedding literature, and \emph{threshold-based} loss (see Section~\ref{sec:related_work}), which is more suitable for some practical applications. 
 We prove that these loss functions lead to fundamentally different graph curvatures. 
@@ -82,7 +84,7 @@ Distortion is a global metric, it takes into account all graph distances. Howeve
 
 Another measure, often used for embeddings, is Mean Average Precision (MAP), which, for a given node, compares the distance-based ranking of other embedded nodes with the graph-neighborhood-based ranking. 
 We do not consider MAP in our analysis since it cares only about the order and so is curvature-invariant.  
-Indeed, changing curvature is equivalent to changing scale, so it is sufficient to consider only the curvatures -1, 0, 1, corresponding to hyperbolic, Euclidean and spherical spaces. Moreover, by considering a small enough region in hyperbolic or spherical space we get geometry similar to the Euclidean one, so for MAP it is important to distinguish only between -1 and~1.
+Indeed, changing curvature is equivalent to changing scale, so for MAP it is sufficient to consider only the curvatures -1, 0, 1, corresponding to hyperbolic, Euclidean and spherical spaces. Moreover, by considering a small enough region in hyperbolic or spherical space we get geometry similar to the Euclidean one, so for MAP it is important to distinguish only between -1 and~1.
 
 We also consider the following class of \textit{threshold-based} loss functions. Given an embedding $f$ of a graph $G$, we (re)construct a graph $G'$ in the following way: $v$ and $u$ are connected in $G'$ iff $d(f(v),f(u))\le 1$. Then, any loss function which is based on the comparison of $G$ and $G'$ is called threshold-based. 
 Such loss functions are natural in many applications (graph reconstruction, link prediction, recommendations).
@@ -181,9 +183,9 @@ Let us discuss how local graph curvatures can be used to estimate the global one
 
 \subsubsection{Average sectional curvature} Let $P_3$ denote the number of paths of length 3 in $G$, then $\xi(G) = \frac{1}{P_3} \sum\limits_{v \in V }\sum\limits_{b<c: b,c\in N(v)} \xi_G(v;b,c)$.
 
-It is important to note that all curvatures discussed above do \textit{not} depend on neither dimension $d$ nor loss function $L$. However, as we show below, global curvature defined in Section~\ref{sec:global_curvature_definition} significantly depends on them.
+It is important to note that all curvatures discussed above do \textit{not} depend on dimension $d$ and loss function $L$. However, as we show below, global curvature defined in Section~\ref{sec:global_curvature_definition} significantly depends on them.
 
-Let us also mention that there is a concept of Gromov's hyperbolicity~\cite{gromov1987hyperbolic}, which is sometimes used to decide whether it is reasonable to embed a graph to a hyperbolic space. However, first, this estimator cannot be easily converted to curvature, and, second, it does not say anything about the embedding in spherical spaces.
+Let us also mention that there is a concept of Gromov's hyperbolicity~\cite{gromov1987hyperbolic}, which is sometimes used to decide whether it is reasonable to embed a graph to a hyperbolic space. However, firstly, this estimator cannot be easily converted to curvature, and, secondly, it does not say anything about the embedding in spherical spaces.
 
 \section{Theoretical analysis of global curvature}\label{sec:theory}
 
@@ -301,24 +303,20 @@ Hence, $C_d^{dist}(T) = -\infty$ for any $T$.
 
 \begin{theorem}\label{thm:tree_threshold}
 $C_d^{thr}(T_b) = (-\infty, C)$ for some $C = C(b,d)$, which increases with $d$ and decreases with $b$. 
-In particular, $C(b,2) \ge \left( \frac{2\,\log b}{2 \, \mathrm{arccosh} \frac{\cosh 1}{\cosh 1/2} - 1} \right)^2$.
+In particular, $C(b,2) \ge - \left( \frac{2\,\log b}{2 \, \mathrm{arccosh} \frac{\cosh 1}{\cosh 1/2} - 1} \right)^2$.
 \end{theorem}
 
 Actually, the bound above holds for any tree whose branching is bounded by $b$.
-Interestingly, while it is often claimed that trees are intrinsically hyperbolic, to the best of our knowledge, we are the first to formally prove that trees can be perfectly embedded in a hyperbolic plane of some curvature.  
+Interestingly, while it is often claimed that trees are intrinsically hyperbolic~\cite{krioukov2010hyperbolic,nickel2017poincare}, to the best of our knowledge, we are the first to formally prove that trees can be perfectly embedded in a hyperbolic plane of some curvature.  
 
 \begin{proof}
+\ch{First, recall that Appendix~\ref{sec:properties} lists some geometric properties of hyperbolic space which we use throughout this proof.}
+
 As for $S_n$, we prove that for $T_b$ a perfect embedding exists for $d = 2$ and some curvature $c$. Then, similarly to the previous section, it is clear that $C$ increases with $b$ and decreases with $n$.
 
 %First, let us discuss the upper bound. 
 %Here we say that all children at levels $l, l-2, l-4, \ldots$ have to fit to the ball of radius $l$ with all pairwise distances $> 1$. We can consider large enough $l$ here (and get hyperbolic space).
 
-\begin{figure}
-    \centering
-    \includegraphics[width = 0.5 \textwidth]{trees.pdf}
-    \caption{Threshold-based embedding of trees. The nodes $u_l, u$ and $u_r$ are at level $l$ while $u_1,u_2,u_3$ are at level $l+1$.}
-    \label{fig:trees}
-\end{figure}
 
 
 For the lower bound on $C$, we have to guarantee that an embedding exists. For this, we provide the following construction (see Figure~\ref{fig:trees} for an illustration).
@@ -327,20 +325,29 @@ First, we take the node $v$ and consider a circle of radius 1 around this node.
 We spread $b + 1$ neighbors uniformly around this node. For our construction to work, we need all distances between these nodes to be larger than 1.
 Now, at some step of the algorithm, assume that we have all nodes at level $l$ placed at some circle centered at $v$ and all distances between the nodes at level $l$ are larger than 1. Our aim is then to find positions for all nodes at level $l + 1$.
 
+\begin{figure}[t]
+    \centering
+    \includegraphics[width = 0.5 \textwidth]{trees.pdf}
+    \caption{Threshold-based embedding of trees. The nodes $u_l, u$ and $u_r$ are at level $l$ while $u_1,u_2,u_3$ are at level $l+1$.}
+    \label{fig:trees}
+\end{figure}
+
+
 Let us take any node at $l$-th level. Consider two points $u_l$ and $u_r$ on the same circle at distance 1 from the node $u$ to the left and to the right, respectively.
 Let $u,u_l,z_l$ and $u,u_r,z_r$ form equilateral triangles (with sides equal to 1). Then we let the points at $l+1$-th level to be spread on the circle centred at $v$ and passing through $z_l$ and $z_r$. The children of $u$ ($u_1, \ldots, u_{b}$) will be placed on the circular arc between $z_l$ and $z_r$. As usual, we want $u_i$ and $u_{i+1}$ to be at distance at least 1 from each other. Moreover, they have to be at distance at least 1 from children of other nodes. Also, note that placing $u_1, \ldots, u_{b}$ between $z_l$ and $z_r$ guarantees that these nodes are closer than 1 to their parent node $u$ but at the same time at a distance larger than 1 from all other nodes at $l$-th level. Also, all points at $l$-th level are far enough from points at $l+2$-th level. 
 
 It remains to find a maximum curvature such that the required conditions are satisfied. Let $r$ and $r'$ be radii of circles at $l$-th and $l+1$-th levels and let $2\alpha = \angle u_l v u$. We know (the law of cosines and $\cos 2\alpha = 1 - 2\sin^2 \alpha$) that
 \begin{equation}\label{eq:1}
-\cosh \frac{1}{R} = 1 + 2 \sinh \frac{r}{R} \sin^2 \alpha \,.
+\cosh \frac{1}{R} = 1 + 2 \sinh \left( \frac{r}{R} \right) \sin^2 \alpha \,,
 \end{equation}
-So the only condition we need for the whole procedure to work is that we have enough space on the circular arc for placing $b$ nodes there:
+\ch{where $R = 1/\sqrt{-C}$ (see Appendix~\ref{sec:properties}).}
+So, the only condition we need for the whole procedure to work is that we have enough space on the circular arc for placing $b$ nodes there:
 \[
-\cosh \frac{1}{R} \le 1 + 2 \sinh \frac{r'}{R} \sin^2 \frac{\alpha}{b} \,.
+\cosh \frac{1}{R} \le 1 + 2 \sinh \left( \frac{r'}{R} \right) \sin^2 \frac{\alpha}{b} \,.
 \]
 We note that $\sin^2 \frac{\alpha}{b} \ge \frac{\sin^2 \alpha}{b^2}$ for all $b \ge 1$. Therefore, it is sufficient to have
 \begin{equation}\label{eq:2}
-\cosh \frac{1}{R} \le 1 + 2 \sinh \frac{r'}{R} \cdot \frac{\sin^2 \alpha}{b^2} \,.
+\cosh \frac{1}{R} \le 1 + 2 \sinh \left(\frac{r'}{R}\right) \cdot \frac{\sin^2 \alpha}{b^2} \,.
 \end{equation}
 Combining \eqref{eq:1} and \eqref{eq:2}, we obtain:
 \[
@@ -355,11 +362,11 @@ R \le \frac{r' - r}{2 \log b}.
 \]
 It remains to find the lower bound for $r' - r$ and it is easy to see that $r' - r$ decreases with $r$. Therefore, it is sufficient to consider only the second step of the construction procedure, when we move from the circle of radius 1 to the next one. In this case, $r = 1$ and 
 \[
-r' = 2 \, \mathrm{arccosh} \frac{\cosh 1}{\cosh 1/2}.
+r' = 2 \, \mathrm{arccosh} \left( \frac{\cosh1}{\cosh 0.5} \right).
 \]
 So, we have 
 \[
--C = \frac{1}{R^2} \le \left( \frac{2\,\log b}{2 \, \mathrm{arccosh} \frac{\cosh 1}{\cosh 1/2} - 1} \right)^2.
+-C = \frac{1}{R^2} \le \left( \frac{2\,\log b}{2 \, \mathrm{arccosh}\left( \frac{\cosh 1}{\cosh 0.5} \right) - 1} \right)^2.
 \]
 \end{proof}
 
@@ -510,7 +517,7 @@ In particular, if $m = l$ we get $\xi({K_{l,m}}) = \frac{1}{2m - 3}$.
 This lemma implies that for balanced complete bipartite graphs $\xi({K_{l,m}})$ is positive, but tends to zero as the graph grows.
 
 \begin{proof}
-If $v$ and $a$ are in the same part of the bipartite graph, then $\xi_{K_{l,m}}(v;b,c;a) = 1$, otherwise $\xi_{K_{l,m}}(v;b,c;a) = -1$. Therefore, if $a$ belongs to the part of size $l$, sectional curvature is
+If $v$ and $a$ are in the same part of the bipartite graph, then $\xi_{K_{l,m}}(v;b,c;a) = 1$, otherwise $\xi_{K_{l,m}}(v;b,c;a) = -1$. Therefore, if $v$ belongs to the part of size $l$, sectional curvature is
 $\xi_{K_{l,m}}(v;b,c) = \frac{l-m+1}{l+m-3}$, otherwise it is $\xi_{K_{l,m}}(v;b,c) = \frac{m-l+1}{l+m-3}$. As a result, by averaging over all triplets, we get
 
 \begin{multline*}
@@ -540,7 +547,7 @@ Indeed, the result for $K_{2,2}$ follows from the corresponding result on cycle 
 
 \section{Conclusion}
 
-We introduced a concept of global graph curvature motivated by the practical task of embedding graphs. This curvature depends on the loss function and space dimension. To get an intuition about how global graph curvature behaves, we theoretically analyzed it for several simple graphs. We compared the global graph curvature and several approximations based on well-known local graph curvatures and showed that they essentially differ. We demonstrated that dimensionality and the choice of a loss function fundamentally affect the global curvature and, in particular, when dimension is larger the optimal curvature usually becomes less negative. Our work shows that the problem of finding the rights space for graph embedding is interesting and non-trivial and we hope our results will encourage further research on global graph curvature.
+We introduced a concept of global graph curvature motivated by the practical task of embedding graphs. This curvature depends on the loss function and space dimension. To get an intuition about how global graph curvature behaves, we theoretically analyzed it for several simple graphs. We compared the global graph curvature and several approximations based on well-known local graph curvatures and showed that they essentially differ. We demonstrated that dimensionality and the choice of a loss function fundamentally affect the global curvature and, in particular, when dimension is larger the optimal curvature usually becomes less negative. Our work shows that the problem of finding the right space for graph embedding is interesting and non-trivial and we hope our results will encourage further research on global graph curvature.
 
 % ---- Bibliography ----
 %
@@ -559,7 +566,7 @@ We introduced a concept of global graph curvature motivated by the practical tas
 
 In this section, we recall some useful equalities which will be used throughout the proofs.
 
-We use notation $R$, where $R = \frac{1}{\sqrt{c}}$ in spherical space (corresponds to the radius of a sphere) and  $R = \frac{1}{\sqrt{-c}}$ in the hyperbolic case (can be considered as a scaling factor compared to the space of curvature~1).
+We use notation $R$, where $R = \frac{1}{\sqrt{c}}$ in spherical space (corresponds to the radius of a sphere) and  $R = \frac{1}{\sqrt{-c}}$ in the hyperbolic case (can be considered as a scaling factor compared to the space of curvature~-1).
 
 \subsubsection{Law of cosines}
 
