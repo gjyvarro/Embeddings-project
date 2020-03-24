@@ -105,7 +105,6 @@ While in this paper we analyze \textit{global} graph curvature, there are severa
 \subsubsection{Ollivier curvature}
 
 Ollivier curvature translates the definition of Ricci curvature to graphs. Again, the idea is to compare the distance between two small balls with the distance between their centers. The distance between balls is defined by the well-known optimal transport distance (a.k.a. Wasserstein distance or earth-mover distance).
-%, Monge-Kantorovich-Rubinstein distance).
 Formally, for a graph $G$ we consider the shortest path metric on $G$, denoted by $d_G$, and let $W_1^G$ denote the Wasserstein metric with respect to the metric space $(G,d_G)$. Furthermore, for each node $v$ we let $m_v$ denote the uniform probability measure on the neighbors of $v$, i.e., $m_v(u) = \frac{1_{u \sim v}}{\mathrm{deg}(v)}$, where $\mathrm{deg}(v)$ denotes the degree of $v$. Then, the classic definition\footnote{Note that Ollivier curvature is defined in much more generality in terms of metrics and random walks, see~\cite{ollivier2009ricci}. Thus, different version on graphs can be considered. Equation~\eqref{eq:def_classic_ollivier_graphs} corresponds to the classical choices of graph distance and random walk on the graph.} of Ollivier curvature between two neighboring nodes $v \sim u$ in $G$ is defined as
 \begin{equation}\label{eq:def_classic_ollivier_graphs}
 	\kappa_G(u,v) = 1 - W_1^G(m_v, m_u).
@@ -185,21 +184,27 @@ Let us discuss how local graph curvatures can be used to estimate the global one
 
 It is important to note that all curvatures discussed above do \textit{not} depend on dimension $d$ and loss function $L$. However, as we show below, global curvature defined in Section~\ref{sec:global_curvature_definition} significantly depends on them.
 
-Let us also mention that there is a concept of Gromov's hyperbolicity~\cite{gromov1987hyperbolic}, which is sometimes used to decide whether it is reasonable to embed a graph to a hyperbolic space. However, firstly, this estimator cannot be easily converted to curvature, and, secondly, it does not say anything about the embedding in spherical spaces.
-
+Let us also mention that there is a concept of Gromov's hyperbolicity~\cite{gromov1987hyperbolic}, which is sometimes used to decide whether it is reasonable to embed a graph to a hyperbolic space. 
+\ch{A metric has $\delta$-hyperbolicity if all geodesic triangles are $\delta$-slim: for any three points $a, b, c$, the shortest paths between them satisfy the following property: any point on one path is within distance $\delta$ from the closest point on the other two paths.
+However, firstly, such estimator cannot be easily converted to curvature, and, secondly, it does not say anything about the embedding in spherical spaces~\cite{ni2015ricci}.}
+\vspace{-4pt}
 \section{Theoretical analysis of global curvature}\label{sec:theory}
-
+\vspace{-4pt}
 To better understand the performance of the proposed approximations of global graph curvature,
 we consider several basic graphs and compare their global curvature and approximations. 
 By studying these graphs we also gain insights into how classic graph topologies influence the curvature of the space in which they can be properly embedded. 
 
+\vspace{-4pt}
+
 \subsection{Star $S_n$}\label{sec:S_n}
 
+\vspace{-4pt}
 It is pointed out in numerous papers that trees are negatively curved. 
 We analyze this theoretically and start with the simplest tree: one central node and $n$ leaves. We denote this graph by $S_n$ and assume that $n \ge 3$.
 
 \subsubsection{Ollivier curvature} 
 Consider any tree graph $T$, let $v, u$ be two neighbors. Then Proposition 2 in~\cite{jost2014ollivier} states that
+\vspace{-4pt}
 \begin{equation}\label{eq:ollivier_tree}
 	\kappa_T(u,v) = -2\left(1 - \frac{1}{\mathrm{deg}(v)} - \frac{1}{\mathrm{deg}(u)}\right)^+, 
 \end{equation}
@@ -661,7 +666,7 @@ D(S_n) \ge \frac{{n\choose 3}}{2(n-2){n+1 \choose 2}} D_{min} = \frac{ (n-1)D_{m
 Hence, it remains to find a lower bound on $D_{min}$, i.e., a lower bound for a weighted distortion of $S_3$ with central node $v$ and three leaves $v_1, v_2, v_3$.
 If we consider three angles at the node $v$, then at least one of them is $\alpha \le 2 \pi / 3$, so we can get a lower bound by only considering this triangle, which is, w.l.o.g., formed by $v, v_1, v_2$.
 \[
-D_{min} \ge  |d(f(v_1),f(v_2)) - 2| + \frac{|d(f(v_1),f(v)) - 1| + |d(f(v_2),f(v)) - 1|}{(n-1)/2}.
+D_{min} \ge  |d(f(v_1),f(v_2)) - 2| + \frac{|d(f(v_1),f(v)) - 1| + |d(f(v_2),f(v)) - 1|}{(n-1)/4}.
 \]
 
 Denote $d(f(v_1),f(v)) = x = 1 + \varepsilon$, $d(f(v_2),f(v)) = y = 1 + \delta$, $d(f(v_1),f(v_2)) = z = 2 + \varepsilon + \delta - \varphi$ with some $\varepsilon, \delta$ and some $\varphi > 0$ (from triangle inequality). Assume that $|\varepsilon| < 1/2$ and $|\delta| < 1/2$ (otherwise the lower bound is trivial). Now we use the law of cosines to get a lower bound on $\varphi$.
@@ -774,7 +779,6 @@ C = - \left(2\,\textrm{arccosh}\frac{1}{2\sin \frac{\alpha}{2}}\right)^2.
 Note that if $n$ is large, then $\sin \frac{\alpha}{2} = \sin\frac{\pi}{n-1} \sim \frac{\pi}{n-1}$. Then,  $\textrm{arccosh}\frac{1}{2\sin \frac{\alpha}{2}} \sim \textrm{arccosh}\frac{n-1}{2\pi} \sim \log n$, so we get $C \sim - 4 \log^2 n$. 
 
 Now, let us consider $n \le 6$. Obviously, for $n = 6$ we have $C = 0$. 
-%\textbf{[ I guess this is obvious because it is in Euclidean space. Maybe we should explain this a bit more.]}
 
 If $n < 6$, then $C > 0$. 
 In this case we consider a spherical space and use the corresponding law of cosines~\eqref{eq:sph_eq}:
