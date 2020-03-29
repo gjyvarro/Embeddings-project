@@ -16,7 +16,8 @@
 
 \begin{document}
 %
-\title{Global Graph Curvature\thanks{Supported by the grant of the Russian Government N 075-15-2019-1926.}}
+\title{Global Graph Curvature\thanks{
+Supported by the Ministry of Education and Science of the Russian Federation in the framework of MegaGrant no 075-15-2019-1926.}}
 %
 %\titlerunning{Abbreviated paper title}
 % If the paper title is too long for the running head, you can set
@@ -41,9 +42,9 @@ Recently, non-Euclidean spaces became popular for embedding structured data. How
 In this paper, we define a notion of \textit{global graph curvature}, specifically catered to the problem of embedding graphs.
 We theoretically analyze this value and show that the optimal curvature essentially depends on the dimensionality of the embedding space and loss function one aims to minimize via embedding. 
 We also review existing notions of local curvature (e.g., Ollivier-Ricci curvature) and conduct a theoretical analysis of their properties. 
-\ch{In particular, we demonstrate that the
+In particular, we demonstrate that the
 global curvature differs significantly from the aggregations of local ones. 
-Thus, the proposed measure is non-trivial and it requires new empirical estimators as well as separate theoretical analysis.}
+Thus, the proposed measure is non-trivial and it requires new empirical estimators as well as separate theoretical analysis.
 
 \keywords{Graph embedding \and Curvature \and Non-Euclidean spaces}
 \end{abstract}
@@ -105,7 +106,7 @@ While in this paper we analyze \textit{global} graph curvature, there are severa
 \subsubsection{Ollivier curvature}
 
 Ollivier curvature translates the definition of Ricci curvature to graphs. Again, the idea is to compare the distance between two small balls with the distance between their centers. The distance between balls is defined by the well-known optimal transport distance (a.k.a. Wasserstein distance or earth-mover distance).
-Formally, for a graph $G$ we consider the shortest path metric on $G$, denoted by $d_G$, and let $W_1^G$ denote the Wasserstein metric with respect to the metric space $(G,d_G)$. Furthermore, for each node $v$ we let $m_v$ denote the uniform probability measure on the neighbors of $v$, i.e., $m_v(u) = \frac{1_{u \sim v}}{\mathrm{deg}(v)}$, where $\mathrm{deg}(v)$ denotes the degree of $v$. Then, the classic definition\footnote{Note that Ollivier curvature is defined in much more generality in terms of metrics and random walks, see~\cite{ollivier2009ricci}. Thus, different version on graphs can be considered. Equation~\eqref{eq:def_classic_ollivier_graphs} corresponds to the classical choices of graph distance and random walk on the graph.} of Ollivier curvature between two neighboring nodes $v \sim u$ in $G$ is defined as
+Formally, for a graph $G$ we consider the shortest path metric on $G$, denoted by $d_G$, and let $W_1^G$ denote the Wasserstein metric with respect to the metric space $(G,d_G)$. Furthermore, for each node $v$ we let $m_v$ denote the uniform probability measure on the neighbors of $v$, i.e., $m_v(u) = \frac{1_{u \sim v}}{\mathrm{deg}(v)}$, where $\mathrm{deg}(v)$ denotes the degree of $v$. Then, the classic definition\footnote{Note that Ollivier curvature is defined in much more generality in terms of metrics and random walks~\cite{ollivier2009ricci}. Thus, different version on graphs can be considered. Equation~\eqref{eq:def_classic_ollivier_graphs} corresponds to the classical choices of graph distance and random walk.} of Ollivier curvature between two neighboring nodes $v \sim u$ in $G$ is defined as
 \begin{equation}\label{eq:def_classic_ollivier_graphs}
 	\kappa_G(u,v) = 1 - W_1^G(m_v, m_u).
 \end{equation}
@@ -184,27 +185,28 @@ Let us discuss how local graph curvatures can be used to estimate the global one
 
 It is important to note that all curvatures discussed above do \textit{not} depend on dimension $d$ and loss function $L$. However, as we show below, global curvature defined in Section~\ref{sec:global_curvature_definition} significantly depends on them.
 
-Let us also mention that there is a concept of Gromov's hyperbolicity~\cite{gromov1987hyperbolic}, which is sometimes used to decide whether it is reasonable to embed a graph to a hyperbolic space. 
-\ch{A metric has $\delta$-hyperbolicity if all geodesic triangles are $\delta$-slim: for any three points $a, b, c$, the shortest paths between them satisfy the following property: any point on one path is within distance $\delta$ from the closest point on the other two paths.
-However, firstly, such estimator cannot be easily converted to curvature, and, secondly, it does not say anything about the embedding in spherical spaces~\cite{ni2015ricci}.}
-\vspace{-4pt}
+There is also a concept of Gromov's hyperbolicity~\cite{gromov1987hyperbolic}, which is sometimes used to decide whether it is reasonable to embed a graph to a hyperbolic space. 
+A metric has $\delta$-hyperbolicity if all geodesic triangles are $\delta$-slim: for any three points $a, b, c$, the shortest paths between them satisfy the following property: any point on one path is within distance $\delta$ from the closest point on the other two paths.
+However, firstly, such estimator cannot be easily converted to curvature, and, secondly, it does not say anything about the embedding in spherical spaces~\cite{ni2015ricci}.
+
+%\vspace{-4pt}
 \section{Theoretical analysis of global curvature}\label{sec:theory}
-\vspace{-4pt}
+%\vspace{-4pt}
 To better understand the performance of the proposed approximations of global graph curvature,
 we consider several basic graphs and compare their global curvature and approximations. 
 By studying these graphs we also gain insights into how classic graph topologies influence the curvature of the space in which they can be properly embedded. 
 
-\vspace{-4pt}
+%\vspace{-4pt}
 
 \subsection{Star $S_n$}\label{sec:S_n}
 
-\vspace{-4pt}
+%\vspace{-4pt}
 It is pointed out in numerous papers that trees are negatively curved. 
 We analyze this theoretically and start with the simplest tree: one central node and $n$ leaves. We denote this graph by $S_n$ and assume that $n \ge 3$.
 
 \subsubsection{Ollivier curvature} 
 Consider any tree graph $T$, let $v, u$ be two neighbors. Then Proposition 2 in~\cite{jost2014ollivier} states that
-\vspace{-4pt}
+%\vspace{-4pt}
 \begin{equation}\label{eq:ollivier_tree}
 	\kappa_T(u,v) = -2\left(1 - \frac{1}{\mathrm{deg}(v)} - \frac{1}{\mathrm{deg}(u)}\right)^+, 
 \end{equation}
@@ -217,7 +219,6 @@ $F(S_n) = \hat F(S_n) = 3-n$, so stars are highly negatively curved for large $n
 \subsubsection{Average sectional curvature}
 
 Heuristic sectional curvature is defined for a node and its two neighbors. In case of a star we can only take a central node $v$ and two neighboring ones $b$ and $c$. For any other node $a$ we obtain $\xi_{S_n}(v;b,c;a) = -1$. Therefore, by averaging we obtain $\xi(S_n) = -1$.
-
 \subsubsection{Distortion-based curvature} 
 The following theorem holds.
 
@@ -315,7 +316,7 @@ Actually, the bound above holds for any tree whose branching is bounded by $b$.
 Interestingly, while it is often claimed that trees are intrinsically hyperbolic~\cite{krioukov2010hyperbolic,nickel2017poincare}, to the best of our knowledge, we are the first to formally prove that trees can be perfectly embedded in a hyperbolic plane of some curvature.  
 
 \begin{proof}
-\ch{First, recall that Appendix~\ref{sec:properties} lists some geometric properties of hyperbolic space which we use throughout this proof.}
+First, recall that Appendix~\ref{sec:properties} lists some geometric properties of hyperbolic space which we use throughout this proof.
 
 As for $S_n$, we prove that for $T_b$ a perfect embedding exists for $d = 2$ and some curvature $c$. Then, similarly to the previous section, it is clear that $C$ increases with $b$ and decreases with $n$.
 
@@ -333,7 +334,7 @@ Now, at some step of the algorithm, assume that we have all nodes at level $l$ p
 \begin{figure}[t]
     \centering
     \includegraphics[width = 0.5 \textwidth]{trees.pdf}
-    \caption{Threshold-based embedding of trees. The nodes $u_l, u$ and $u_r$ are at level $l$ while $u_1,u_2,u_3$ are at level $l+1$. \ch{Please note that this is only to give an intuitive idea of the proof construction. The exact shape of the circles and triangles will depend on the specific model of hyperbolic space used.}}
+    \caption{Threshold-based embedding of trees. The nodes $u_l, u$ and $u_r$ are at level $l$ while $u_1,u_2,u_3$ are at level $l+1$. This figure illustrates an intuitive idea of the proof construction, the exact shape of the circles and triangles will depend on the specific model of hyperbolic space used.}
     \label{fig:trees}
 \end{figure}
 
@@ -345,7 +346,7 @@ It remains to find a maximum curvature such that the required conditions are sat
 \begin{equation}\label{eq:1}
 \cosh \frac{1}{R} = 1 + 2 \sinh \left( \frac{r}{R} \right) \sin^2 \alpha \,,
 \end{equation}
-\ch{where $R = 1/\sqrt{-C}$ (see Appendix~\ref{sec:properties}).}
+where $R = 1/\sqrt{-C}$ (see Appendix~\ref{sec:properties}).
 So, the only condition we need for the whole procedure to work is that we have enough space on the circular arc for placing $b$ nodes there:
 \[
 \cosh \frac{1}{R} \le 1 + 2 \sinh \left( \frac{r'}{R} \right) \sin^2 \frac{\alpha}{b} \,.
